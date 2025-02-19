@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
+
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ['class'],
@@ -14,6 +15,7 @@ export default {
     theme: {
     	extend: {
     		fontFamily: {
+				geist : ['Karla','Roboto','Instrument Sans','Geist','serif'],
     			sans: [
     				'Figtree',
                     ...defaultTheme.fontFamily.sans
@@ -25,6 +27,10 @@ export default {
     			sm: 'calc(var(--radius) - 4px)'
     		},
     		colors: {
+				ultraego : {
+					DEFAULT : 'var(--ultraego)',
+					secondary : 'var(--ultraego-secondary)'
+				},
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {
