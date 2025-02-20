@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/drawer"
 import {ToggleMode} from '@/Components/ToggleMode'
 import { Menu } from 'lucide-react'
-const MobileNav = () => {
+import ProfileDropDown from '@/Components/Header/ProfileDropDown'
+const MobileNav = ({user}) => {
     const [open, setOpen] = useState(false);
   return (
     <div className="flex justify-between items-center">
@@ -30,21 +31,24 @@ const MobileNav = () => {
             <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>My Cart</Link></DrawerTitle>
             <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>Gallery</Link></DrawerTitle>
             <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>Contact/About</Link></DrawerTitle>
-            <DrawerDescription>&copy; {new Date().getFullYear()} Orée. All rights reserved.</DrawerDescription>
             </DrawerHeader>
-            {/* <DrawerFooter>
-            <Button>Submit</Button>
-            </DrawerFooter> */}
+            <DrawerFooter>
+              <DrawerDescription>&copy; {new Date().getFullYear()} Noir. All rights reserved.</DrawerDescription>
+            </DrawerFooter>
         </DrawerContent>
         </Drawer>
         <Link href='/'>
-        <AppLogo/>
+          <AppLogo/>
         </Link>
         <div className='space-x-2 flex items-center'>
-        <Link href="#" >
-            <Button variant="default">Log in</Button>
-        </Link>
-        <ToggleMode/>
+          {user ? 
+            <ProfileDropDown user={user}/>
+            : 
+            <Link href={route("login")} >
+              <Button variant="default">Log in</Button>
+            </Link> 
+            }
+          <ToggleMode/>
         </div>
     </div>
   )

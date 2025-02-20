@@ -8,7 +8,7 @@ export default function GuestLayout({ children }) {
         <ThemeProvider>
             <ScrollArea className="h-screen w-full">
                 <Header/>
-                <main className="mt-6 w-full h-auto bg-card px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+                <main className="bg-card px-20 py-4 shadow-md">
                     {children}
                 </main>
             </ScrollArea>
