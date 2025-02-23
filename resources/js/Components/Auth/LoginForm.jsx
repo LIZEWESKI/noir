@@ -79,6 +79,7 @@ export function LoginForm({className,...props}) {
                   id="password" 
                   type="password" 
                   value={data.password} 
+                  placeholder="Password"
                   onChange={e => setData('password', e.target.value)}
                   required />
                   {errors.password && <p className="text-sm text-red-500 ">{errors.password}</p>}

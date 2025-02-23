@@ -27,6 +27,7 @@ export default {
     			sm: 'calc(var(--radius) - 4px)'
     		},
     		colors: {
+				success : 'var(--success)',
 				ultraego : {
 					DEFAULT : 'var(--ultraego)',
 					secondary : 'var(--ultraego-secondary)'

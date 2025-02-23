@@ -6,16 +6,16 @@ import AppLogo from '@/Components/AppLogo'
 import ProfileDropDown from '@/Components/Header/ProfileDropDown'
 const DesktopNav = ({user}) => {
   return (
-    <div className='flex justify-between text-muted-foreground font-semibold items-center'>
+    <div className='flex justify-between items-center'>
         <nav className='flex gap-3 items-center'>
         <Link href='/' className='flex justify-center items-center gap-1'>
             <AppLogo/>
             <h1 className='text-lg font-extrabold text-primary mr-2'>Noir.</h1>
         </Link>
-        <Link href="#" className='hover:text-primary hover:underline'>Rooms</Link>
-        <Link href="#" className='hover:text-primary hover:underline'>My Cart</Link>
-        <Link href="#" className='hover:text-primary hover:underline'>Gallery</Link>
-        <Link href="#" className='hover:text-primary hover:underline'>Contact/About</Link>
+        <Link href="#" className='transition-colors hover:text-foreground/80 text-foreground/80'>Rooms</Link>
+        <Link href="#" className='transition-colors hover:text-foreground/80 text-foreground/80'>My Cart</Link>
+        <Link href="#" className='transition-colors hover:text-foreground/80 text-foreground/80'>Gallery</Link>
+        <Link href="#" className='transition-colors hover:text-foreground/80 text-foreground/80'>Contact/About</Link>
         </nav>
         <div className='space-x-2 flex items-center'>
           {user ? 

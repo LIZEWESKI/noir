@@ -1,6 +1,6 @@
 import React from 'react'
 import { Head , Link } from '@inertiajs/react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import Layout from '@/Layouts/Layout';
 import { LoginForm } from "@/Components/Auth/LoginForm"
 
 const Login = () => {
@@ -16,5 +16,5 @@ const Login = () => {
   )
 }
 
-Login.layout = (page) => <GuestLayout children={page} />;
+Login.layout = (page) => <Layout children={page} />;
 export default Login;

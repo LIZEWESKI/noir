@@ -1,12 +1,12 @@
 import React from 'react'
 import { Head , Link } from '@inertiajs/react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import Layout from '@/Layouts/Layout';
 import { RegisterForm } from '@/Components/Auth/RegisterForm';
 
 const Register = () => {
   return (
     <>
-        <Head title="Signup"/>
+        <Head title="Sign up"/>
         <div className="flex min-h-svh flex-col items-center justify-center gap-6  rounded-sm md:p-10">
         <div className="flex w-full max-w-sm flex-col gap-6">
             <RegisterForm />
@@ -16,5 +16,5 @@ const Register = () => {
   )
 }
 
-Register.layout = (page) => <GuestLayout children={page} />;
+Register.layout = (page) => <Layout children={page} />;
 export default Register;

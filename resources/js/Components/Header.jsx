@@ -6,9 +6,9 @@ import { usePage } from '@inertiajs/react'
 
 const Header = () => {
   const {auth} = usePage().props
-  const isMobile = useMediaQuery({query:'(max-width: 800px)'});
+  const isMobile = useMediaQuery({query:'(max-width: 768px)'});
   return (
-    <header className={`sticky top-0 bg-background border-b-[1px] border-border ${isMobile ? "px-4" : "px-20"} py-2`}>
+    <header className={`sticky top-0 bg-background border-b ${isMobile ? "px-4" : "px-20"} py-2`}>
       {isMobile && <MobileNav user={auth.user}/>}
       {!isMobile && <DesktopNav user={auth.user}/>}
     </header>
