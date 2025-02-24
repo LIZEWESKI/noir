@@ -5,7 +5,7 @@ const Home = ({ auth }) => {
     return (
         <>
             <Head title="Home" />
-            <h1 >TEST</h1>
+            <h1 >Home goes here :D</h1>
         </>
     );
 }

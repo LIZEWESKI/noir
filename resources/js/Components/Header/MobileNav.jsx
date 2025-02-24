@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import { Link } from '@inertiajs/react'
-import { Button } from '@/components/ui/Button'
 import AppLogo from '@/Components/AppLogo'
 import {
   Drawer,
@@ -12,10 +11,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import {ToggleMode} from '@/Components/ToggleMode'
 import { Menu } from 'lucide-react'
-import ProfileDropDown from '@/Components/Header/ProfileDropDown'
-const MobileNav = ({user}) => {
+import { GuestDropdown } from './GuestDropDown'
+import { UserDropdown } from './UserDropDown'
+const MobileNav = ({user, url, navigation}) => {
     const [open, setOpen] = useState(false);
   return (
     <div className="flex justify-between items-center">
@@ -27,10 +26,13 @@ const MobileNav = ({user}) => {
             <DrawerHeader className="text-start space-y-2">
             {/* <DrawerClose>
             </DrawerClose> */}
-            <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>Rooms</Link></DrawerTitle>
-            <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>My Cart</Link></DrawerTitle>
-            <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>Gallery</Link></DrawerTitle>
-            <DrawerTitle><Link href="#" onClick={() => setOpen(false)}>Contact/About</Link></DrawerTitle>
+            {navigation.map((item) => (          
+            <DrawerTitle 
+            key={item.href} 
+            className={`${url === item.href && "text-muted-foreground"}`} >
+              <Link href={item.href} onClick={() => setOpen(false)}>{item.name}</Link>
+            </DrawerTitle>
+            ))}
             </DrawerHeader>
             <DrawerFooter>
               <DrawerDescription>&copy; {new Date().getFullYear()} Noir. All rights reserved.</DrawerDescription>
@@ -41,14 +43,7 @@ const MobileNav = ({user}) => {
           <AppLogo/>
         </Link>
         <div className='space-x-2 flex items-center'>
-          {user ? 
-            <ProfileDropDown user={user}/>
-            : 
-            <Link href={route("login")} >
-              <Button variant="default">Log in</Button>
-            </Link> 
-            }
-          <ToggleMode/>
+          {user ? <UserDropdown user={user}/>: <GuestDropdown/>}
         </div>
     </div>
   )

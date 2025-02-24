@@ -11,6 +11,7 @@ Route::get('/', function () {
         'canRegister' => Route::has('register')
     ]);
 })->name("home");
+Route::inertia("/contact-us","ContactUs");
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
