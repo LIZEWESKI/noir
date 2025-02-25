@@ -12,7 +12,7 @@ const Header = () => {
     { name: "Rooms", href: "/rooms" },
     { name: "My Cart", href: "/my-cart" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Contact/About", href: "/contact-us" },
+    { name: "About us", href: "/about" },
   ]
   return (
     <header className={`sticky top-0 bg-background border-b ${isMobile ? "px-4" : "px-20"} py-2`}>

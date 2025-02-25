@@ -45,9 +45,9 @@ export function GuestDropdown() {
             <BookOpen className="mr-2 h-4 w-4" />
             <span>Gallery</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.visit("/contact-us") }>
+          <DropdownMenuItem onClick={() => router.visit("/about") }>
             <HelpCircle className="mr-2 h-4 w-4" />
-            <span>Contact/About</span>
+            <span>About Us</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

@@ -26,6 +26,9 @@ const MobileNav = ({user, url, navigation}) => {
             <DrawerHeader className="text-start space-y-2">
             {/* <DrawerClose>
             </DrawerClose> */}
+            <DrawerTitle className={`${url === "/" && "text-muted-foreground"}`}>
+              <Link href="/" onClick={() => setOpen(false)}>Home</Link>
+            </DrawerTitle>
             {navigation.map((item) => (          
             <DrawerTitle 
             key={item.href} 
@@ -39,7 +42,7 @@ const MobileNav = ({user, url, navigation}) => {
             </DrawerFooter>
         </DrawerContent>
         </Drawer>
-        <Link href='/'>
+        <Link href='/' className='transition-colors hover:opacity-90'>
           <AppLogo/>
         </Link>
         <div className='space-x-2 flex items-center'>

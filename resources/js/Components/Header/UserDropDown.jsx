@@ -13,7 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./ThemeToggle"
 import { router } from "@inertiajs/react"
-
 export function UserDropdown({user}) {
     const initials = user.name.substring(0, 2).toUpperCase();
   return (
