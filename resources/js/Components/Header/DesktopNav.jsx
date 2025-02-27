@@ -3,14 +3,14 @@ import { Link } from '@inertiajs/react'
 import AppLogo from '@/Components/AppLogo'
 import { UserDropdown } from './UserDropDown'
 import { GuestDropdown } from './GuestDropDown'
-const DesktopNav = ({user, url, navigation}) => {
+const DesktopNav = ({user, url, navigation, className}) => {
 
   return (
-    <div className='flex justify-between items-center'>
+    <div className={`justify-between items-center ${className}`}>
         <nav className='flex gap-3 items-center'>
           <Link href="/" className="flex items-center space-x-2 transition-colors hover:opacity-90">
             <AppLogo />
-            <span className="font-bold text-xl">
+            <span className="font-extrabold text-xl">
               Noir<span className="text-primary">.</span>
             </span>
           </Link>

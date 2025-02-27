@@ -20,7 +20,7 @@ export function UserDropdown({user}) {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
             <span className="sr-only">Open user menu</span>
-            <AvatarImage src={user.profile_pic_url} />
+            <AvatarImage src={user.profile_picture_url} />
             <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

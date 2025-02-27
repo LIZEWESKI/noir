@@ -7,17 +7,14 @@ const About = () => {
   return (
     <>
       <Head title="About us"/>
-      <div className="container self-center space-y-6 max-w-6xl py-12 md:py-16 lg:py-24">
-        {/* Hero Section */}
+      <div className="container self-center space-y-6 max-w-6xl py-12 md:py-10 lg:py-14">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl ">About Us – Noir</h1>
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-7xl ">About Us</h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
             Your premier hotel booking and management platform designed to make reservations seamless and efficient.
           </p>
         </div>
-
-        {/* Welcome Section */}
-        <Card>
+        <Card className="border-success border-[1px]">
           <CardHeader>
             <CardTitle className="text-2xl">Welcome to Noir</CardTitle>
           </CardHeader>
@@ -29,7 +26,6 @@ const About = () => {
           </CardContent>
         </Card>
 
-        {/* Mission Section */}
         <Card className="bg-primary/5">
           <CardHeader>
             <CardTitle className="text-2xl">Our Mission</CardTitle>
@@ -43,8 +39,7 @@ const About = () => {
           </CardContent>
         </Card>
 
-        {/* Features Section */}
-        <Card>
+        <Card className="border-success border-[1px]">
           <CardHeader>
             <CardTitle className="text-2xl">Why Choose Noir?</CardTitle>
           </CardHeader>
@@ -56,7 +51,7 @@ const About = () => {
                 "Secure Transactions – Safe and reliable online payments.",
                 "Customer-Centric – Personalized experiences for every guest.",
               ].map((feature, index) => (
-                <div key={index} className="flex items-start space-x-3 bg-success/5">
+                <div key={index} className="flex items-start space-x-3">
                   <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
                   <span className="text-muted-foreground">{feature}</span>
                 </div>
@@ -65,7 +60,6 @@ const About = () => {
           </CardContent>
         </Card>
 
-        {/* Contact Section */}
         <Card className="bg-primary/5">
           <CardHeader>
             <CardTitle className="text-2xl">Get in Touch</CardTitle>

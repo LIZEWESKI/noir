@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card"
 import InputField from "@/components/Form/InputField"
 import AppLogo from "../AppLogo"
-import { useForm } from '@inertiajs/react'
+import { useForm, Link } from '@inertiajs/react'
 export function RegisterForm({className,...props}) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -18,8 +18,8 @@ export function RegisterForm({className,...props}) {
         password_confirmation: '',
       })
     const formFields = [
-      { label: "Username", placeholder: "noir_istheway", name: "name", type: "text", value: data.name, },
-      { label: "Email",placeholder: "noir@meow.com", name: "email", type: "email", value: data.email,  },
+      { label: "Username", placeholder: "Darth Noir", name: "name", type: "text", value: data.name, },
+      { label: "Email",placeholder: "noir@darth.com", name: "email", type: "email", value: data.email,  },
       { label: "Password", name: "password", type: "password", value: data.password, },
       { label: "Confirm Password", name: "password_confirmation", type: "password", value: data.password_confirmation}
     ];
@@ -31,8 +31,8 @@ export function RegisterForm({className,...props}) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-        <CardTitle className="text-xl flex items-center justify-center rounded-md">
-            <AppLogo size={66} />
+        <CardTitle className="text-xl flex items-center justify-center gap-1 rounded-md">
+            <AppLogo />
             <h1 className='text-extrabold'>Noir.</h1>
         </CardTitle>
           <CardDescription>
@@ -71,23 +71,23 @@ export function RegisterForm({className,...props}) {
               placeholder={field.placeholder || field.label}
               />
               ))}
-                <Button type="submit" className="w-full" disabled={processing}>
+                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
                   Sign up
                 </Button>
               </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <a href={route("login")} className="underline underline-offset-4">
+                <Link href={route("login")} className="underline underline-offset-4">
                   Log in
-                </a>
+                </Link>
               </div>
             </div>
           </form>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <Link href="/about">Terms of Service</Link>{" "}
+        and <Link href="about">Privacy Policy</Link>.
       </div>
     </div>
   )

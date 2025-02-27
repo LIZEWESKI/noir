@@ -15,10 +15,9 @@ const Header = () => {
     { name: "About us", href: "/about" },
   ]
   return (
-    <header className={`sticky top-0 bg-background border-b ${isMobile ? "px-4" : "px-20"} py-2`}>
-      {isMobile ? 
-      <MobileNav user={auth.user} url={url} navigation={navigation}/> : 
-      <DesktopNav user={auth.user} url={url} navigation={navigation}/>}
+    <header className={` bg-background border-b md:px-20 py-2 px-4 z-50`}>
+      <MobileNav className="flex md:hidden" user={auth.user} url={url} navigation={navigation}/>
+      <DesktopNav className="hidden md:flex" user={auth.user} url={url} navigation={navigation}/>
     </header>
   )
 }

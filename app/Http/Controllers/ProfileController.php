@@ -38,10 +38,10 @@ class ProfileController extends Controller
             // Store file in storage/app/public/profile_pictures
             $path = $request->file('profile_picture')->store('avatars');
             // Delete old avatar if exists
-            if ($request->user()->profile_pic) {
-                Storage::disk('public')->delete($request->user()->profile_pic);
+            if ($request->user()->profile_picture_path) {
+                Storage::disk('public')->delete($request->user()->profile_picture_path);
             }
-            $request->user()->profile_pic = $path;
+            $request->user()->profile_picture_path = $path;
         }
         $request->user()->save();
         // return Redirect::route('profile.edit');

@@ -4,10 +4,24 @@
 @tailwind utilities;
 
 @layer base {
+  ::-webkit-scrollbar{
+    width: 3px;
+  }
+  ::-webkit-scrollbar-track{
+    background-color: var(--background-foreground);
+    border-radius: 20px;
+  }
+  ::-webkit-scrollbar-thumb{
+    background-color:  var(--success);
+    border-radius: 20px;
+  }
+  ::selection {
+    color: var(--success);
+    background: #042f2e ;
+  }
   :root {
-    --ultraego : #f987d5;
-    --ultraego-secondary : #62c2fa;
-    --success : #22c55e;
+    --ultraego: #62c2fa;
+    --success : #2accb8;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -65,7 +79,7 @@
 
 @layer base {
   * {
-    @apply border-border font-geist;
+    @apply border-border font-karla;
   }
   body {
     @apply bg-background text-foreground;
@@ -78,8 +92,6 @@
   }
 
 }
-
-
 
 @layer base {
   * {

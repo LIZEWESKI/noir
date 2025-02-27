@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import AppLogo from "../AppLogo"
-import { useForm } from "@inertiajs/react"
+import { useForm, Link } from "@inertiajs/react"
 
 export function LoginForm({className,...props}) {
       const { data, setData, post, processing, errors } = useForm({
@@ -25,8 +25,8 @@ export function LoginForm({className,...props}) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl flex items-center justify-center rounded-md">
-            <AppLogo size={66} />
+          <CardTitle className="text-xl flex items-center gap-1 justify-center rounded-md">
+            <AppLogo/>
             <h1 className='text-extrabold'>Noir.</h1>
         </CardTitle>
           <CardDescription>
@@ -84,15 +84,15 @@ export function LoginForm({className,...props}) {
                   required />
                   {errors.password && <p className="text-sm text-red-500 ">{errors.password}</p>}
                 </div>
-                <Button type="submit" className="w-full" disabled={processing}>
+                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
                   Login
                 </Button>
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href={route("register")} className="underline underline-offset-4">
+                <Link href={route("register")} className="underline underline-offset-4">
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>

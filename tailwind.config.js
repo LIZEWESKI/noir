@@ -15,7 +15,8 @@ export default {
     theme: {
     	extend: {
     		fontFamily: {
-				geist : ['Karla','Roboto','Instrument Sans','Geist','serif'],
+				karla : ['Karla','Roboto','Instrument Sans','Geist','serif'],
+				roboto : ['Roboto','Karla','Instrument Sans','Geist','serif'],
     			sans: [
     				'Figtree',
                     ...defaultTheme.fontFamily.sans

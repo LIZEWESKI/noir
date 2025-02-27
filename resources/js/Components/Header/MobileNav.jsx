@@ -14,10 +14,10 @@ import {
 import { Menu } from 'lucide-react'
 import { GuestDropdown } from './GuestDropDown'
 import { UserDropdown } from './UserDropDown'
-const MobileNav = ({user, url, navigation}) => {
+const MobileNav = ({user, url, navigation, className}) => {
     const [open, setOpen] = useState(false);
   return (
-    <div className="flex justify-between items-center">
+    <div className={`justify-between items-center ${className}`}>
         <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger>
             <Menu />
