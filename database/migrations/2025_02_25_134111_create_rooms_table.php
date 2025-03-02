@@ -19,6 +19,11 @@ return new class extends Migration
             $table->decimal("price",8,2);
             $table->string("status");
             $table->string("image_path")->nullable();
+            $table->string("size");
+            $table->integer("guests");
+            $table->integer("bathrooms");
+            $table->string("bed");
+            $table->text("description");
             $table->timestamps();
         });
     }

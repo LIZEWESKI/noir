@@ -31,9 +31,6 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
         if ($request->hasFile('profile_picture')) {
             // Store file in storage/app/public/profile_pictures
             $path = $request->file('profile_picture')->store('avatars');

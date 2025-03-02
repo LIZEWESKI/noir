@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
+use Inertia\Inertia;
 use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 
@@ -13,7 +14,8 @@ class RoomController extends Controller
      */
     public function index()
     {
-        //
+        $rooms = Room::latest()->with("features")->paginate(5);
+        return Inertia::render('Rooms/Index',compact("rooms"));
     }
 
     /**

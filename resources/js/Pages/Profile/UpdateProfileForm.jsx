@@ -9,13 +9,11 @@ const UpdateProfileForm = () => {
   const {user} = usePage().props.auth;
   const { data, setData, post, processing, errors } = useForm({
     name : user?.name,
-    email: user?.email,
     profile_picture : undefined,
   })
   const fileInputRef = useRef(null);
   const formFields = [
-    { label: "Username", placeholder: "Darth Noir", name: "name", type: "text", value: data.name, description: "This is your public display name. It can be your real name or pseudonym. Make sure not to include spaces."},
-    { label: "Email",placeholder: "noir@darth.com", name: "email", type: "email", value: data.email, description: "Your account’s email address. This will be used for account recovery and notifications." },
+    { label: "Username", placeholder: "Darth Noir", name: "name", type: "text", value: data.name, description: "This is your public display name. It can be your real name or pseudonym."},
     { label: "Profile Picture", name: "profile_picture", type: "file", description: "PNG, JPG and WEBP are allowed as profile picture.", ref :fileInputRef},
   ];
   function updateProfile(e) {

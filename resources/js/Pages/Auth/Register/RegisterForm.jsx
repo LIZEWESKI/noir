@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import InputField from "@/components/Form/InputField"
-import AppLogo from "../AppLogo"
+import AppLogo from "@/components/AppLogo"
 import { useForm, Link } from '@inertiajs/react'
 export function RegisterForm({className,...props}) {
     const { data, setData, post, processing, errors } = useForm({

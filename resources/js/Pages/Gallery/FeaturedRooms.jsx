@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 export default function FeaturedRooms({rooms}) {
   return (
         <div className="flex flex-col md:flex-row items-center gap-10 mb-8">
-          <div className="w-full md:w-2/5 space-y-4 md:order-2">
+          <div className="w-full md:w-2/5 space-y-4 ">
             <div className="space-y-2 mb-4 ">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight font-roboto">Our Rooms</h2>
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl ">
@@ -13,7 +13,7 @@ export default function FeaturedRooms({rooms}) {
               </p>
             </div>
             <Link href="/rooms">
-              <Button variant="outline" size="lg" className="rounded-full px-8 border-[2px] border-success">
+              <Button variant="outline" size="lg" className="rounded-full px-8 border-[2px] border-success hidden md:block">
                 View All Rooms
               </Button>
             </Link>
@@ -49,6 +49,12 @@ export default function FeaturedRooms({rooms}) {
               />
             </div>
           </div>
+          
+          <Link href="/rooms">
+              <Button variant="outline" size="lg" className="rounded-full px-8 border-[2px] border-success md:hidden">
+                View All Rooms
+              </Button>
+            </Link>
         </div>
   )
 }

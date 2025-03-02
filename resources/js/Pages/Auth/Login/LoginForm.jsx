@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import AppLogo from "../AppLogo"
+import AppLogo from "@/components/AppLogo"
 import { useForm, Link } from "@inertiajs/react"
 
 export function LoginForm({className,...props}) {

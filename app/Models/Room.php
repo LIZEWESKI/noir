@@ -14,4 +14,9 @@ class Room extends Model
     {
         return $this->image_path ? asset('storage/' . $this->image_path) : null;
     }
+    public function features()
+{
+    return $this->belongsToMany(Feature::class);
+}
+
 }

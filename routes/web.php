@@ -5,11 +5,14 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoomController;
 
 Route::get('/', function () {
-    return Inertia::render('Home', [
+    $rooms = Room::latest()->get();
+    return Inertia::render('Home/Index', [
         'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register')
+        'canRegister' => Route::has('register'),
+        'rooms' => $rooms
     ]);
 })->name("home");
 Route::inertia("/about","About");
@@ -32,9 +35,9 @@ Route::get("/gallery",function(){
         'image_path_url' => asset('assets/amenities/4.jpg'),
         "description" => "A heated, indoor pool offering a year-round swimming experience."],
     ];
-    return Inertia::render("Gallery/Gallery",compact("rooms","amenities"));
+    return Inertia::render("Gallery/Index",compact("rooms","amenities"));
 });
-
+Route::get('/rooms',[RoomController::class,'index']);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

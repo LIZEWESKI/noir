@@ -9,7 +9,7 @@ const About = () => {
       <Head title="About us"/>
       <div className="container self-center space-y-6 max-w-6xl py-12 md:py-10 lg:py-14">
         <div className="flex flex-col items-center text-center space-y-4 mb-16">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-7xl ">About Us</h1>
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-7xl font-roboto ">About Us</h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
             Your premier hotel booking and management platform designed to make reservations seamless and efficient.
           </p>
