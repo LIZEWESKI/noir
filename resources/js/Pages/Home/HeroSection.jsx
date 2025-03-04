@@ -26,7 +26,7 @@ const HeroSection = ({backGroundImage}) =>  {
         
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
       </div>
-      <div className="relative z-10 px-4 md:px-20 py-24 md:py-32 lg:py-40">
+      <div className="relative z-10 px-4 md:px-20 py-10 md:py-16 lg:py-24">
         <div className="max-w-[85rem] mx-auto space-y-10 text-center">
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white">

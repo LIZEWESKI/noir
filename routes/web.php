@@ -39,11 +39,15 @@ Route::get("/gallery",function(){
     return Inertia::render("Gallery/Index",compact("rooms","amenities"));
 });
 Route::get('/rooms',[RoomController::class,'index']);
+Route::get('/rooms/{room}',[RoomController::class,'show']);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/my-cart',function(){
+        return Inertia::render("MyCart/Index");
+    });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -39,7 +39,10 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
-        //
+        $room->loadMissing('features');
+        $related_rooms = Room::latest()->whereIn('type',[$room->type])->get();
+        return Inertia::render('Rooms/Show',compact("room","related_rooms"));
+
     }
 
     /**

@@ -2,6 +2,7 @@ import React from 'react'
 import { Maximize2, Users, Bed, Bath, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Link } from '@inertiajs/react'
 const RoomCard = ({room, index}) => {
     
   return (
@@ -58,10 +59,12 @@ const RoomCard = ({room, index}) => {
 
             {/* CTA */}
             <div className={`flex ${index % 2 === 1 ? "md:justify-end" : ""}`}>
-            <Button variant="link" className="p-0 h-auto font-semibold group">
-                Discover More
-                <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link href={`/rooms/${room.id}`} >
+                <Button variant="link" className="p-0 h-auto font-semibold group">
+                    Discover More
+                    <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
+                </Button>
+            </Link>
             </div>
         </div>
     </div>
