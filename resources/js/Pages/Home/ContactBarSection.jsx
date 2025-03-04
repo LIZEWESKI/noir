@@ -7,33 +7,33 @@ export default function ContactBarSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Address */}
           <div className="space-y-2">
-            <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Address</h3>
-            <div className="flex items-start gap-2">
-              <MapPin className="h-5 w-5 mt-0.5 text-muted-foreground" />
-              <p className="text-sm">73120 Courchevel 1850, France</p>
+            <div className="flex items-start gap-4 mb-2">
+              <MapPin className="h-5 w-5 text-muted-foreground" />
+              <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Address</h3>
             </div>
+              <p className="text-sm">73120 Courchevel 1850, France</p>
           </div>
 
           {/* Phone */}
           <div className="space-y-2">
-            <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Phone</h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 mb-2">
               <Phone className="h-5 w-5 text-muted-foreground" />
-              <a href="tel:+41223456788" className="text-sm hover:text-primary transition-colors">
-                +41 22 345 67 88
-              </a>
+              <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Phone</h3>
             </div>
+            <a href="tel:+41223456788" className="text-sm hover:text-primary transition-colors">
+              +41 22 345 67 88
+            </a>
           </div>
 
           {/* Email */}
           <div className="space-y-2">
-            <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Email</h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 mb-2">
               <Mail className="h-5 w-5 text-muted-foreground" />
-              <a href="mailto:reservation@cozystay.com" className="text-sm hover:text-primary transition-colors">
-                reservation@noir.com
-              </a>
+              <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Email</h3>
             </div>
+            <a href="mailto:reservation@cozystay.com" className="text-sm hover:text-primary transition-colors">
+              reservation@noir.com
+            </a>
           </div>
 
           {/* Social */}

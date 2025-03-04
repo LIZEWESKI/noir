@@ -3,27 +3,27 @@ import { CalendarCheck, BadgeDollarSign, Hotel, HeadphonesIcon, MapPin } from "l
 export default function WhyChooseSection() {
   const features = [
     {
-      icon: <CalendarCheck className="h-12 w-12 mb-5 text-primary" />,
+      icon: <CalendarCheck className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
       title: "Effortless Booking",
       description: "Simple & fast reservation system.",
     },
     {
-      icon: <BadgeDollarSign className="h-12 w-12 mb-5 text-primary" />,
+      icon: <BadgeDollarSign className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
       title: "Best Price Guarantee",
       description: "Get exclusive offers on direct bookings.",
     },
     {
-      icon: <Hotel className="h-12 w-12 mb-5 text-primary" />,
+      icon: <Hotel className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
       title: "Unmatched Comfort & Style",
       description: "Elegant rooms & premium amenities.",
     },
     {
-      icon: <HeadphonesIcon className="h-12 w-12 mb-5 text-primary" />,
+      icon: <HeadphonesIcon className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
       title: "24/7 Concierge Service",
       description: "Personalized assistance anytime.",
     },
     {
-      icon: <MapPin className="h-12 w-12 mb-5 text-primary" />,
+      icon: <MapPin className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
       title: "Prime Location",
       description: "Stay close to key attractions & business hubs.",
     },
@@ -42,12 +42,12 @@ export default function WhyChooseSection() {
     </div>
 
     {/* Features Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 ">
         {features.map((feature, index) => (
         <div
             key={index}
             className={`
-            group p-6 rounded-xl border bg-background/50 border-success backdrop-blur-sm
+            group p-6 rounded-xl border bg-background/50 border-primary/20 backdrop-blur-sm
             hover:bg-background hover:shadow-lg transition-all duration-300
             ${index === features.length - 1 && features.length % 3 === 1 ? "lg:col-span-3 lg:max-w-xl lg:mx-auto" : ""}
             

@@ -12,7 +12,8 @@ Route::get('/', function () {
     return Inertia::render('Home/Index', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'rooms' => $rooms
+        'rooms' => $rooms,
+        'bg_hero' => asset('assets/hero_bg.jpg')
     ]);
 })->name("home");
 Route::inertia("/about","About");

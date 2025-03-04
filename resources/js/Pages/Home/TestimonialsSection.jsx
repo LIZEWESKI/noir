@@ -46,14 +46,20 @@ export default function TestimonialsSection() {
               className="relative group overflow-hidden border-0 bg-muted/30 backdrop-blur-sm hover:bg-background hover:shadow-lg transition-all duration-300"
             >
               <CardContent className="p-6">
+                
                 {/* Quote Icon */}
                 <Quote className="absolute top-6 right-6 h-12 w-12 text-muted-foreground/20" />
 
                 {/* Rating */}
                 <div className="flex gap-0.5 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-success text-primary" />
+                    <Star key={i} className="h-5 w-5 fill-[#d2a70b] stroke-primary stroke-[0.7px] " />
                   ))}
+                  {testimonial.rating < 5 && 
+                    [...Array(5 - testimonial.rating)].map((_,i) => (
+                      <Star key={i} className="h-5 w-5 fill-transparent stroke-primary stroke-[0.7px] " />
+                    ))
+                  }
                 </div>
 
                 {/* Quote */}

@@ -10,7 +10,7 @@ import {
 import { Link } from "@inertiajs/react"
 
 export default function AccommodationsSection({rooms}) {
-  const roomss = [
+  const accomodationsRooms = [
     {
       title: rooms[2].name,
       price: rooms[2].price,
@@ -104,29 +104,30 @@ export default function AccommodationsSection({rooms}) {
         </div>
 
         <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {roomss.map((room, index) => (
-            <Card key={index} className="group overflow-hidden border-0 bg-background">
-              <CardContent className="p-0">
-                {/* Image Container */}
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <div className="absolute top-4 left-4 bg-background px-4 py-1 rounded-full text-sm font-medium z-10">
-                    FROM ${room.price}/Night
-                  </div>
-                  <img
-                    src={room.image || "/placeholder.svg"}
-                    alt={room.title}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                  />
+          {accomodationsRooms.map((room, index) => (
+            <Card key={index} className="group relative overflow-hidden border-0 bg-background aspect-[4/5] md:aspect-[3/4]">
+              {/* Background Image with Overlay */}
+              <div
+                className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                style={{ backgroundImage: `url(${room.image})` }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 " />
+              </div>
+
+              <CardContent className="relative h-full p-6 flex flex-col justify-between text-white">
+                {/* Price Tag */}
+                <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full text-sm font-medium">
+                  FROM ${room.price}/Night
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-4">
+                <div className="space-y-4 mt-auto">
                   <h3 className="text-2xl font-semibold">{room.title}</h3>
 
                   {/* Amenities */}
                   <div className="flex gap-4 flex-wrap">
                     {room.amentities.map((amenity, i) => (
-                      <div key={i} className="text-muted-foreground">
+                      <div key={i} className="text-white/80 hover:text-white transition-colors">
                         <TooltipProvider delayDuration={100}>
                           <Tooltip>
                             <TooltipTrigger>{amenity.icon}</TooltipTrigger>
@@ -140,7 +141,7 @@ export default function AccommodationsSection({rooms}) {
                   </div>
 
                   {/* Details */}
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-4 text-sm text-white/80">
                     <div className="flex items-center gap-1">
                       <Bed className="h-4 w-4" />
                       {room.bed}
@@ -152,7 +153,7 @@ export default function AccommodationsSection({rooms}) {
                   </div>
 
                   {/* CTA */}
-                  <Button variant="link" className="p-0 h-auto font-semibold group/btn">
+                  <Button variant="link" className="p-0 h-auto font-semibold group/btn text-white hover:text-white/90" onClick={() => console.log("clicked")}>
                     {room.cta}
                     <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
                   </Button>
@@ -171,6 +172,85 @@ export default function AccommodationsSection({rooms}) {
         </div>
       </div>
     </section>
+    // <section className="py-6 md:py-12">
+    //   <div className="container px-4 md:px-6">
+    //     <div className="flex justify-between items-center mb-12">
+    //       <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-roboto">The Accommodations</h2>
+    //       <Link href="/rooms">
+    //         <Button variant="outline" className="hidden md:flex">
+    //           Discover All Suites
+    //         </Button>
+    //       </Link>
+    //     </div>
+
+    //     <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+    //       {roomss.map((room, index) => (
+    //         <Card key={index} className="group overflow-hidden border-0 bg-background">
+    //           <CardContent className="p-0">
+    //             {/* Image Container */}
+    //             <div className="relative aspect-[4/3] overflow-hidden">
+    //               <div className="absolute top-4 left-4 bg-background px-4 py-1 rounded-full text-sm font-medium z-10">
+    //                 FROM ${room.price}/Night
+    //               </div>
+    //               <img
+    //                 src={room.image || "/placeholder.svg"}
+    //                 alt={room.title}
+    //                 className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+    //               />
+    //             </div>
+
+    //             {/* Content */}
+    //             <div className="p-6 space-y-4">
+    //               <h3 className="text-2xl font-semibold">{room.title}</h3>
+
+    //               {/* Amenities */}
+    //               <div className="flex gap-4 flex-wrap">
+    //                 {room.amentities.map((amenity, i) => (
+    //                   <div key={i} className="text-muted-foreground">
+    //                     <TooltipProvider delayDuration={100}>
+    //                       <Tooltip>
+    //                         <TooltipTrigger>{amenity.icon}</TooltipTrigger>
+    //                         <TooltipContent>
+    //                           <p>{amenity.name}</p>
+    //                         </TooltipContent>
+    //                       </Tooltip>
+    //                     </TooltipProvider>
+    //                   </div>
+    //                 ))}
+    //               </div>
+
+    //               {/* Details */}
+    //               <div className="flex items-center gap-4 text-sm text-muted-foreground">
+    //                 <div className="flex items-center gap-1">
+    //                   <Bed className="h-4 w-4" />
+    //                   {room.bed}
+    //                 </div>
+    //                 <div className="flex items-center gap-1">
+    //                   <Users className="h-4 w-4" />
+    //                   {room.guests}
+    //                 </div>
+    //               </div>
+
+    //               {/* CTA */}
+    //               <Button variant="link" className="p-0 h-auto font-semibold group/btn">
+    //                 {room.cta}
+    //                 <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
+    //               </Button>
+    //             </div>
+    //           </CardContent>
+    //         </Card>
+    //       ))}
+    //     </div>
+
+    //     <div className="mt-8 text-center md:hidden">
+    //       <Link href="/rooms">
+    //         <Button variant="outline" className="w-full">
+    //           Discover All Suites
+    //         </Button>
+    //       </Link>
+    //     </div>
+    //   </div>
+    // </section>
   )
 }
 

@@ -10,8 +10,7 @@ export function SimplePagination({ currentPage = 1, totalPages = 3, nextPage, pr
         onClick={() => router.visit(prevPage)}
         disabled={prevPage === null}
       >
-        <ChevronLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
-        Previous
+        <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
       </Button>
       <span className="text-muted-foreground">
         Page {currentPage} of {totalPages}
@@ -22,8 +21,7 @@ export function SimplePagination({ currentPage = 1, totalPages = 3, nextPage, pr
         onClick={() => router.visit(nextPage)}
         disabled={nextPage === null}
       >
-        Next
-        <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
       </Button>
     </div>
   )

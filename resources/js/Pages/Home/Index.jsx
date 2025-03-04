@@ -6,11 +6,11 @@ import React from 'react';
 import WhyChooseSection from './WhyChooseSection';
 import TestimonialsSection from './TestimonialsSection';
 import ContactBarSection from './ContactBarSection';
-const Index = ({ auth, rooms}) => {
+const Index = ({ auth, rooms, bg_hero}) => {
     return (
         <>
-            <Head title="Home" />
-            <HeroSection />
+            <Head title="Home"/>
+            <HeroSection backGroundImage={bg_hero} />
             <AccommodationsSection rooms={rooms}/>
             <WhyChooseSection/>
             <TestimonialsSection/>

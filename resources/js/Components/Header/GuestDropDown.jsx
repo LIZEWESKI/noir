@@ -1,4 +1,4 @@
-import { BookOpen, HelpCircle, Languages, LogIn, UserPlus, Users } from "lucide-react"
+import { BookOpen, HelpCircle, Languages, LogIn, UserPlus, User } from "lucide-react"
 import { ThemeToggle } from "@/components/Header/ThemeToggle"
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ export function GuestDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="h-10 w-10 rounded-full">
-          <Users className="h-4 w-4" />
+          <User className="h-4 w-4" />
           <span className="sr-only">Open guest menu</span>
         </Button>
       </DropdownMenuTrigger>

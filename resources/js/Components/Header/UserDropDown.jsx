@@ -14,18 +14,21 @@ import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./ThemeToggle"
 import { router } from "@inertiajs/react"
 export function UserDropdown({user}) {
-    const initials = user.name.substring(0, 2).toUpperCase();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
             <span className="sr-only">Open user menu</span>
             <AvatarImage src={user.profile_picture_url} />
-            <AvatarFallback>{initials}</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64" align="end">
-        <DropdownMenuLabel className="font-normal">
+            <AvatarFallback>{user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+            </AvatarFallback>
+      </Avatar>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-64" align="end">
+      <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.name}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
