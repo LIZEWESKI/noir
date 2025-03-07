@@ -56,5 +56,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/password', [PasswordController::class, 'edit'])->name('profile.edit.password');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-
 });

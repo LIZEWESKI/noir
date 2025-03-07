@@ -68,7 +68,7 @@ const About = () => {
           <CardContent>
             <div className="flex flex-wrap gap-2 ">
             <Button variant="outline" className="justify-start space-x-2" asChild>
-              <a href="mailto:support@noir.com" target="_blank" rel="noopener noreferrer">
+              <a href="mailto:reservation@noir.com" target="_blank" rel="noopener noreferrer">
               <Mail className="h-4 w-4" />
               </a>
             </Button>

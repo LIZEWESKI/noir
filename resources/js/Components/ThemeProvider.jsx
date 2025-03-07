@@ -1,14 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
 const initialState = {
-    theme: "system",
+    theme: "dark",
     setTheme: () => null,
   }
 const ThemeProviderContext = createContext(initialState)
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   storageKey = "vite-ui-theme",
   ...props
 }) {

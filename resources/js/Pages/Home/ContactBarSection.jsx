@@ -31,7 +31,7 @@ export default function ContactBarSection() {
               <Mail className="h-5 w-5 text-muted-foreground" />
               <h3 className="text-sm tracking-widest text-muted-foreground uppercase">Email</h3>
             </div>
-            <a href="mailto:reservation@cozystay.com" className="text-sm hover:text-primary transition-colors">
+            <a href="mailto:reservation@noir.com" className="text-sm hover:text-primary transition-colors">
               reservation@noir.com
             </a>
           </div>

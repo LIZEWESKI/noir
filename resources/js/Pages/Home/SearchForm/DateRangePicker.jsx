@@ -6,21 +6,14 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format, isBefore, startOfToday  } from "date-fns"
 
-export function DateRangePicker({ className }) {
-    const [date, setDate] = React.useState({
-        from: new Date(),
-        to: new Date(),
-    })
-    // Disable past dates
-    const disabledDays = {
-        before: new Date(), // This disables all dates before today
-        }
-        // Custom modifiers to style the disabled dates
-        const modifiers = {
-        disabled: (date) => isBefore(date, startOfToday()),
-        }
-
-
+export function DateRangePicker({ className, date, setDate }) {
+  // Disable past dates
+  const disabledDays = {
+    before: new Date()
+  }
+  const modifiers = {
+    disabled: (date) => isBefore(date, startOfToday())
+  }
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
