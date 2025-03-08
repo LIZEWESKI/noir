@@ -10,7 +10,7 @@ const Header = () => {
   const {url} = usePage();
   const navigation = [
     { name: "Rooms", href: "/rooms" },
-    { name: "My Cart", href: "/my-cart" },
+    { name: "Reservations", href: "/reservations" },
     { name: "Gallery", href: "/gallery" },
     { name: "About us", href: "/about" },
   ]

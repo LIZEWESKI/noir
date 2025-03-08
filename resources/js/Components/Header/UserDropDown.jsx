@@ -55,9 +55,9 @@ export function UserDropdown({user}) {
           <LogOut className="ml-auto h-4 w-4" />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="w-full" onClick={() => router.visit("/my-cart") }>
+        <DropdownMenuItem className="w-full" onClick={() => router.visit("/reservations") }>
           <Button className="w-full" variant="default">
-            My Cart
+            Reservations
           </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
