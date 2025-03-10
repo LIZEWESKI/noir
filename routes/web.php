@@ -33,6 +33,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/reservations',[ReservationController::class,'index'])->name("reservations.index");
     Route::post('/reservation',[ReservationController::class,'store'])->name("reservation.store");
+    Route::put('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

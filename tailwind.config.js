@@ -29,10 +29,7 @@ export default {
     		},
     		colors: {
 				success : 'var(--success)',
-				ultraego : {
-					DEFAULT : 'var(--ultraego)',
-					secondary : 'var(--ultraego-secondary)'
-				},
+				danger : 'var(--danger)',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {

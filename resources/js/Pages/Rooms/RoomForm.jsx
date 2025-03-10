@@ -84,7 +84,7 @@ const RoomForm = ({room}) => {
                     />
                     </PopoverContent>
                 </Popover>
-                {errors.check_in && <p className="text-sm text-red-500 ">{errors.check_in}</p>}
+                {errors.check_in && <p className="text-sm text-danger ">{errors.check_in}</p>}
                 </div>
                 <div className="space-y-2">
                 <label className="text-sm font-medium">Check-out</label>
@@ -105,7 +105,7 @@ const RoomForm = ({room}) => {
                     />
                     </PopoverContent>
                 </Popover>
-                {errors.check_out && <p className="text-sm text-red-500 ">{errors.check_out}</p>}
+                {errors.check_out && <p className="text-sm text-danger ">{errors.check_out}</p>}
                 </div>
             </div>
 

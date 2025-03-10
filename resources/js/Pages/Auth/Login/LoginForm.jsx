@@ -63,7 +63,7 @@ export function LoginForm({className,...props}) {
                     placeholder="noir@example.com"
                     required
                   />
-                  {errors.email && <p className="text-sm text-red-500 ">{errors.email}</p>}
+                  {errors.email && <p className="text-sm text-danger ">{errors.email}</p>}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -82,7 +82,7 @@ export function LoginForm({className,...props}) {
                   placeholder="Password"
                   onChange={e => setData('password', e.target.value)}
                   required />
-                  {errors.password && <p className="text-sm text-red-500 ">{errors.password}</p>}
+                  {errors.password && <p className="text-sm text-danger ">{errors.password}</p>}
                 </div>
                 <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
                   Login

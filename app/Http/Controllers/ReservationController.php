@@ -16,7 +16,11 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        $reservations = Reservation::latest()->with('room')->where('user_id',Auth::id())->get();
+        $reservations = Reservation::latest()
+            ->with('room')
+            ->where('user_id',Auth::id())
+            ->where('status', 'pending')
+            ->get();
         return Inertia::render("Reservations/Index" ,compact('reservations'));
     }
 
@@ -42,7 +46,7 @@ class ReservationController extends Controller
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
         $nightsCount =(int) max(0, $checkIn->diffInDays($checkOut));    
-    
+        
         // Prepare data for saving
         $attributes['user_id'] = Auth::id();
         $attributes['nights'] = $nightsCount;
@@ -82,6 +86,11 @@ class ReservationController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+    public function cancel(Reservation $reservation)
+    {
+        $reservation->update(['status' => 'canceled']);
+        return back()->with('success', 'Reservation has been canceled.');
     }
 
     /**

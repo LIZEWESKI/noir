@@ -24,7 +24,7 @@ const InputField = ({ label, name, value, type = 'text', description, error, set
         ref={inputRef}
         required={type !== 'file'}
       />
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
       {description && <p className="text-[0.8rem] text-muted-foreground">{description}</p>}
     </div>
   );

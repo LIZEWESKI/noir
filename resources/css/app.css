@@ -12,16 +12,16 @@
     border-radius: 20px;
   }
   ::-webkit-scrollbar-thumb{
-    background-color:  var(--success);
+    background-color:  #2accb8;
     border-radius: 20px;
   }
   ::selection {
-    color: var(--success);
+    color: #2accb8;
     background: #042f2e ;
   }
   :root {
-    --ultraego: #62c2fa;
-    --success : #2accb8;
+    --success : #25c974;
+    --danger: #FF0060;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
