@@ -1,11 +1,15 @@
 import React from "react"
-
 import Layout from "@/Layouts/Layout"
 import RelatedRoomsCarousel from "./RelatedRoomsCarousel"
 import RoomDetails from "./RoomDetails"
 import RoomForm from "./RoomForm"
 
 const Show = ({room, related_rooms}) => {
+  const unavailableDates = [
+    { checkIn: '2025-03-10', checkOut: '2025-03-15' },
+    { checkIn: '2025-03-20', checkOut: '2025-03-22' },
+    // more booked periods...
+  ];
   return (
     <div className=" py-3">
       <div className="mb-12">
@@ -19,7 +23,7 @@ const Show = ({room, related_rooms}) => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <RoomDetails room={room} />
-        <RoomForm room={room} />
+        <RoomForm room={room} unavailableDates={unavailableDates}/>
       </div>
       <RelatedRoomsCarousel relatedRooms={related_rooms}/>
     </div>
