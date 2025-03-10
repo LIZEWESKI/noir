@@ -48,7 +48,7 @@ const UpdateProfileForm = () => {
           />
           ))}
           <div>
-            <Button type="submit" className="mt-auto" disabled={processing}>Update profile</Button>
+            <Button type="submit" className="mt-auto bg-success text-white" disabled={processing}>Update profile</Button>
           </div>
         </form>
     </>

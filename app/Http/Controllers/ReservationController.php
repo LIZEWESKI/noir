@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class ReservationController extends Controller
 {
@@ -42,9 +43,27 @@ class ReservationController extends Controller
             'check_in' => 'required|date|before:check_out',
             'check_out' => 'required|date|after:check_in',
         ]);
-        // Parse dates and calculate nights count
+        // Get Room 
+        $room = Room::findOrFail($attributes['room_id']);
+        // Parse dates
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
+        // Check for overlapping reservations
+        $overlap = Reservation::where('room_id', $request->room_id)
+        ->where(function ($query) use ($request) {
+            $query->whereBetween('check_in', [$request->check_in, $request->check_out])
+                ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
+                ->orWhere(function ($query) use ($request) {
+                    $query->where('check_in', '<=', $request->check_in)
+                            ->where('check_out', '>=', $request->check_out);
+                });
+        })->exists();
+        if ($overlap) {
+            throw ValidationException::withMessages([
+                'date' => 'The selected dates overlap with an existing reservation.',
+            ]);
+        }
+        // Calculate nights count
         $nightsCount =(int) max(0, $checkIn->diffInDays($checkOut));    
         
         // Prepare data for saving
@@ -53,14 +72,12 @@ class ReservationController extends Controller
         $attributes['cleaning_fee'] = 25;
         $attributes['service_fee'] = 15;
         // Get room price and calculate total price
-        $room = Room::findOrFail($attributes['room_id']);
         $totalPrice = ($room->price * $nightsCount) 
                         + $attributes['cleaning_fee'] 
                         + $attributes['service_fee'];
         $attributes['total_price'] = $totalPrice;
-        // Save reservation
+        // Save reservation and Redirect
         Reservation::create($attributes);
-        
         return redirect()->route('reservations.index')->with('success', 'Reservation created successfully.');
     }
 

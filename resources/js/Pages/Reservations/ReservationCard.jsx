@@ -48,13 +48,7 @@ const ReservationCard = ({reservation}) => {
                 </div>
                 <AlertDialog>
                     <AlertDialogTrigger>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="Remove from cart"
-                    >
                         <Trash2 className="h-5 w-5 text-danger" />
-                    </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
@@ -66,7 +60,10 @@ const ReservationCard = ({reservation}) => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                         <AlertDialogCancel>Close</AlertDialogCancel>
-                        <AlertDialogAction className="bg-danger text-white transition-colors duration-300 hover:text-danger hover:bg-white" onClick={() => router.put(`/reservations/${reservation.id}/cancel`)}>Confirm Cancellation</AlertDialogAction>
+                        <AlertDialogAction 
+                        className="bg-danger text-white transition-colors duration-300 hover:text-danger hover:bg-white" 
+                        onClick={() => router.put(`/reservations/${reservation.id}/cancel`)}
+                        >Confirm Cancellation</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

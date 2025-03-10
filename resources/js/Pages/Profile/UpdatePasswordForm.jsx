@@ -47,7 +47,7 @@ const UpdatePasswordForm = () => {
             />
             ))}
             <div>
-                <Button type="submit" className="mt-auto" disabled={processing}>Save</Button>
+                <Button type="submit" className="mt-auto bg-success text-white" disabled={processing}>Save</Button>
             </div>
         </form>
     </>

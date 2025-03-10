@@ -6,6 +6,7 @@ use App\Models\Room;
 use Inertia\Inertia;
 use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
+use App\Models\Reservation;
 
 class RoomController extends Controller
 {
@@ -41,8 +42,8 @@ class RoomController extends Controller
     {
         $room->loadMissing('features');
         $related_rooms = Room::latest()->whereIn('type',[$room->type])->get();
-        return Inertia::render('Rooms/Show',compact("room","related_rooms"));
-
+        $unavailable_dates = Reservation::select('check_in','check_out')->where('room_id', $room->id)->where('status','confirmed')->get();
+        return Inertia::render('Rooms/Show',compact("room","related_rooms",'unavailable_dates'));
     }
 
     /**

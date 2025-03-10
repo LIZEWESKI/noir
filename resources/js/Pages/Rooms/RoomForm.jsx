@@ -13,8 +13,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const RoomForm = ({ room, unavailableDates = [] }) => {
   // Convert string dates to Date objects if they're not already
   const parsedUnavailableDates = unavailableDates.map((range) => ({
-    checkIn: range.checkIn instanceof Date ? range.checkIn : new Date(range.checkIn),
-    checkOut: range.checkOut instanceof Date ? range.checkOut : new Date(range.checkOut),
+    checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
+    checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
 
   // Calculate nights and total when dates change
@@ -151,7 +151,9 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Info className="h-4 w-4 text-muted-foreground" />
+                              <button type="button" className="h-4 w-4 text-muted-foreground focus:outline-none">
+                                <Info className="h-4 w-4" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <div className="space-y-2 w-60">
@@ -188,7 +190,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
                     />
                   </PopoverContent>
                 </Popover>
-                {errors.check_in && <p className="text-sm text-danger ">{errors.check_in}</p>}
+                {errors.check_in && <p className="text-sm text-danger font-medium ">{errors.check_in}</p>}
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Check-out</label>
@@ -206,7 +208,9 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Info className="h-4 w-4 text-muted-foreground" />
+                              <button type="button" className="h-4 w-4 text-muted-foreground focus:outline-none">
+                                <Info className="h-4 w-4" />
+                              </button>
                             </TooltipTrigger>
                             <TooltipContent>
                               <div className="space-y-2 w-60">
@@ -232,7 +236,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
                         unavailable: (date) => isDateUnavailable(date),
                       }}
                       modifiersClassNames={{
-                        unavailable: "unavailable-date",
+                        unavailable: "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
                       }}
                       styles={{
                         day: (date) => ({
@@ -243,7 +247,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
                     />
                   </PopoverContent>
                 </Popover>
-                {errors.check_out && <p className="text-sm text-danger ">{errors.check_out}</p>}
+                {errors.check_out && <p className="text-sm text-danger font-medium ">{errors.check_out}</p>}
               </div>
             </div>
 
@@ -290,7 +294,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
 
           <Button
             size="lg"
-            className="w-full border-success border text-success font-bold"
+            className="w-full bg-success text-white font-bold"
             type="submit"
             disabled={nights <= 0 || processing}
           >

@@ -18,13 +18,14 @@ const InputField = ({ label, name, value, type = 'text', description, error, set
       <Input
         id={name}
         placeholder={placeholder}
+        autoComplete = {type === 'password' ? "current-password" : 'username' }
         type={type}
         value={type !== 'file' ? value : undefined}
         onChange={handleChange}
         ref={inputRef}
         required={type !== 'file'}
       />
-      {error && <p className="text-sm text-danger">{error}</p>}
+      {error && <p className="text-sm text-danger font-medium">{error}</p>}
       {description && <p className="text-[0.8rem] text-muted-foreground">{description}</p>}
     </div>
   );
