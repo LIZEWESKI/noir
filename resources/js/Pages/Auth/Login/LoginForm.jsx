@@ -14,9 +14,9 @@ import { useForm, Link } from "@inertiajs/react"
 
 export function LoginForm({className,...props}) {
       const { data, setData, post, processing, errors } = useForm({
-          email: '',
-          password: '',
-        })
+        email: '',
+        password: '',
+      })
       function handleLogin(e) {
           e.preventDefault();
           post("login");
@@ -68,12 +68,12 @@ export function LoginForm({className,...props}) {
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
-                    <a
-                      href="#"
+                    <Link
+                      href="/forgot-password"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
                     >
                       Forgot your password?
-                    </a>
+                    </Link>
                   </div>
                   <Input 
                   id="password" 
