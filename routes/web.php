@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\LegalController;
 use App\Models\Room;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -12,7 +13,6 @@ use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
-    // dd(phpinfo());
     $rooms = Room::latest()->get();
     return Inertia::render('Home/Index', [
         'canLogin' => Route::has('login'),
@@ -21,16 +21,24 @@ Route::get('/', function () {
         'bg_hero' => asset('assets/hero_bg.jpg')
     ]);
 })->name("home");
+// Invokable
 Route::get('/search',SearchController::class)->name("search");
-Route::inertia("/about","About")->name("about");
 Route::get("/gallery",GalleryController::class)->name("gallery");
+// Resource
 Route::get('/rooms',[RoomController::class,'index']);
 Route::get('/rooms/{room}',[RoomController::class,'show']);
+// Static Legal Routes
+Route::get("/about", [LegalController::class,'about'])->name("about");
+Route::get("/contact", [LegalController::class,'contact'])->name("contact");
+Route::get("/legal", [LegalController::class,'legal'])->name("legal");
+Route::get("/privacy-policy", [LegalController::class,'privacyPolicy'])->name("privacy_policy");
+Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name("terms_of_service");
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Middleware Auth Resource
 Route::middleware('auth')->group(function () {
     Route::get('/reservations',[ReservationController::class,'index'])->name("reservations.index");
     Route::post('/reservation',[ReservationController::class,'store'])->name("reservation.store");

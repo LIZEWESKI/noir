@@ -15,8 +15,20 @@ export default {
     theme: {
     	extend: {
     		fontFamily: {
-				karla : ['Karla','Roboto','Instrument Sans','Geist','serif'],
-				roboto : ['Roboto','Karla','Instrument Sans','Geist','serif'],
+    			karla: [
+    				'Karla',
+    				'Roboto',
+    				'Instrument Sans',
+    				'Geist',
+    				'serif'
+    			],
+    			roboto: [
+    				'Roboto',
+    				'Karla',
+    				'Instrument Sans',
+    				'Geist',
+    				'serif'
+    			],
     			sans: [
     				'Figtree',
                     ...defaultTheme.fontFamily.sans
@@ -28,8 +40,8 @@ export default {
     			sm: 'calc(var(--radius) - 4px)'
     		},
     		colors: {
-				success : 'var(--success)',
-				danger : 'var(--danger)',
+    			success: 'var(--success)',
+    			danger: 'var(--danger)',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {
@@ -70,6 +82,28 @@ export default {
     				'4': 'hsl(var(--chart-4))',
     				'5': 'hsl(var(--chart-5))'
     			}
+    		},
+    		keyframes: {
+    			'accordion-down': {
+    				from: {
+    					height: '0'
+    				},
+    				to: {
+    					height: 'var(--radix-accordion-content-height)'
+    				}
+    			},
+    			'accordion-up': {
+    				from: {
+    					height: 'var(--radix-accordion-content-height)'
+    				},
+    				to: {
+    					height: '0'
+    				}
+    			}
+    		},
+    		animation: {
+    			'accordion-down': 'accordion-down 0.2s ease-out',
+    			'accordion-up': 'accordion-up 0.2s ease-out'
     		}
     	}
     },
