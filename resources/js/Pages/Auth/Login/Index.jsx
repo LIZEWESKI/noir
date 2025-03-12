@@ -5,14 +5,29 @@ import { Head, usePage} from '@inertiajs/react';
 import Layout from '@/Layouts/Layout';
 import { LoginForm } from "./LoginForm"
 const Index = () => {
-  const {status} = usePage().props;
+  const {flash, status} = usePage().props;
   useEffect(() => {
     status && toast.success(status, {
       descriptionClassName: "text-white/90", 
       duration: 5000,
       position: "top-center",
+      style: {
+        backgroundColor: "var(--success)",
+        color: "#fff",
+      },
     })
   }, [status]);
+  useEffect(() => {
+    flash?.error && toast.error(flash.error, {
+      descriptionClassName: "text-white/90", 
+      duration: 5000,
+      position: "top-center",
+      style: {
+        backgroundColor: "var(--danger)",
+        color: "#fff",
+      },
+    })
+  }, [flash]);
   return (
     <>
         <Head title="Login"/>
@@ -21,13 +36,7 @@ const Index = () => {
             <LoginForm />
         </div>
         </div>
-        <Toaster  
-          toastOptions={{
-            style: {
-              backgroundColor: "var(--success)",
-              color: "#fff",
-            }
-        }}/>
+        <Toaster />
     </>
   )
 }

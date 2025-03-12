@@ -19,6 +19,10 @@ const Index = () => {
           descriptionClassName: "text-white/90", 
           duration: 3000,
           position: "top-center",
+          style: {
+            backgroundColor: "var(--success)",
+            color: "#fff",
+          }
         })
     },[status])
     function handleResetPassowrd(e) {
@@ -67,13 +71,7 @@ const Index = () => {
                 </p>
             </CardFooter>
         </Card>
-        <Toaster  
-        toastOptions={{
-          style: {
-            backgroundColor: "var(--success)",
-            color: "#fff",
-          }
-        }}/>
+        <Toaster />
     </div>
   )
 }

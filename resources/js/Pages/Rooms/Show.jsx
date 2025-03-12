@@ -13,6 +13,10 @@ const Show = ({room, related_rooms,unavailable_dates}) => {
       descriptionClassName: "text-white/90", 
       duration: 5000,
       position: "top-center",
+      style: {
+        backgroundColor: "var(--danger)",
+        color: "#fff",
+      }
     })
   }, [errors]);
   return (
@@ -31,13 +35,7 @@ const Show = ({room, related_rooms,unavailable_dates}) => {
         <RoomForm room={room} unavailableDates={unavailable_dates}/>
       </div>
       <RelatedRoomsCarousel relatedRooms={related_rooms}/>
-      <Toaster  
-        toastOptions={{
-          style: {
-            backgroundColor: "var(--danger)",
-            color: "#fff",
-          }
-      }}/>
+      <Toaster/>
     </div>
   )
 }

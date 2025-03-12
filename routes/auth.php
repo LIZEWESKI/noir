@@ -1,17 +1,50 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 Route::middleware('guest')->group(function () {
+
+    Route::get('/auth/redirect', function () {
+        return Socialite::driver('google')->redirect();
+    });
+    
+    Route::get('/auth/google/callback', function () {
+        $googleUser = Socialite::driver('google')->user();
+        // Check if the user exists but doesn't have a google_id (regular account)
+        $user = User::where('email', $googleUser->email)->first();
+
+        if ($user && !$user->google_id) {
+            // Option 1: Show an error or ask to link accounts
+            return redirect('/login')->with('error', 'This email is already used for a normal account. Please log in and link Google in your profile settings.');
+        }
+        // Find or create user
+        $user = User::updateOrCreate(
+            ['email' => $googleUser->email], // Match existing user by email
+            [
+                'name' => $googleUser->name,
+                'google_id' => $googleUser->id,
+                'profile_picture_path' => $googleUser->avatar,
+            ]
+        );
+        // Log the user in
+        Auth::login($user);
+
+        // Redirect to intended page or home
+        return redirect('/');
+    });
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

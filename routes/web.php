@@ -12,6 +12,7 @@ use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 
 Route::get('/', function () {
+    // dd(phpinfo());
     $rooms = Room::latest()->get();
     return Inertia::render('Home/Index', [
         'canLogin' => Route::has('login'),

@@ -9,6 +9,10 @@ const Edit = ({children}) => {
     descriptionClassName: "text-white/90", 
     duration: 3000,
     position: "top-center",
+    style: {
+      backgroundColor: "var(--success)",
+      color: "#fff",
+    }
   })
   const sidebarItems = [
     { id: "profile", label: "Profile", link: "profile.edit", url: "/profile" },
@@ -42,13 +46,7 @@ const Edit = ({children}) => {
           </nav>
           <main className="space-y-6 flex-1 lg:max-w-2xl">
             {children}
-            <Toaster  
-              toastOptions={{
-                style: {
-                  backgroundColor: "var(--success)",
-                  color: "#fff",
-                }
-            }}/>
+            <Toaster />
           </main>
         </div>
     </div>
