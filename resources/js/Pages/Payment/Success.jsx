@@ -5,18 +5,6 @@ import { Link } from "@inertiajs/react"
 import Layout from "@/Layouts/Layout"
 
 const Success = ({reservations, totalAmount, orderId}) =>  {
-  console.log(reservations)
-  console.log(totalAmount)
-  console.log(orderId)
-  // In a real app, you would get this data from your API or state management
-  const bookingDetails = {
-    bookingId: "BOOK-" + Math.floor(100000 + Math.random() * 900000),
-    checkIn: "March 15, 2025",
-    checkOut: "March 18, 2025",
-    totalAmount: "$473.00",
-    roomName: "Superior Double Room",
-  }
-
   return (
     <div className="min-h-screen flex justify-center py-12 ">
       <div className="container px-4 md:px-6 max-w-3xl">
@@ -35,7 +23,7 @@ const Success = ({reservations, totalAmount, orderId}) =>  {
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
               {reservations.map(reservation => (
-                <>
+                <div key={reservation.id}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-start gap-3">
                     <Calendar className="h-5 w-5 text-primary mt-0.5" />
@@ -64,7 +52,7 @@ const Success = ({reservations, totalAmount, orderId}) =>  {
                     <p className="text-xs text-muted-foreground">{reservation.room.bed} • {`${reservation.room.guest} ${reservation.room.guest === 1 ? "Guest" : "Guests"}`} • {reservation.room.size}</p>
                   </div>
                 </div>
-                </>
+                </div>
               ))}
 
             <div className="bg-muted/50 p-4 rounded-lg">

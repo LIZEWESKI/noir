@@ -16,7 +16,8 @@ const Edit = ({children}) => {
   })
   const sidebarItems = [
     { id: "profile", label: "Profile", link: "profile.edit", url: "/profile" },
-    { id: "password", label: "Password", link: "profile.edit.password",  url: "/profile/password"}
+    { id: "password", label: "Password", link: "profile.edit.password",  url: "/profile/password"},
+    {id: "reservations",label: "Reservations & Payments",link: "profile.reservations",url: "/profile/reservations",},
   ]
   return (
     <>

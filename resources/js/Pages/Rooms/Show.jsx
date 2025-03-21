@@ -8,7 +8,6 @@ import { toast } from "sonner"
 import { usePage } from "@inertiajs/react"
 const Show = ({room, related_rooms,unavailable_dates}) => {
   const {errors, flash} = usePage().props;
-  console.log(flash);
   useEffect(() => {
     errors.date && toast.error(errors.date, {
       descriptionClassName: "text-white/90", 

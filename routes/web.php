@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/reservations', [ProfileController::class, 'show'])->name('profile.reservations');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 

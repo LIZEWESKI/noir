@@ -29,8 +29,7 @@ const PaypalButton = () => {
         onApprove={async (data) => {
           router.get(`/success-transaction?token=${data.orderID}`);
         }}
-        onCancel={ (data) => {
-          console.log(data);
+        onCancel={ () => {
           router.get(`/cancel-transaction`);
         }}
       />

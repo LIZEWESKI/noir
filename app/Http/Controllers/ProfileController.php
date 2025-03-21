@@ -10,10 +10,18 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Payment;
+use App\Models\Reservation;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
 {
+
+    public function show() {
+        $reservations = Reservation::latest()->where('user_id',Auth::id())->with("room")->get();
+        $payments = Payment::latest()->where('user_id',Auth::id())->get();
+        return Inertia::render('Profile/ReservationsHistory',compact('reservations','payments'));
+    }
     /**
      * Display the user's profile form.
      */
