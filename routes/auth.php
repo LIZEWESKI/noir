@@ -21,6 +21,11 @@ Route::middleware('guest')->group(function () {
     });
     
     Route::get('/auth/google/callback', function () {
+        // Check if Google returned an error or if 'code' is missing
+        if (request()->has('error')) {
+            $errorReason = request('error');
+            return redirect('/login')->with('error', "Google login failed: $errorReason");
+        }
         $googleUser = Socialite::driver('google')->user();
         // Check if the user exists but doesn't have a google_id (regular account)
         $user = User::where('email', $googleUser->email)->first();

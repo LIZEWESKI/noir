@@ -20,7 +20,7 @@ const Index = () => {
   useEffect(() => {
     flash?.error && toast.error(flash.error, {
       descriptionClassName: "text-white/90", 
-      duration: 5000,
+      duration: 9000,
       position: "top-center",
       style: {
         backgroundColor: "var(--danger)",

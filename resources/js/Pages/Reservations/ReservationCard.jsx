@@ -1,6 +1,5 @@
 import React from 'react'
 import { Trash2, Calendar, Users, Bed } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { format } from "date-fns"
@@ -15,20 +14,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
-import { useForm, router } from '@inertiajs/react'
+import { router } from '@inertiajs/react'
 
 const ReservationCard = ({reservation}) => {
-    const { data, setData, put, processing, errors, reset} = useForm({})
-    function cancelReservation(e) {
-        e.preventDefault();
-        put(`/reservations/${reservation.id}/cancel`)
-    }
 
   return (
     <Card className="overflow-hidden">
         <CardContent className="p-0">
             <div className="flex flex-col sm:flex-row">
-            {/* Room Image */}
+                
             <div className="sm:w-1/3 h-1/3 sm:h-auto aspect-video sm:aspect-square relative">
                 <img
                 src={reservation.room.image_path_url || "/placeholder.svg"}
@@ -37,7 +31,6 @@ const ReservationCard = ({reservation}) => {
                 />
             </div>
 
-            {/* Room Details */}
             <div className="p-6 flex-1 flex flex-col">
                 <div className="flex justify-between">
                 <div>

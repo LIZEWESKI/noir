@@ -45,11 +45,20 @@ class ReservationController extends Controller
         ]);
         // Get Room 
         $room = Room::findOrFail($attributes['room_id']);
+        // Check if it has more than two reservation if so redirect back with error message
+        $reservations_count = Reservation::where('user_id',Auth::id())
+            ->where('status', 'pending')
+            ->count();
+        if ($reservations_count >= 2) {
+            return back()->with([
+                'error' => 'We’re sorry, but you can only reserve up to two rooms at a time. Please cancel an existing reservation if you wish to book a new room.'
+            ]);
+        }
         // Parse dates
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
         // Check for overlapping reservations
-        $overlap = Reservation::where('room_id', $request->room_id)->where('status','confirmed')
+        $overlap = Reservation::where('room_id', $request->room_id)->where('status','active')
         ->where(function ($query) use ($request) {
             $query->whereBetween('check_in', [$request->check_in, $request->check_out])
                 ->orWhereBetween('check_out', [$request->check_in, $request->check_out])

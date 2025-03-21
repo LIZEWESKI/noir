@@ -4,7 +4,7 @@ import OrderSummary from "./OrderSummary"
 import { Badge } from "@/components/ui/badge"
 const Reservations = ({reservations}) => {
   return (
-    <div className="py-12 md:py-24">
+    <div className="py-8 md:py-16">
         <div className="container px-4 md:px-6 max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start gap-8">
                 <div className="w-full md:w-2/3 space-y-8">

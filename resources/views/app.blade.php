@@ -16,5 +16,9 @@
     </head>
     <body class="font-geist antialiased">
         @inertia
+        <script>
+            window.PAYPAL_CLIENT_ID = "{{ env('PAYPAL_CLIENT_ID') }}";
+        </script>
+
     </body>
 </html>

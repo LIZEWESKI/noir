@@ -16,6 +16,7 @@ class RoomController extends Controller
     public function index()
     {
         $rooms = Room::latest()->with("features")->paginate(5);
+        
         return Inertia::render('Rooms/Index',compact("rooms"));
     }
 
@@ -40,6 +41,7 @@ class RoomController extends Controller
      */
     public function show(Room $room)
     {
+        if(!$room) Inertia::render('NotFound')->toResponse(request())->setStatusCode(404);
         $room->loadMissing('features');
         $related_rooms = Room::latest()->whereIn('type',[$room->type])->get();
         $unavailable_dates = Reservation::select('check_in','check_out')->where('room_id', $room->id)->where('status','confirmed')->get();

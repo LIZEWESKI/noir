@@ -6,7 +6,7 @@ import { CreditCard} from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { format } from "date-fns"
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 const OrderSummary = ({reservations}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [totalAmount, setTotalAmount] = useState(0)
@@ -22,11 +22,9 @@ const OrderSummary = ({reservations}) => {
     // Handle checkout
     const handleCheckout = () => {
       setIsLoading(true)
-      // Simulate API call
       setTimeout(() => {
         setIsLoading(false)
-        alert("Proceeding to payment gateway...")
-        // Here you would redirect to payment page or process payment
+        router.visit('/payment-gateway')
       }, 1500)
     }
   return (
@@ -57,13 +55,13 @@ const OrderSummary = ({reservations}) => {
                     </div>
                     <div className="flex justify-between">
                         <span>Taxes</span>
-                        <span>${Number.parseFloat(totalAmount * 0.1).toFixed(2)}</span>
+                        <span>${Number.parseFloat(0 * 0.1).toFixed(2)}</span>
                     </div>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>${Number.parseFloat(totalAmount * 1.1).toFixed(2)}</span>
+                    <span>${Number.parseFloat(totalAmount).toFixed(2)}</span>
                 </div>
 
                 <Alert className="bg-muted/50 border-muted">

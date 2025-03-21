@@ -7,7 +7,8 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { usePage } from "@inertiajs/react"
 const Show = ({room, related_rooms,unavailable_dates}) => {
-  const {errors} = usePage().props;
+  const {errors, flash} = usePage().props;
+  console.log(flash);
   useEffect(() => {
     errors.date && toast.error(errors.date, {
       descriptionClassName: "text-white/90", 
@@ -19,6 +20,17 @@ const Show = ({room, related_rooms,unavailable_dates}) => {
       }
     })
   }, [errors]);
+  useEffect(() => {
+    flash.error && toast.error(flash.error, {
+      descriptionClassName: "text-white/90", 
+      duration: 9000,
+      position: "top-center",
+      style: {
+        backgroundColor: "var(--danger)",
+        color: "#fff",
+      }
+    })
+  }, [flash]);
   return (
     <div className=" py-3">
       <div className="mb-12">
