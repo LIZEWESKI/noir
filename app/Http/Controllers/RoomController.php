@@ -44,7 +44,7 @@ class RoomController extends Controller
         if(!$room) Inertia::render('NotFound')->toResponse(request())->setStatusCode(404);
         $room->loadMissing('features');
         $related_rooms = Room::latest()->whereIn('type',[$room->type])->get();
-        $unavailable_dates = Reservation::select('check_in','check_out')->where('room_id', $room->id)->where('status','confirmed')->get();
+        $unavailable_dates = Reservation::select('check_in','check_out')->where('room_id', $room->id)->where('status','active')->get();
         return Inertia::render('Rooms/Show',compact("room","related_rooms",'unavailable_dates'));
     }
 

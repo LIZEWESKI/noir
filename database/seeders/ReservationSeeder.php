@@ -17,35 +17,35 @@ class ReservationSeeder extends Seeder
             [
                 'user_id' => '1',
                 'room_id' => '1',
-                'check_in' => '2025-03-09',
-                'check_out' => '2025-03-12',
+                'check_in' => '2025-03-28',
+                'check_out' => '2025-03-29',
                 'nights' => 3,
                 'cleaning_fee' => 25,
                 'service_fee' => 15,
                 'total_price' => 245,
-                'status' => 'confirmed'
+                'status' => 'active'
             ],
             [
                 'user_id' => '1',
                 'room_id' => '1',
-                'check_in' => '2025-03-15',
-                'check_out' => '2025-03-18',
+                'check_in' => '2025-03-24',
+                'check_out' => '2025-03-26',
                 'nights' => 3,
                 'cleaning_fee' => 25,
                 'service_fee' => 15,
                 'total_price' => 245,
-                'status' => 'confirmed'
+                'status' => 'active'
             ],
             [
                 'user_id' => '1',
                 'room_id' => '1',
                 'check_in' => '2025-03-21',
-                'check_out' => '2025-03-24',
+                'check_out' => '2025-03-22',
                 'nights' => 3,
                 'cleaning_fee' => 25,
                 'service_fee' => 15,
                 'total_price' => 245,
-                'status' => 'confirmed'
+                'status' => 'active'
             ],
         ];
         foreach ($reservations as $reservation) {
