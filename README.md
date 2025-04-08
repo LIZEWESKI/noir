@@ -30,7 +30,8 @@ A modern, elegant hotel booking system built with Laravel, Inertia.js, React, an
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [Shadcn UI](https://ui.shadcn.com/) - Re-usable UI components
 
-
+- **Design**: 
+- [Designer](https://www.behance.net/yassinemagri) - Designed by Yassine Magri (Thanks bro)
 
 - **Payment Processing**:
 
