@@ -23,7 +23,7 @@ export default function WhyChooseSection() {
       description: "Personalized assistance anytime.",
     },
     {
-      icon: <MapPin className="h-12 w-12 mb-5 text-primary stroke-[0.7px]" />,
+      icon: <MapPin className="h-12 w-12 mb-5 text-primary stroke-[0.7px] " />,
       title: "Prime Location",
       description: "Stay close to key attractions & business hubs.",
     },
@@ -42,7 +42,7 @@ export default function WhyChooseSection() {
     </div>
 
     {/* Features Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 ">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 items-center h-96">
         {features.map((feature, index) => (
         <div
             key={index}
@@ -50,7 +50,6 @@ export default function WhyChooseSection() {
             group p-6 rounded-xl border bg-background/50 border-primary/20 backdrop-blur-sm
             hover:bg-background hover:shadow-lg transition-all duration-300
             ${index === features.length - 1 && features.length % 3 === 1 ? "lg:col-span-3 lg:max-w-xl lg:mx-auto" : ""}
-            
             `}
         >
             {/* Icon with hover effect */}

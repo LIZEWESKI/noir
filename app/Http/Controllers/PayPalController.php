@@ -1,11 +1,14 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Mail\SuccessPayment;
 use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalController extends Controller
@@ -95,6 +98,8 @@ class PayPalController extends Controller
                 $totalAmount = $payment->total_amount;
                 $orderId = $payment->transaction_id;
                 // Redirect to success page with a success message
+                Mail::to(Auth::user())->send(new SuccessPayment($payment));
+
                 return Inertia::render('Payment/Success',compact('reservations',"orderId","totalAmount"));
             }
         }

@@ -49,7 +49,7 @@ const Success = ({reservations, totalAmount, orderId}) =>  {
                   <div>
                     <h3 className="font-medium text-sm">Accommodation</h3>
                     <p>{reservation.room.name}</p>
-                    <p className="text-xs text-muted-foreground">{reservation.room.bed} • {`${reservation.room.guest} ${reservation.room.guest === 1 ? "Guest" : "Guests"}`} • {reservation.room.size}</p>
+                    <p className="text-xs text-muted-foreground">{reservation.room.bed} • {`${reservation.room.guests} ${reservation.room.guest === 1 ? "Guest" : "Guests"}`} • {reservation.room.size}</p>
                   </div>
                 </div>
                 </div>
