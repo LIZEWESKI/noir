@@ -63,7 +63,7 @@ A modern, elegant hotel booking system built with Laravel, Inertia.js, React, an
 
 ```shellscript
 git clone https://github.com/LIZEWESKI/noir.git
-cd noir-hotel-booking
+cd noir
 ```
 
 2. **Install PHP dependencies**
@@ -80,12 +80,13 @@ composer install
 npm install
 ```
 
-4. **Create environment file**
+4. **Create environment file using cmd or create one manually**
 
 
 ```shellscript
-cp .env.example .env
+cp .env.example .env 
 ```
+
 
 5. **Generate application key**
 
@@ -126,17 +127,17 @@ php artisan migrate --seed
 
 
 ```shellscript
-npm run dev
+npm run build
 ```
 
-10. **Start the development server**
-
+10. **Link Storage Files**
 
 ```shellscript
-php artisan serve
+php artisan storage:link
 ```
 
-Or you can run both at the same time using 
+11. **Start the development server**
+
 
 ```shellscript
 composer dev

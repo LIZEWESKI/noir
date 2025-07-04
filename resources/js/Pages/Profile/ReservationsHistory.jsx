@@ -87,46 +87,6 @@ const  ReservationsHistory = ({ reservations, payments}) => {
 
         {/* Reservations Tab */}
         <TabsContent value="reservations" className="space-y-4">
-          <div className="flex overflow-auto pb-2 mb-2">
-            <TabsList className="h-9 bg-transparent p-0 space-x-2">
-              <TabsTrigger
-                value="all"
-                onClick={() => setActiveTab("all")}
-                className={`rounded-md px-3 ${activeTab === "all" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-              >
-                All
-              </TabsTrigger>
-              <TabsTrigger
-                value="pending"
-                onClick={() => setActiveTab("pending")}
-                className={`rounded-md px-3 ${activeTab === "pending" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-              >
-                Pending
-              </TabsTrigger>
-              <TabsTrigger
-                value="active"
-                onClick={() => setActiveTab("active")}
-                className={`rounded-md px-3 ${activeTab === "active" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-              >
-                Active
-              </TabsTrigger>
-              <TabsTrigger
-                value="completed"
-                onClick={() => setActiveTab("completed")}
-                className={`rounded-md px-3 ${activeTab === "completed" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-              >
-                Completed
-              </TabsTrigger>
-              <TabsTrigger
-                value="cancelled"
-                onClick={() => setActiveTab("cancelled")}
-                className={`rounded-md px-3 ${activeTab === "cancelled" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-              >
-                Cancelled
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
           {filteredReservations.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-10 text-center">
