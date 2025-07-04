@@ -94,7 +94,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-6. **Configure your database in the .env file**
+6. **Configure your database in the .env file (or use sqlite instead)**
 
 
 ```plaintext
@@ -136,7 +136,13 @@ npm run dev
 php artisan serve
 ```
 
-The application will be available at `http://localhost:8000`.
+Or you can run both at the same time using 
+
+```shellscript
+composer dev
+```
+
+The application will be available at `http://127.0.0.1:8000`.
 
 ## 🏗️ Project Structure
 
