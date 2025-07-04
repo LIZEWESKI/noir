@@ -54,7 +54,7 @@ A modern, elegant hotel booking system built with Laravel, Inertia.js, React, an
 - Node.js and npm
 - MySQL
 - PayPal Developer Account (for payment processing)
-
+- SSL Certificate
 
 ## 🚀 Installation
 
@@ -115,28 +115,44 @@ PAYPAL_CLIENT_ID=your_paypal_client_id
 PAYPAL_CLIENT_SECRET=your_paypal_client_secret
 PAYPAL_MODE=sandbox  # Change to 'live' for production
 ```
+8. **SSL Certificate Configuration**
 
-8. **Run database migrations and seeders**
+#### Step 1: Download Certificate File
+
+Download the `cacert.pem` file from the official cURL website:
+- Visit: https://curl.se/docs/caextract.html
+- Download the latest `cacert.pem` file
+- Save it to a secure location on your server (e.g., `C:\ssl\cacert.pem`)
+
+#### Step 2: Configure PHP Settings
+Add the following lines to your `php.ini` file:
+
+```ini
+curl.cainfo = "C:\path\to\cacert.pem"
+openssl.cafile = "C:\path\to\cacert.pem"
+```
+
+9. **Run database migrations and seeders**
 
 
 ```shellscript
 php artisan migrate --seed
 ```
 
-9. **Build assets**
+10. **Build assets**
 
 
 ```shellscript
 npm run build
 ```
 
-10. **Link Storage Files**
+11. **Link Storage Files**
 
 ```shellscript
 php artisan storage:link
 ```
 
-11. **Start the development server**
+12. **Start the development server**
 
 
 ```shellscript

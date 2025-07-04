@@ -62,16 +62,6 @@ const Success = ({reservations, totalAmount, orderId}) =>  {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col sm:flex-row gap-3 pt-0">
-            <Button variant="outline" className="w-full sm:w-auto flex gap-2">
-              <Download className="h-4 w-4" />
-              Download Receipt
-            </Button>
-            <Button variant="outline" className="w-full sm:w-auto flex gap-2">
-              <Share2 className="h-4 w-4" />
-              Share Booking Details
-            </Button>
-          </CardFooter>
         </Card>
 
         <div className="space-y-4">
