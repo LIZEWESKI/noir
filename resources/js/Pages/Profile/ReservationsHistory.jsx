@@ -154,12 +154,6 @@ const  ReservationsHistory = ({ reservations, payments}) => {
                               </Button>
                             </Link>
                           )}
-                          <Link href={`/reservations/${reservation.id}`}>
-                            <Button size="sm" variant="outline">
-                              View Details
-                              <ChevronRight className="h-4 w-4 ml-1" />
-                            </Button>
-                          </Link>
                         </div>
                       </div>
                     </div>
@@ -206,16 +200,6 @@ const  ReservationsHistory = ({ reservations, payments}) => {
 
                       <div className="flex flex-col md:items-end gap-2">
                         <div className="font-semibold text-lg">${Number(payment.total_amount).toFixed(2)}</div>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            <Download className="h-4 w-4 mr-1" />
-                            Receipt
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <Eye className="h-4 w-4 mr-1" />
-                            Details
-                          </Button>
-                        </div>
                       </div>
                     </div>
                   </CardContent>

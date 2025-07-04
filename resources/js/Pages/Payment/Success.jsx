@@ -58,7 +58,7 @@ const Success = ({reservations, totalAmount, orderId}) =>  {
             <div className="bg-muted/50 p-4 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="font-medium">Total Amount Paid</span>
-                <span className="font-bold text-lg">{totalAmount}</span>
+                <span className="font-bold text-lg">${totalAmount}</span>
               </div>
             </div>
           </CardContent>

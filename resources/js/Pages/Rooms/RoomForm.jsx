@@ -16,14 +16,22 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
-
+  const formatDateForBackend = (date) => {
+  if (!date) return ""
+  // Use local timezone formatting instead of UTC
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+  
   // Calculate nights and total when dates change
   const [checkInDate, setCheckInDate] = useState()
   const [checkOutDate, setCheckOutDate] = useState()
   const { data, setData, post, processing, errors } = useForm({
     room_id: room.id,
-    check_in: checkInDate?.toISOString().split("T")[0] || "",
-    check_out: checkOutDate?.toISOString().split("T")[0] || "",
+    check_in: formatDateForBackend(checkInDate),
+    check_out: formatDateForBackend(checkOutDate),
   })
   const [guestCount, setGuestCount] = useState(room.guests)
   const [nights, setNights] = useState(differenceInDays(checkOutDate, checkInDate))
@@ -51,7 +59,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     setCheckOutDate(null)
     setData({
       ...data,
-      check_in: checkIn?.toISOString().split("T")[0] || "",
+      check_in: formatDateForBackend(checkIn),
       check_out: "", 
     })
   }
@@ -60,7 +68,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     setCheckOutDate(checkOut)
     setData({
       ...data,
-      check_out: checkOut?.toISOString().split("T")[0] || "",
+      check_out: formatDateForBackend(checkOut),
     })
   }
 
