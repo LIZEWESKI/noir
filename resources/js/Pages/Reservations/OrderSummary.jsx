@@ -24,7 +24,7 @@ const OrderSummary = ({reservations}) => {
       setIsLoading(true)
       setTimeout(() => {
         setIsLoading(false)
-        router.visit('/payment-gateway')
+        router.visit('/payment')
       }, 1500)
     }
   return (

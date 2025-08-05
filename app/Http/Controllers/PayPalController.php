@@ -18,13 +18,24 @@ class PayPalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function paymentGateway()
+    public function paymentGateway(Request $request)
     {
-        $reservations = Reservation::latest()
-            ->with(['room',"user:id,name,email"])
-            ->where('user_id',Auth::id())
-            ->where('status', 'pending')
-            ->get();
+        
+        $query = $request->input("reservation");
+        if(empty($query)){
+            $reservations = Reservation::latest()
+                ->with(['room',"user:id,name,email"])
+                ->where('user_id',Auth::id())
+                ->where('status', 'pending')
+                ->get();
+        }else {
+            // This is a very naive version to handle authorization access (I should use Policy instead)
+            $reservations = Reservation::where('user_id',Auth::id())
+                ->with(['room',"user:id,name,email"])
+                ->where("id",$query)
+                ->where('status', 'pending')
+                ->get();
+        }
         return Inertia::render('Payment/Index',compact('reservations'));
     }
     /**

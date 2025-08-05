@@ -36,9 +36,9 @@ Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name
 Route::fallback(function() {
     return Inertia::render('NotFound')->toResponse(request())->setStatusCode(404);
 });
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Middleware Auth Resource
 Route::middleware('auth')->group(function () {
@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/payment-gateway', [PayPalController::class, 'paymentGateway'])->name('paymentGateway');
+    Route::get('/payment', [PayPalController::class, 'paymentGateway'])->name('payment');
     Route::post('/process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
     Route::get('/success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
     Route::get('/cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
