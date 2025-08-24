@@ -8,18 +8,18 @@ use Illuminate\Http\Request;
 class LegalController extends Controller
 {
     public function about() {
-        return Inertia::render("Legal/About");
+        return Inertia::render("legal/about");
     }
     public function contact() {
-        return Inertia::render("Legal/Contact");
+        return Inertia::render("legal/contact");
     }
     public function legal() {
-        return Inertia::render("Legal/Legal");
+        return Inertia::render("legal/legal");
     }
     public function privacyPolicy() {
-        return Inertia::render("Legal/PrivacyPolicy");
+        return Inertia::render("legal/privacy-policy");
     }
     public function TermsOfService() {
-        return Inertia::render("Legal/TermsOfService");
+        return Inertia::render("legal/terms-of-service");
     }
 }

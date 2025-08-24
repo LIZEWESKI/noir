@@ -1,6 +1,6 @@
 import React from 'react'
-import MobileNav from '@/Components/Header/MobileNav'
-import DesktopNav from '@/Components/Header/DesktopNav'
+import MobileNav from '@/components/header/mobile-nav'
+import DesktopNav from '@/components/header/desktop-nav'
 import { usePage } from '@inertiajs/react'
 
 const Header = () => {

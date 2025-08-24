@@ -31,6 +31,6 @@ class GalleryController extends Controller
             'image_path_url' => asset('assets/amenities/4.jpg'),
             "description" => "A heated, indoor pool offering a year-round swimming experience."],
         ];
-        return Inertia::render("Gallery/Index",compact("rooms","amenities"));
+        return Inertia::render("gallery",compact("rooms","amenities"));
     }
 }

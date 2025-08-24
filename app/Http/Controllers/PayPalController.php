@@ -36,7 +36,7 @@ class PayPalController extends Controller
                 ->where('status', 'pending')
                 ->get();
         }
-        return Inertia::render('Payment/Index',compact('reservations'));
+        return Inertia::render('payment/index',compact('reservations'));
     }
     /**
      * process transaction.
@@ -57,6 +57,7 @@ class PayPalController extends Controller
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
+                "locale" => "en-US",
                 "return_url" => route('processTransaction'),
                 "cancel_url" => route('cancelTransaction'),
             ],
@@ -111,12 +112,12 @@ class PayPalController extends Controller
                 // Redirect to success page with a success message
                 Mail::to(Auth::user())->send(new SuccessPayment($payment));
 
-                return Inertia::render('Payment/Success',compact('reservations',"orderId","totalAmount"));
+                return Inertia::render('payment/success',compact('reservations',"orderId","totalAmount"));
             }
         }
         
         // Redirect to error page if something went wrong
-        return redirect('/payment-gateway')->with('error', 'Something went wrong with your payment.');
+        return redirect('/payment')->with('error', 'Something went wrong with your payment.');
         
     }
     /**
@@ -130,6 +131,6 @@ class PayPalController extends Controller
         if ($payment) {
             $payment->update(['payment_status' => 'cancelled']);
         }
-        return redirect('/payment-gateway')->with('success', 'Payment cancelled!');
+        return redirect('/payment')->with('success', 'Payment cancelled!');
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const mastercard = () => {
+const MasterCard = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="38" viewBox="0 0 780 500" fill="none">
     <path d="M465.738 113.525H313.812V386.475H465.738V113.525Z" fill="#FF5A00"/>
@@ -10,4 +10,4 @@ const mastercard = () => {
   )
 }
 
-export default mastercard
+export default MasterCard

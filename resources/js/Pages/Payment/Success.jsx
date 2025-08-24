@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle, Calendar, Home, Download, Share2, ArrowLeft } from "lucide-react"
 import { Link } from "@inertiajs/react"
-import Layout from "@/Layouts/Layout"
+import Layout from "@/layouts/Layout"
 
 const Success = ({reservations, totalAmount, orderId}) =>  {
   return (

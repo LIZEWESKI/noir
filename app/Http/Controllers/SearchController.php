@@ -19,6 +19,6 @@ class SearchController extends Controller
         //     "check_out" => 'required|date|after:check_in'
         // ]);
         $rooms = Room::latest()->where("guests",'=',$request->input('guests'))->get();
-        return Inertia::render("Search/Index",compact("rooms"));
+        return Inertia::render("search",compact("rooms"));
     }
 }

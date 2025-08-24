@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('cleaning_fee', 10, 2);
             $table->decimal('service_fee', 10, 2);
             $table->decimal('total_price', 10, 2);
-            $table->string('status')->default('pending');
+            $table->string('status')->default('pending'); // completed, pending, cancelled
             $table->timestamps();
             $table->index('check_in');
             $table->index('check_out');

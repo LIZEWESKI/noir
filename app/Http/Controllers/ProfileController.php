@@ -20,14 +20,14 @@ class ProfileController extends Controller
     public function show() {
         $reservations = Reservation::latest()->where('user_id',Auth::id())->with("room")->get();
         $payments = Payment::latest()->where('user_id',Auth::id())->get();
-        return Inertia::render('Profile/ReservationsHistory',compact('reservations','payments'));
+        return Inertia::render('profile/reservations-history',compact('reservations','payments'));
     }
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/UpdateProfileForm', [
+        return Inertia::render('profile/update-profile-form', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
@@ -49,7 +49,6 @@ class ProfileController extends Controller
             $request->user()->profile_picture_path = $path;
         }
         $request->user()->save();
-        // return Redirect::route('profile.edit');
         return Redirect::route('profile.edit')->with('success', 'Your profile has been updated.');
     }
 

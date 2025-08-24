@@ -1,11 +1,11 @@
 import { useEffect } from "react"
-import Layout from "@/Layouts/Layout"
-import ReservationsDetails from "./ReservationsDetails"
+import Layout from "@/layouts/Layout"
+import ReservationsDetails from "@/components/payment/reservations-details"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { usePage } from "@inertiajs/react"
-import NoReservations from "./NoReservations"
-import PaypalButton from "./PaypalButton"
+import NoReservations from "@/components/payment/no-reservations"
+import PaypalButton from "@/components/payment/paypal-button"
 
 const Index = ({ reservations }) => {
   const { flash } = usePage().props

@@ -13,7 +13,7 @@ use App\Http\Controllers\ReservationController;
 
 Route::get('/', function () {
     $rooms = Room::latest()->get();
-    return Inertia::render('Home/Index', [
+    return Inertia::render('home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'rooms' => $rooms,
@@ -34,7 +34,7 @@ Route::get("/privacy-policy", [LegalController::class,'privacyPolicy'])->name("p
 Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name("terms_of_service");
 // Page Not Found
 Route::fallback(function() {
-    return Inertia::render('NotFound')->toResponse(request())->setStatusCode(404);
+    return Inertia::render('not-found')->toResponse(request())->setStatusCode(404);
 });
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

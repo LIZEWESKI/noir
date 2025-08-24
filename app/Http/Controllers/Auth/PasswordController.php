@@ -16,7 +16,7 @@ class PasswordController extends Controller
 {
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/UpdatePasswordForm', [
+        return Inertia::render('profile/update-password-form', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);

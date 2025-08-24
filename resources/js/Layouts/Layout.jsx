@@ -1,7 +1,6 @@
-
-import { ThemeProvider } from '@/Components/ThemeProvider';
-import Header from '@/Components/Header/Header';
-import { Footer } from '@/Components/Footer';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import Header from '@/components/header/header';
+import { Footer } from '@/components/Footer';
 export default function Layout({ children }) {
     return (
         <ThemeProvider>

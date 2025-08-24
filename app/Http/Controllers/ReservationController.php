@@ -22,7 +22,7 @@ class ReservationController extends Controller
             ->where('user_id',Auth::id())
             ->where('status', 'pending')
             ->get();
-        return Inertia::render("Reservations/Index" ,compact('reservations'));
+        return Inertia::render("reservations" ,compact('reservations'));
     }
 
     /**
@@ -115,8 +115,8 @@ class ReservationController extends Controller
     }
     public function cancel(Reservation $reservation)
     {
-        $reservation->update(['status' => 'canceled']);
-        return back()->with('success', 'Reservation has been canceled.');
+        $reservation->update(['status' => 'cancelled']);
+        return back()->with('success', 'Reservation has been cancelled.');
     }
 
     /**

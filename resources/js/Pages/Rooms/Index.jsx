@@ -1,6 +1,6 @@
-import Layout from "@/Layouts/Layout"
-import { SimplePagination } from "@/Components/Pagination/SimplePagination"
-import RoomCard from "./RoomCard"
+import Layout from "@/layouts/Layout"
+import { SimplePagination } from "@/components/pagination/simple-pagination"
+import RoomCard from "@/components/rooms/room-card"
 import { Head } from "@inertiajs/react";
 const Index = ({rooms}) => {
   const data = rooms.data;
