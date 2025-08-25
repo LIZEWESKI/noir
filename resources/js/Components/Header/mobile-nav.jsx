@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Link } from '@inertiajs/react'
-import AppLogo from '@/components/AppLogo'
+import AppLogo from '@/components/app-logo'
 import {
   Drawer,
   DrawerClose,

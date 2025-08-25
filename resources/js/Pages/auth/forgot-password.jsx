@@ -6,7 +6,7 @@ import { Mail } from "lucide-react"
 import { Link, useForm, usePage } from "@inertiajs/react"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import { useEffect } from "react"
 
 const ForgotPAssword = () => {

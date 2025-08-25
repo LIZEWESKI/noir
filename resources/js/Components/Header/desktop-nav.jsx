@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from '@inertiajs/react'
-import AppLogo from '@/components/AppLogo'
+import AppLogo from '@/components/app-logo'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
 

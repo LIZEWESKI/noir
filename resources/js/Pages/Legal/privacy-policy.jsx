@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import { ArrowLeft, Printer } from "lucide-react"
 import { Link } from "@inertiajs/react"
 

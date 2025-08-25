@@ -1,5 +1,5 @@
 import React, {useEffect} from "react"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import RelatedRoomsCarousel from "@/components/rooms/related-rooms-carousel"
 import RoomDetails from "@/components/rooms/room-details"
 import RoomForm from "@/components/rooms/room-form"

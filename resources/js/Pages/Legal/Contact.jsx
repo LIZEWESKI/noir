@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Mail, Phone, MapPin, Clock, CheckCircle2, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Link } from "@inertiajs/react"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 
 const Contact = () => {
   const [formState, setFormState] = useState({

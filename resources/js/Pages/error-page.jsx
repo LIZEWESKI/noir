@@ -1,4 +1,4 @@
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 
 const ErrorPage = ({ status }) =>  {
     const title = {

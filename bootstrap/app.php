@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\HandleAppearance;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
+            HandleAppearance::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);

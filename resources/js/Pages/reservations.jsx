@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { Head, usePage } from "@inertiajs/react"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import NoReservations from "@/components/reservations/no-reservations"
 import Reservations from "@/components/reservations/reservations"
 

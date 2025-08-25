@@ -1,7 +1,7 @@
 import { Mail, Globe, Github, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import { Head } from "@inertiajs/react"
 const About = () => {
   return (

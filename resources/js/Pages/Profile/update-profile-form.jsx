@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { useForm , usePage, router} from '@inertiajs/react'
 import Edit from './edit'
-import Layout from '@/layouts/Layout'
+import Layout from '@/layouts/layout'
 import InputField  from "@/Components/ui/input-field"
 import { Button } from '@/components/ui/button'
 

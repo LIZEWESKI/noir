@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import ReservationsDetails from "@/components/payment/reservations-details"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"

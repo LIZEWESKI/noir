@@ -1,4 +1,4 @@
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import Summary from "@/components/search/summary"
 import NoResult from "@/components/search/no-result"
 import RoomsResults from "@/components/search/rooms-results"

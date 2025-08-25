@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import { ShoppingCart, Bed, Calendar, ArrowRight, Clock, Info } from "lucide-react"
 import { Link } from "@inertiajs/react"
 

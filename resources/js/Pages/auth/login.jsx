@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { Head, usePage} from '@inertiajs/react';
-import Layout from '@/layouts/Layout';
+import Layout from '@/layouts/layout';
 import { LoginForm } from "../../components/login-form"
 const Login = () => {
   const {flash, status} = usePage().props;

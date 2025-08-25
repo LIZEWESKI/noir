@@ -17,7 +17,7 @@ import {
   Eye,
 } from "lucide-react"
 import { Link } from "@inertiajs/react"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import Edit from "./edit"
 
 // Status badge component with appropriate colors

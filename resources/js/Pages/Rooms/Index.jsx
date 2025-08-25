@@ -1,4 +1,4 @@
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 import { SimplePagination } from "@/components/pagination/simple-pagination"
 import RoomCard from "@/components/rooms/room-card"
 import { Head } from "@inertiajs/react";

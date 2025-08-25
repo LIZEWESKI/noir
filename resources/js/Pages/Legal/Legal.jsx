@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator"
 import { FileText, Shield, ArrowRight } from "lucide-react"
 import { Link } from "@inertiajs/react"
-import Layout from "@/layouts/Layout"
+import Layout from "@/layouts/layout"
 
 const Legal = () =>  {
   return (

@@ -4,11 +4,13 @@ use App\Models\Room;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReservationController;
 
 Route::get('/', function () {
@@ -36,9 +38,7 @@ Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name
 Route::fallback(function() {
     return Inertia::render('not-found')->toResponse(request())->setStatusCode(404);
 });
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 // Middleware Auth Resource
 Route::middleware('auth')->group(function () {
@@ -56,5 +56,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
     Route::get('/cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
 });
+
+Route::middleware(['auth', AdminMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Example: rooms management
+    Route::resource('rooms', RoomController::class);
+});
+
 require __DIR__.'/auth.php';
 require __DIR__.'/api.php';
