@@ -45,7 +45,7 @@ class ReservationController extends Controller
         ]);
         // Get Room 
         $room = Room::findOrFail($attributes['room_id']);
-        // Check if it has more than two reservation if so redirect back with error message
+        // Check if it has more than two reservations if so redirect back with error message
         $reservations_count = Reservation::where('user_id',Auth::id())
             ->where('status', 'pending')
             ->count();

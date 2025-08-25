@@ -1,4 +1,4 @@
-import { LogOut, ChevronRight } from "lucide-react"
+import { LogOut, ChevronRight, LayoutGrid } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./theme-toggle"
-import { router } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
 export function UserDropdown({user}) {
+  const {auth} = usePage().props;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,10 +47,17 @@ export function UserDropdown({user}) {
           </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        {auth.isAdmin && (
+          <DropdownMenuItem onClick={() => router.visit("/admin/dashboard") }>
+            Dashboard
+          <LayoutGrid className="ml-auto h-4 w-4" />
+        </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => router.visit("/") }>
           Home Page
           <ChevronRight className="ml-auto h-4 w-4" />
         </DropdownMenuItem>
+
         <DropdownMenuItem onClick={() => router.post(route("logout"))}>
           Log Out
           <LogOut className="ml-auto h-4 w-4" />

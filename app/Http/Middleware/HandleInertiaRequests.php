@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+                'isAdmin' => $request->user()?->isAdmin() || null,
             ],
             'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
@@ -46,9 +47,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'flash' => [
-            'success' => session('success'),
-            'error' => session('error'),
-        ],
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
         ];
     }
 }

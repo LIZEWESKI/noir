@@ -2,17 +2,16 @@ import { SectionCards } from '@/components/section-card';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-// import { DataTable } from '@/components/data-table';
-// import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { DataTable } from '@/components/data-table';
+import { ChartAreaInteractive } from '@/components/chart-area-interactive';
 const breadcrumbs= [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: '/admin/dashboard',
     },
 ];
 
 export default function Dashboard({metrics,reservations,bookings}) {
-    // console.log(bookings);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -25,9 +24,9 @@ export default function Dashboard({metrics,reservations,bookings}) {
                         : metrics.map(metric => (<SectionCards metric={metric} key={metric.name}/>))
                     }
                 </div>
-                {/* <DataTable data={reservations}/> */}
+                <DataTable data={reservations}/>
                 <div className="px-4 lg:px-6">
-                    {/* <ChartAreaInteractive chartData={bookings} /> */}
+                    <ChartAreaInteractive chartData={bookings} />
                 </div>
             </div>
         </AppLayout>

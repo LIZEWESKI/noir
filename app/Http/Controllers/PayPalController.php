@@ -103,7 +103,7 @@ class PayPalController extends Controller
                 
                 // Update reservation status
                 foreach ($payment->reservations as $reservation) {
-                    $reservation->update(['status' => 'active']);
+                    $reservation->update(['status' => 'completed']);
                 }
                 $reservations = $payment->reservationsWithRooms()->get();
 

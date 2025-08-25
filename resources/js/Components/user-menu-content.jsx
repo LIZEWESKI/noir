@@ -3,6 +3,7 @@ import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
+import { ThemeToggle } from './header/theme-toggle';
 
 
 export function UserMenuContent({ user }) {
@@ -27,6 +28,12 @@ export function UserMenuContent({ user }) {
                         <Settings className="mr-2" />
                         Settings
                     </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                    Theme
+                    <div className="ml-auto flex items-center">
+                    <ThemeToggle/>
+                    </div>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

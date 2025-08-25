@@ -65,7 +65,6 @@ const StatusBadge = ({ status }) => {
 
 const  ReservationsHistory = ({ reservations, payments}) => {
   const [activeTab, setActiveTab] = useState("all")
-    console.log(reservations)
   // Filter reservations based on active tab
   const filteredReservations =
     activeTab === "all" ? reservations : reservations.filter((res) => res.status.toLowerCase() === activeTab)

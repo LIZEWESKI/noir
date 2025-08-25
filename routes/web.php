@@ -57,15 +57,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
 });
 
+// Middleware Admin Resource
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
-
-    // Example: rooms management
-    Route::resource('rooms', RoomController::class);
+    
 });
 
 require __DIR__.'/auth.php';
