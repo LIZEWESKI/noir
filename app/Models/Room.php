@@ -15,8 +15,24 @@ class Room extends Model
         return $this->image_path ? asset('storage/' . $this->image_path) : null;
     }
     public function features()
-{
-    return $this->belongsToMany(Feature::class);
-}
+    {
+        return $this->belongsToMany(Feature::class);
+    }
+    
+    public static function availableCount(): int
+    {
+        return self::where('status', 'available')->count();
+    }
+
+    public static function trendComparedToYesterday(): ?float
+    {
+        $today = self::availableCount();
+        $yesterday = self::where('status', 'available')
+            ->whereDate('updated_at', '<=', now()->subDay())
+            ->count();
+
+        return $yesterday ? round((($today - $yesterday) / $yesterday) * 100, 2) : null;
+    }
+
 
 }

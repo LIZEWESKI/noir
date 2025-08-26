@@ -30,4 +30,34 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function statsForPeriod($start, $end): object
+    {
+        return self::selectRaw('COUNT(*) as totalBooking, SUM(total_amount) as totalRevenue')
+            ->where('payment_status', 'completed')
+            ->whereBetween('created_at', [$start, $end])
+            ->first();
+    }
+
+    public static function monthlyStats(): array
+    {
+        $now = now();
+        $currentMonth = self::statsForPeriod($now->copy()->startOfMonth(), $now->copy()->endOfMonth());
+        $lastMonth = self::statsForPeriod($now->copy()->subMonth()->startOfMonth(), $now->copy()->subMonth()->endOfMonth());
+
+        $calculateChange = fn($current, $previous) => $previous
+            ? round((($current - $previous) / $previous) * 100, 2)
+            : null;
+
+        return [
+            'booking' => [
+                'value' => (int)($currentMonth->totalBooking ?? 0),
+                'trend' => $calculateChange($currentMonth->totalBooking ?? 0, $lastMonth->totalBooking ?? 0)
+            ],
+            'revenue' => [
+                'value' => number_format((float)($currentMonth->totalRevenue ?? 0), 2, '.', ''),
+                'trend' => $calculateChange($currentMonth->totalRevenue ?? 0, $lastMonth->totalRevenue ?? 0)
+            ]
+        ];
+    }
 }

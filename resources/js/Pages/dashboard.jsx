@@ -1,9 +1,19 @@
 import { SectionCards } from '@/components/section-card';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { TrendingUp } from 'lucide-react';
 const breadcrumbs= [
     {
         title: 'Dashboard',

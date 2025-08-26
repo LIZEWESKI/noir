@@ -8,46 +8,35 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
-import { BadgeDollarSign, Calendar, Home } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 export function SectionCards({metric}) {
     const { formatCurrency } = useCurrencyFormatter();
-    const iconList = [
-      {
-        name: "booking",
-        icon: <Calendar className="!size-5"/>
-      },
-      {
-        name: "revenue",
-        icon: <BadgeDollarSign className="!size-5"/>
-      },
-      {
-        name: "rooms",
-        icon: <Home className="!size-5"/>
-      },
-    ]
   return (
-    <Card className="@container/card">
-      <CardHeader>
-        <CardDescription>{metric.description}</CardDescription>
-        <CardTitle className="text-4xl py-4 font-semibold tabular-nums @[250px]/card:text-3xl">
-          {metric.type === "currency" ? formatCurrency(metric.value,"USD","en-US"): metric.value}
-        </CardTitle>
-        <CardAction>
-          <Badge variant="outline">
-            {iconList.map(icon => (
-              <span key={icon.name}>
-                {icon.name === metric.name && icon.icon}
-              </span>
-            ))}
-          </Badge>
-        </CardAction>
-      </CardHeader>
-      <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        <div className="text-muted-foreground">
-          Acquisition needs attention
-        </div>
-      </CardFooter>
-    </Card>
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription>{metric.description}</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          {metric.type === "currency" ? `${formatCurrency(metric.value,"USD","en-US")}` :  metric.value}
+          
+          </CardTitle>
+          <CardAction>
+            {metric.name !== "rooms" && (
+              <Badge variant="outline">
+                {metric.trend >= 0 ? (<TrendingUp color="green"/>) : (<TrendingDown color="red"/>) }
+                {metric.trend}%
+              </Badge>
+            )}
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                Trending up this month <TrendingUp className="size-4" />
+              </div>
+              <div className="text-muted-foreground">
+                Engagement exceed targets
+              </div>
+        </CardFooter>
+      </Card>
   )
 }
