@@ -46,15 +46,12 @@ export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
+                <SidebarMenu className="flex justify-center items-start">
+                    <SidebarMenuItem >
                         <SidebarMenuButton size="lg" asChild>
                             <Link href="/admin/dashboard" prefetch>
-                            <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                                <AppLogo className="size-6 fill-current text-white dark:text-black" />
-                            </div>
-                            <div className="ml-1 grid flex-1 text-left text-sm">
-                                <span className="mb-0.5 truncate leading-tight font-semibold">Noir Dashboard.</span>
+                            <div className="flex aspect-square size-8 items-center justify-center rounded-md">
+                                <AppLogo />
                             </div>
                             </Link>
                         </SidebarMenuButton>

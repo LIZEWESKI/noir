@@ -11,11 +11,12 @@ const breadcrumbs= [
     },
 ];
 
-export default function Dashboard({metrics,reservations,bookings}) {
+export default function Dashboard({metrics,reservations,charts_data}) {
+    console.log(metrics)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     {metrics.length === 0 ? [1,2,3].map(card => 
                         (<div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -26,7 +27,7 @@ export default function Dashboard({metrics,reservations,bookings}) {
                 </div>
                 <DataTable data={reservations}/>
                 <div className="px-4 lg:px-6">
-                    <ChartAreaInteractive chartData={bookings} />
+                    <ChartAreaInteractive chartData={charts_data} />
                 </div>
             </div>
         </AppLayout>
