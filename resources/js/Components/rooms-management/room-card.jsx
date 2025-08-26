@@ -8,13 +8,12 @@ const StatusBadge = ({ status }) => {
     Available: "default",
     Booked: "secondary",
     Maintenance: "destructive",
-    cleaning: "outline",
   }
 
   return <Badge variant={statusVariants[status]}>{status.charAt(0).toUpperCase() + status.slice(1)}</Badge>
 }
 const RoomCard = ({ room, onEdit, onDelete }) => (
-  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+  <Card className="overflow-hidden hover:shadow-lg transition-shadow pt-0 dark:border-primary/20">
     <div className="relative">
       <img src={room.image_path_url} alt={room.name} className="w-full h-48 object-cover" />
       <div className="absolute top-2 right-2">
@@ -25,7 +24,7 @@ const RoomCard = ({ room, onEdit, onDelete }) => (
     <CardContent className="p-4">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h3 className="font-semibold text-foreground">{room.name}</h3>
+          <h3 className="font-semibold text-foreground truncate ">{room.name}</h3>
           <p className="text-sm text-muted-foreground">Room {room.room_number}</p>
         </div>
         <div className="flex items-center gap-1">

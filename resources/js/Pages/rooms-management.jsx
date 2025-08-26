@@ -9,81 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Search} from "lucide-react"
 
 
-const mockRooms = [
-  {
-    id: 1,
-    name: "Deluxe Ocean View",
-    room_number: "101",
-    type: "Deluxe",
-    price: 299.99,
-    status: "available",
-    image_path: "/luxury-hotel-ocean-view.png",
-    size: "45 sqm",
-    guests: 2,
-    bathrooms: 1,
-    bed: "King",
-    description: "Spacious room with stunning ocean views and modern amenities.",
-    features: [
-      { id: 1, name: "Ocean View" },
-      { id: 2, name: "Balcony" },
-      { id: 3, name: "Mini Bar" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Executive Suite",
-    room_number: "201",
-    type: "Suite",
-    price: 599.99,
-    status: "occupied",
-    image_path: "/executive-hotel-suite-luxury.png",
-    size: "80 sqm",
-    guests: 4,
-    bathrooms: 2,
-    bed: "King + Sofa Bed",
-    description: "Luxurious suite with separate living area and premium amenities.",
-    features: [
-      { id: 1, name: "Ocean View" },
-      { id: 4, name: "Living Area" },
-      { id: 5, name: "Kitchenette" },
-      { id: 6, name: "Work Desk" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Standard Room",
-    room_number: "102",
-    type: "Standard",
-    price: 149.99,
-    status: "maintenance",
-    image_path: "/standard-hotel-room-modern.png",
-    size: "25 sqm",
-    guests: 2,
-    bathrooms: 1,
-    bed: "Queen",
-    description: "Comfortable standard room with essential amenities.",
-    features: [
-      { id: 7, name: "Air Conditioning" },
-      { id: 8, name: "WiFi" },
-    ],
-  },
-]
 
-const mockFeatures = [
-  { id: 1, name: "Ocean View" },
-  { id: 2, name: "Balcony" },
-  { id: 3, name: "Mini Bar" },
-  { id: 4, name: "Living Area" },
-  { id: 5, name: "Kitchenette" },
-  { id: 6, name: "Work Desk" },
-  { id: 7, name: "Air Conditioning" },
-  { id: 8, name: "WiFi" },
-  { id: 9, name: "Room Service" },
-  { id: 10, name: "Spa Access" },
-]
 
-const roomTypes = ["Standard", "Deluxe", "Suite", "Presidential"]
-const roomStatuses = ["available", "occupied", "maintenance", "cleaning"]
+const roomTypes = ["Single", "Double", "Suite"]
+const roomStatuses = ["Available", "Booked", "Maintenance"]
 
 const breadcrumbs= [
     {
@@ -92,8 +21,9 @@ const breadcrumbs= [
     },
 ];
 
-export default function RoomManagement({rooms_m}) {
-  const [rooms, setRooms] = useState(rooms_m)
+export default function RoomManagement({rooms_management, features}) {
+    console.log(features);
+  const [rooms, setRooms] = useState(rooms_management)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
@@ -209,7 +139,7 @@ export default function RoomManagement({rooms_m}) {
             setEditingRoom(null)
             }}
             onSave={handleSaveRoom}
-            features={mockFeatures}
+            features={features}
         />
         </div>
     </AppLayout>

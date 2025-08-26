@@ -20,12 +20,12 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
       size: "",
       guests: 1,
       bathrooms: 1,
-      bed: "Queen",
+      bed: "1 Queen Bed",
       description: "",
       features: [],
     },
   )
-  const bedTypes = ["Single", "Twin", "Queen", "King", "King + Sofa Bed"]
+  const bedTypes = ["1 Single Bed", "1 King Bed", "1 Queen Bed", "2 King Beds", "2 King Beds, 1 Single Bed","1 King Bed, 2 Single Beds","1 Queen Bed, 1 Sofa Bed","1 King Bed, 1 Sofa Bed"]
 
   const handleSubmit = (e) => {
     e.preventDefault()
