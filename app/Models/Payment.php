@@ -39,11 +39,34 @@ class Payment extends Model
             ->first();
     }
 
+    public static function averageBookingValue($start, $end)
+    {
+        $stats = self::selectRaw('COUNT(*) as totalBooking, SUM(total_amount) as totalRevenue')
+            ->where('payment_status', 'completed')
+            ->whereBetween('created_at', [$start, $end])
+            ->first();
+
+        if (!$stats || $stats->totalBooking == 0) {
+            return 0;
+        }
+
+        return round($stats->totalRevenue / $stats->totalBooking, 2);
+    }
+
+    
     public static function monthlyStats(): array
     {
         $now = now();
+        $firstDay = $now->copy()->startOfMonth();
+        $lastDay = $now->copy()->endOfMonth();
+        $lastMonthFirstDay = $now->copy()->subMonth()->startOfMonth();
+        $lastMonthLastDay = $now->copy()->subMonth()->endOfMonth();
+
         $currentMonth = self::statsForPeriod($now->copy()->startOfMonth(), $now->copy()->endOfMonth());
         $lastMonth = self::statsForPeriod($now->copy()->subMonth()->startOfMonth(), $now->copy()->subMonth()->endOfMonth());
+
+        $currentABV = Payment::averageBookingValue($firstDay, $lastDay);
+        $lastABV = Payment::averageBookingValue($lastMonthFirstDay, $lastMonthLastDay);
 
         $calculateChange = fn($current, $previous) => $previous
             ? round((($current - $previous) / $previous) * 100, 2)
@@ -57,7 +80,12 @@ class Payment extends Model
             'revenue' => [
                 'value' => number_format((float)($currentMonth->totalRevenue ?? 0), 2, '.', ''),
                 'trend' => $calculateChange($currentMonth->totalRevenue ?? 0, $lastMonth->totalRevenue ?? 0)
+            ],
+            'avg_booking_value' => [
+                'value' => number_format((float)($currentABV ?? 0), 2, '.', ''),
+                'trend' => $calculateChange($currentABV ?? 0, $lastABV ?? 0)
             ]
         ];
     }
+
 }

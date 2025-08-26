@@ -12,6 +12,20 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 
 export function SectionCards({metric}) {
     const { formatCurrency } = useCurrencyFormatter();
+    const trends = [
+      {
+        value: "up",
+        label : "Trending up this month",
+        description : "Engagement exceed targets",
+        icon : TrendingUp
+      },
+      {
+        value: "down",
+        label : "Trending down this month",
+        description : "Acquisition needs attention",
+        icon : TrendingDown
+      }
+    ]
   return (
       <Card className="@container/card">
         <CardHeader>
@@ -30,6 +44,7 @@ export function SectionCards({metric}) {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              {console.log(metric.description, Boolean(metric.trend))}
               <div className="line-clamp-1 flex gap-2 font-medium">
                 Trending up this month <TrendingUp className="size-4" />
               </div>

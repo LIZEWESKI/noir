@@ -58,5 +58,4 @@ class Reservation extends Model
             ->latest()
             ->get();
     }
-
 }

@@ -13,9 +13,18 @@ class DashboardController extends Controller
 {
     public function index()
     {
+
+        $now = Carbon::now();
+        $firstDay = $now->copy()->startOfMonth();
+        $lastDay = $now->copy()->endOfMonth();
+        $lastMonthFirstDay = $now->copy()->subMonth()->startOfMonth();
+        $lastMonthLastDay = $now->copy()->subMonth()->endOfMonth();
+
         $paymentStats = Payment::monthlyStats();
         $roomsAvailable = Room::availableCount();
         $roomsTrend = Room::trendComparedToYesterday();
+
+
 
         $metrics = [
             (object)[
@@ -33,11 +42,11 @@ class DashboardController extends Controller
                 "type" => "currency"
             ],
             (object)[
-                "name" => "rooms",
-                "description" => "Rooms Available Today",
-                "value" => $roomsAvailable,
-                "trend" => $roomsTrend,
-                "type" => "number"
+                "name" => "avg_booking_value",
+                "description"  => "Average booking value",
+                "value" => $paymentStats['avg_booking_value']['value'],
+                "trend" => $paymentStats['avg_booking_value']['trend'],
+                "type" => "currency"
             ]
         ];
 
