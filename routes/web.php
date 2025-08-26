@@ -12,6 +12,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\RoomsManagementController;
 
 Route::get('/', function () {
     $rooms = Room::latest()->get();
@@ -64,7 +65,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     ->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
-    
+    Route::get("/rooms-management",[RoomsManagementController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';

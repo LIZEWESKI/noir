@@ -1,5 +1,5 @@
 import Header from '@/components/header/header';
-import { Footer } from '@/components/Footer';
+import { Footer } from '@/components/user-layout-footer';
 export default function Layout({ children }) {
     return (
         <div className='flex flex-col gap-4 h-screen w-full min-h-screen '>

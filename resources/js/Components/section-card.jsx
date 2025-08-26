@@ -8,24 +8,51 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 export function SectionCards({metric}) {
     const { formatCurrency } = useCurrencyFormatter();
-    const trends = [
-      {
-        value: "up",
-        label : "Trending up this month",
-        description : "Engagement exceed targets",
-        icon : TrendingUp
-      },
-      {
-        value: "down",
-        label : "Trending down this month",
-        description : "Acquisition needs attention",
-        icon : TrendingDown
+    function getTrendsData(trend) {
+      if (trend === null) {
+        return {
+          label: "No change",
+          description: "No data compared to last month",
+          icon: Minus,
+          color: "text-gray-500",
+          value: 0,
+        };
       }
-    ]
+
+      if (trend > 0) {
+        return {
+          label: `Trending up this month`,
+          description: trend > 20 
+            ? "Strong growth compared to last month" 
+            : "Slight improvement compared to last month",
+          icon: TrendingUp,
+          value: trend,
+        };
+      }
+
+      if (trend < 0) {
+        return {
+          label: `Trending down this month`,
+          description: trend < -20 
+            ? "Significant drop compared to last month" 
+            : "Slight decline compared to last month",
+          icon: TrendingDown,
+          value: trend,
+        };
+      }
+
+      return {
+        label: "0%",
+        description: "Performance is stable",
+        icon: Minus,
+        value: 0,
+      };
+    }
+    const trendsData = getTrendsData(metric.trend);
   return (
       <Card className="@container/card">
         <CardHeader>
@@ -37,20 +64,19 @@ export function SectionCards({metric}) {
           <CardAction>
             {metric.name !== "rooms" && (
               <Badge variant="outline">
-                {metric.trend >= 0 ? (<TrendingUp color="green"/>) : (<TrendingDown color="red"/>) }
+                {metric.trend >= 0 ? (<TrendingUp color="var(--success)"/>) : (<TrendingDown color="var(--danger)"/>) }
                 {metric.trend}%
               </Badge>
             )}
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-              {console.log(metric.description, Boolean(metric.trend))}
-              <div className="line-clamp-1 flex gap-2 font-medium">
-                Trending up this month <TrendingUp className="size-4" />
-              </div>
-              <div className="text-muted-foreground">
-                Engagement exceed targets
-              </div>
+          <div className={`line-clamp-1 flex gap-2 font-medium`}>
+            {trendsData.label} <trendsData.icon className="size-4" />
+          </div>
+          <div className="text-muted-foreground">
+            {trendsData.description}
+          </div>
         </CardFooter>
       </Card>
   )

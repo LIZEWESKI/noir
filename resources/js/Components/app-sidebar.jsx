@@ -13,8 +13,8 @@ const mainNavItems = [
         icon: LayoutGrid,
     },
     {
-        title: "Room Management",
-        href: "/admin/room-management",
+        title: "Rooms Management",
+        href: "/admin/rooms-management",
         icon: House,
     },
     {

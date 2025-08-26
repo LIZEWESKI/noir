@@ -191,9 +191,9 @@ const columns = [
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
         {row.original.status === "completed" ? (
-          <BadgeCheck color="green"/>
+          <BadgeCheck color="var(--success)"/>
         ) : row.original.status === "cancelled" ?(
-          <CircleX color="red"/>
+          <CircleX color="var(--danger)"/>
         ) : (
           <Loader />
         )}
