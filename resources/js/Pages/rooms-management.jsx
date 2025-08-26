@@ -4,12 +4,9 @@ import RoomCard from "@/components/rooms-management/room-card"
 import AppLayout from "@/layouts/app-layout"
 import { Head } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Search} from "lucide-react"
 
-
-
+import { Plus} from "lucide-react"
+import FilterSection from "@/components/rooms-management/filter-section"
 
 const roomTypes = ["Single", "Double", "Suite"]
 const roomStatuses = ["Available", "Booked", "Maintenance"]
@@ -22,7 +19,7 @@ const breadcrumbs= [
 ];
 
 export default function RoomManagement({rooms_management, features}) {
-    console.log(features);
+  
   const [rooms, setRooms] = useState(rooms_management)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -69,57 +66,31 @@ export default function RoomManagement({rooms_management, features}) {
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Room Management"/>
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-        <div className="flex flex-col sm:flex-row justify-end items-center sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-end items-end sm:items-end gap-4">
             <Button onClick={handleAddRoom}>
-            <Plus className="" />
+            <Plus className="h-4 w-4" />
                 Add Room
             </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-                type="text"
-                placeholder="Search rooms..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-            />
-            </div>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                {roomStatuses.map((status) => (
-                <SelectItem key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                </SelectItem>
-                ))}
-            </SelectContent>
-            </Select>
-
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                {roomTypes.map((type) => (
-                <SelectItem key={type} value={type}>
-                    {type}
-                </SelectItem>
-                ))}
-            </SelectContent>
-            </Select>
+          <FilterSection 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm} 
+            statusFilter={statusFilter} 
+            setStatusFilter={setStatusFilter}
+            typeFilter={typeFilter}
+            setTypeFilter={setTypeFilter}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRooms.map((room) => (
-            <RoomCard key={room.id} room={room} onEdit={handleEditRoom} onDelete={handleDeleteRoom} />
+            <RoomCard 
+              key={room.id} 
+              room={room} 
+              onEdit={handleEditRoom} 
+              onDelete={handleDeleteRoom} />
             ))}
         </div>
 
@@ -131,15 +102,13 @@ export default function RoomManagement({rooms_management, features}) {
 
         <RoomModal
             room={editingRoom}
-            roomTypes={roomTypes}
-            roomStatuses={roomStatuses}
             isOpen={isModalOpen}
+            features={features}
             onClose={() => {
             setIsModalOpen(false)
             setEditingRoom(null)
             }}
             onSave={handleSaveRoom}
-            features={features}
         />
         </div>
     </AppLayout>

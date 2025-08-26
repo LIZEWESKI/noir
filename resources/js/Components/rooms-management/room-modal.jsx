@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -6,30 +6,50 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, Upload, Check } from "lucide-react"
-
-const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, features }) => {
-    
-  const [formData, setFormData] = useState(
-    room || {
-      name: "",
-      room_number: "",
-      type: "Standard",
-      price: "",
-      status: "available",
-      image_path: "",
-      size: "",
-      guests: 1,
-      bathrooms: 1,
-      bed: "1 Queen Bed",
-      description: "",
-      features: [],
-    },
-  )
+import { roomStatuses, roomTypes } from './rooms-data';
+const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
+  const defaultRoom = {
+    name: "",
+    room_number: "",
+    type: "Standard",
+    price: "",
+    status: "available",
+    image_path: "",
+    size: "",
+    guests: 1,
+    bathrooms: 1,
+    bed: "1 Queen Bed",
+    description: "",
+    features: [],
+  }
+  const [formData, setFormData] = useState(room || defaultRoom)
   const bedTypes = ["1 Single Bed", "1 King Bed", "1 Queen Bed", "2 King Beds", "2 King Beds, 1 Single Bed","1 King Bed, 2 Single Beds","1 Queen Bed, 1 Sofa Bed","1 King Bed, 1 Sofa Bed"]
 
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(room?.image_path || "")
+
+  useEffect(() => {
+  if (room) {
+    setFormData(room);
+  } else {
+    setFormData(defaultRoom);
+  }
+}, [room, isOpen]);
   const handleSubmit = (e) => {
     e.preventDefault()
     onSave(formData)
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setSelectedFile(file)
+
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
+
+      setFormData({ ...formData, image_path: file.name })
+    }
   }
 
   const toggleFeature = (feature) => {
@@ -40,10 +60,12 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
         features: formData.features.filter((f) => f.id !== feature.id),
       })
     } else {
-      setFormData({
-        ...formData,
-        features: [...formData.features, feature],
-      })
+      if (formData.features.length < 3) {
+        setFormData({
+          ...formData,
+          features: [...formData.features, feature],
+        })
+      }
     }
   }
 
@@ -121,7 +143,7 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
                   <SelectContent>
                     {roomStatuses.map((status) => (
                       <SelectItem key={status} value={status}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                        {status}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -135,7 +157,7 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
                   type="text"
                   value={formData.size}
                   onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                  placeholder="e.g., 45 sqm"
+                  placeholder="e.g., 45 m²"
                   required
                 />
               </div>
@@ -182,20 +204,31 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
             </div>
 
             <div>
-              <Label htmlFor="image">Image</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="image"
-                  type="text"
-                  value={formData.image_path}
-                  onChange={(e) => setFormData({ ...formData, image_path: e.target.value })}
-                  placeholder="Image URL or path"
-                  className="flex-1"
-                />
-                <Button type="button" variant="outline" size="sm">
-                  <Upload className="h-4 w-4" />
-                </Button>
+              <Label htmlFor="image">Room Image</Label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Input id="image" type="file" accept="image/*" onChange={handleFileChange} className="flex-1" />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.getElementById("image").click()}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Browse
+                    </Button>
+                </div>
               </div>
+                {imagePreview && (
+                  <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+                    <img
+                      src={imagePreview}
+                      alt="Room preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                {selectedFile && <p className="text-sm text-muted-foreground">Selected: {selectedFile.name}</p>}
             </div>
 
             <div>
@@ -210,16 +243,21 @@ const RoomModal = ({ room,roomTypes,roomStatuses, isOpen, onClose, onSave, featu
             </div>
 
             <div>
-              <Label>Features</Label>
+              <Label>
+                Features
+                <span className="text-sm text-muted-foreground ml-2">({formData.features.length}/3 selected)</span>
+              </Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {features.map((feature) => {
                   const isSelected = formData.features.some((f) => f.id === feature.id)
+                  const isDisabled = !isSelected && formData.features.length >= 3
                   return (
                     <Button
                       key={feature.id}
                       type="button"
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
+                      disabled={isDisabled}
                       onClick={() => toggleFeature(feature)}
                       className="justify-start"
                     >

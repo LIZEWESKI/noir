@@ -3,15 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash2, Users, Bath, Bed, Maximize } from "lucide-react"
-const StatusBadge = ({ status }) => {
-  const statusVariants = {
-    Available: "default",
-    Booked: "secondary",
-    Maintenance: "destructive",
-  }
-
-  return <Badge variant={statusVariants[status]}>{status.charAt(0).toUpperCase() + status.slice(1)}</Badge>
-}
+import StatusBadge from './status-badge'
 const RoomCard = ({ room, onEdit, onDelete }) => (
   <Card className="overflow-hidden hover:shadow-lg transition-shadow pt-0 dark:border-primary/20">
     <div className="relative">
