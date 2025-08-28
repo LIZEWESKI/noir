@@ -35,17 +35,17 @@ const SearchForm = () => {
             <div className="md:col-span-6">
                 <DateRangePicker className="w-full" date={date} setDate={handleDateChange} />
                 <p className="text-[0.8rem] text-muted dark:text-muted-foreground mt-1 text-start">Check-in: 3pm - Check-out: 11am</p>
-                {errors.check_in && <p className="text-sm text-danger text-start font-extrabold">{errors.check_in}</p>}
-                {errors.check_out && <p className="text-sm text-danger text-start font-extrabold">{errors.check_out}</p>}
+                {errors.check_in && <p className="text-sm text-destructive text-start font-extrabold">{errors.check_in}</p>}
+                {errors.check_out && <p className="text-sm text-destructive text-start font-extrabold">{errors.check_out}</p>}
             </div>
             <div className="md:col-span-4">
                 <GuestSelector guests={data.guests} setGuests={setData} />
                 <p className="text-[0.8rem] text-muted dark:text-muted-foreground mt-1 text-start">Minimum Check-in Age: 18</p>
-                {errors.guests && <p className="text-sm text-danger text-start font-extrabold">{errors.guests}</p>}
+                {errors.guests && <p className="text-sm text-destructive text-start font-extrabold">{errors.guests}</p>}
             </div>
             <div className="md:col-span-2">
                 <div>
-                    <Button type="submit" className="w-full h-full min-h-[40px] border-[1px] border-success" disabled={processing}>
+                    <Button type="submit" className="w-full h-full min-h-[40px] border-[1px]" disabled={processing}>
                         <Search className="h-4 w-4 mr-2" />
                         Search
                     </Button>

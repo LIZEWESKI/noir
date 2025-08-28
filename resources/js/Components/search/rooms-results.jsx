@@ -7,7 +7,7 @@ const RoomsResults = ({rooms}) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {rooms.map((room) => (
-          <Card key={room.id} className="bg-background border-border text-primary overflow-hidden flex flex-col">
+          <Card key={room.id} className="bg-background border-border overflow-hidden flex flex-col">
             <div className="relative h-[300px]">
               <img
                 src={room.image_path_url || "/placeholder.svg"}
@@ -48,7 +48,7 @@ const RoomsResults = ({rooms}) => {
 
               <div className="mt-6">
                 <Button
-                  className="w-full bg-primary text-background disabled:bg-zinc-700 disabled:text-zinc-300"
+                  className="w-full bg-primary text-background/80 disabled:bg-zinc-700 disabled:text-zinc-300"
                   onClick={()=> router.visit(`/rooms/${room.id}`)}
                 >
                   Book Now

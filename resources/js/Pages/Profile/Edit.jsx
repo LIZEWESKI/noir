@@ -10,7 +10,7 @@ const Edit = ({children}) => {
     duration: 3000,
     position: "top-center",
     style: {
-      backgroundColor: "var(--success)",
+      backgroundColor: "hsl(var(--primary))",
       color: "#fff",
     }
   })
@@ -24,7 +24,7 @@ const Edit = ({children}) => {
     <Head title="Profile"/>
     <div className='space-y-6 py-4'>
       <div className='border-b pb-2'>
-        <h2 className="text-2xl font-extrabold tracking-tight ">
+        <h2 className="text-2xl font-extrabold   ">
           Profile
         </h2>
         <p className="leading-7 text-muted-foreground">

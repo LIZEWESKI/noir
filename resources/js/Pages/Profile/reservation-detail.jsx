@@ -100,7 +100,7 @@ export default function ReservationDetail({ reservation, payment = null }) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Reservation Details</h1>
+        <h1 className="text-2xl font-bold  ">Reservation Details</h1>
         <p className="text-muted-foreground">
           Booking #{reservation.id} • Made on {format(new Date(reservation.created_at), "MMMM dd, yyyy")}
         </p>

@@ -20,7 +20,7 @@ const ForgotPAssword = () => {
           duration: 3000,
           position: "top-center",
           style: {
-            backgroundColor: "var(--success)",
+            backgroundColor: "var(--primary)",
             color: "#fff",
           }
         })
@@ -55,7 +55,7 @@ const ForgotPAssword = () => {
                         placeholder="Enter your email address" 
                         required 
                     />
-                    {errors.email && <p className="text-sm text-danger font-medium ">{errors.email}</p>}
+                    {errors.email && <p className="text-sm text-destructive font-medium ">{errors.email}</p>}
                     </div>
                     <Button type="submit" className="w-full" disabled={processing}>
                         Send Reset Link

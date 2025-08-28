@@ -19,8 +19,8 @@ const Summary = () => {
     const nights = checkIn && checkOut ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)) : 0
   return (
     <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-4">Search Results</h1>
-        <Card className="bg-background border-border text-primary">
+        <h1 className="text-3xl font-bold mb-4">Search Results</h1>
+        <Card className="bg-background border-border">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -51,7 +51,7 @@ const Summary = () => {
                 </div>
               </div>
               {nights > 0 && (
-                <Badge variant="outline" className="ml-auto border-border text-primary">
+                <Badge variant="outline" className="ml-auto border-border text-primary bg-primary/20">
                   {nights} {nights === 1 ? "night" : "nights"}
                 </Badge>
               )}

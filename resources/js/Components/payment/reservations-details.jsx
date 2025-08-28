@@ -17,7 +17,7 @@ const ReservationsDetails = ({ reservations }) => {
 
   return (
     <>
-      <Card className="overflow-hidden border border-border/60">
+      <Card className="overflow-hidden border">
         <CardHeader className="bg-primary/5 pb-4">
           <CardTitle>Your Reservation</CardTitle>
         </CardHeader>
@@ -101,7 +101,7 @@ const ReservationsDetails = ({ reservations }) => {
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden border border-border/60">
+      <Card className="overflow-hidden border">
         <CardHeader className="pb-3">
           <CardTitle>Important Information</CardTitle>
         </CardHeader>

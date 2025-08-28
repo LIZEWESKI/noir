@@ -18,7 +18,7 @@ const TermsOfService = () => {
               Back to Home
             </Button>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Terms of Service</h1>
+          <h1 className="text-3xl md:text-4xl font-bold  ">Terms of Service</h1>
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground">Last updated: {lastUpdated}</p>
             <Button variant="outline" size="sm" onClick={() => window.print()}>

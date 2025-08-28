@@ -41,7 +41,7 @@ const ReservationCard = ({reservation}) => {
                 </div>
                 <AlertDialog>
                     <AlertDialogTrigger>
-                        <Trash2 className="h-5 w-5 text-danger" />
+                        <Trash2 className="h-5 w-5 text-destructive" />
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
@@ -54,7 +54,7 @@ const ReservationCard = ({reservation}) => {
                         <AlertDialogFooter>
                         <AlertDialogCancel>Close</AlertDialogCancel>
                         <AlertDialogAction 
-                        className="bg-danger text-white transition-colors duration-300 hover:text-danger hover:bg-white" 
+                        className="bg-danger text-white transition-colors duration-300 hover:text-destructive hover:bg-white" 
                         onClick={() => router.put(`/reservations/${reservation.id}/cancel`)}
                         >Confirm Cancellation</AlertDialogAction>
                         </AlertDialogFooter>

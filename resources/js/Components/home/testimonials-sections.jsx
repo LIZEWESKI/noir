@@ -32,7 +32,7 @@ export default function TestimonialsSection() {
       <div className="container px-4 md:px-6">
         {/* Section Header */}
         <div className="text-center space-y-4 mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold   bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400">
             What Our Guests Say
           </h2>
           <p className="text-xl text-muted-foreground max-w-[700px] mx-auto">Real experiences from our valued guests</p>

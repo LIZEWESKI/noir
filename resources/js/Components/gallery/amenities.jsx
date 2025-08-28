@@ -11,7 +11,7 @@ const Amenities = ({amenities}) => {
   return (
     <>
         <div className="max-w-[85rem] mx-auto space-y-2 mb-8 sm:mb-12">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight font-roboto">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold   font-outfit">
                 Our Amenities
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl">

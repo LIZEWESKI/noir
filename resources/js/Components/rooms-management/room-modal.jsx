@@ -34,6 +34,10 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
   } else {
     setFormData(defaultRoom);
   }
+  if(!isOpen) {
+    setSelectedFile(null)
+    setImagePreview(null)
+  }
 }, [room, isOpen]);
   const handleSubmit = (e) => {
     e.preventDefault()

@@ -98,7 +98,7 @@ export default function AccommodationsSection({rooms}) {
     <section className="py-6 md:py-12">
       <div className="container px-4 md:px-6">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-roboto">The Accommodations</h2>
+          <h2 className="text-3xl md:text-4xl font-bold   font-outfit">The Accommodations</h2>
           <Link href="/rooms">
             <Button variant="outline" className="hidden md:flex">
               Discover All Suites

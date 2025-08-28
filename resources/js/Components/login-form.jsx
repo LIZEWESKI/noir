@@ -48,7 +48,7 @@ export function LoginForm({className,...props}) {
                 </Button>
               </div>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                <span className="relative z-10 bg-card px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
@@ -63,7 +63,7 @@ export function LoginForm({className,...props}) {
                     placeholder="noir@example.com"
                     required
                   />
-                  {errors.email && <p className="text-sm text-danger font-medium ">{errors.email}</p>}
+                  {errors.email && <p className="text-sm text-destructive font-medium ">{errors.email}</p>}
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
@@ -82,9 +82,9 @@ export function LoginForm({className,...props}) {
                   placeholder="Password"
                   onChange={e => setData('password', e.target.value)}
                   required />
-                  {errors.password && <p className="text-sm text-danger font-medium">{errors.password}</p>}
+                  {errors.password && <p className="text-sm text-destructive font-medium">{errors.password}</p>}
                 </div>
-                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
+                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] " disabled={processing}>
                   Login
                 </Button>
               </div>

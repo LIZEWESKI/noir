@@ -5,7 +5,7 @@ import RoomsResults from "@/components/search/rooms-results"
 
 const Search = ({ rooms }) => {
   return (
-    <div className="container mx-auto py-8 px-4 md:px-6 bg-background text-primary min-h-screen">
+    <div className="container mx-auto py-8 px-4 md:px-6 bg-background min-h-screen">
       <Summary/>
       <div className="mb-6">
         <p className="text-muted-foreground text-lg">

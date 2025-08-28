@@ -21,7 +21,7 @@ const MobileNav = ({user, url, navigation, className, legalNavigation}) => {
 
   return (
     <div className={`justify-between items-center ${className}`}>
-        <Drawer open={open} onOpenChange={setOpen}>
+      <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger>
         <Menu />
       </DrawerTrigger>
@@ -45,7 +45,7 @@ const MobileNav = ({user, url, navigation, className, legalNavigation}) => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="legal" className="border-0">
               <AccordionTrigger className={`p-0 ${isLegalActive ? "text-muted-foreground" : ""}`}>
-                <span className="text-lg font-semibold leading-none tracking-tight">Legal</span>
+                <span className="text-lg font-semibold leading-none  ">Legal</span>
               </AccordionTrigger>
               <AccordionContent className="pt-2 pb-0">
                 <div className="flex flex-col space-y-2 pl-4">
@@ -71,11 +71,11 @@ const MobileNav = ({user, url, navigation, className, legalNavigation}) => {
       </DrawerContent>
     </Drawer>
         <Link href="/" className="flex items-center space-x-2 transition-colors hover:opacity-90">
-            <AppLogo />
-            <span className="font-bold text-xl">
-              Noir<span className="text-primary">.</span>
-            </span>
-          </Link>
+          <AppLogo />
+          <span className="font-bold text-xl font-outfit tracking-wide">
+            Noir<span className="text-primary ">.</span>
+          </span>
+        </Link>
         <div className='space-x-2 flex items-center'>
           {user ? <UserDropdown user={user}/>: <GuestDropdown/>}
         </div>

@@ -11,7 +11,7 @@ const NoReservations = () => {
                 <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-muted">
                     <ShoppingCart className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight">You don't have any reservations.</h1>
+                <h1 className="text-3xl font-bold  ">You don't have any reservations.</h1>
                 <p className="text-muted-foreground max-w-md mx-auto">
                 You haven't added any rooms to your reservations yet. Browse our selection of rooms and find your perfect stay.
                 </p>

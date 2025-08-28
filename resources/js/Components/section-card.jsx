@@ -56,19 +56,23 @@ export function SectionCards({metric}) {
   return (
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>{metric.description}</CardDescription>
+          <div className="flex justify-between">
+            <CardDescription>{metric.description}</CardDescription>
+            <CardAction>
+              {metric.name !== "rooms" && (
+                <Badge variant="outline">
+                  {metric.trend >= 0 ? 
+                  (<TrendingUp color="hsl(var(--success))"/>) : 
+                  (<TrendingDown color="hsl(var(--destructive))"/>) }
+                   {metric.trend}%
+                </Badge>
+              )}
+            </CardAction>
+          </div>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {metric.type === "currency" ? `${formatCurrency(metric.value,"USD","en-US")}` :  metric.value}
           
           </CardTitle>
-          <CardAction>
-            {metric.name !== "rooms" && (
-              <Badge variant="outline">
-                {metric.trend >= 0 ? (<TrendingUp color="var(--success)"/>) : (<TrendingDown color="var(--danger)"/>) }
-                {metric.trend}%
-              </Badge>
-            )}
-          </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className={`line-clamp-1 flex gap-2 font-medium`}>

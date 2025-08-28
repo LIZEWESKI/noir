@@ -76,7 +76,7 @@ export function ChartAreaInteractive({chartData}) {
           </span>
           <span className="@[540px]/card:hidden">Last 3 months</span>
         </CardDescription>
-        <CardAction>
+        <CardAction className="self-end">
           <ToggleGroup
             type="single"
             value={timeRange}

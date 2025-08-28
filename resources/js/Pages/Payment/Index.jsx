@@ -17,7 +17,7 @@ const Index = ({ reservations }) => {
         duration: 9000,
         position: "top-center",
         style: {
-          backgroundColor: "var(--danger)",
+          backgroundColor: "hsl(var(--destructive))",
           color: "#fff",
         },
       })
@@ -28,7 +28,7 @@ const Index = ({ reservations }) => {
         duration: 9000,
         position: "top-center",
         style: {
-          backgroundColor: "var(--success)",
+          backgroundColor: "hsl(var(--primary))",
           color: "#fff",
         },
       })
@@ -42,7 +42,7 @@ const Index = ({ reservations }) => {
         ) : (
           <>
             <div className="mb-8 md:mb-10">
-              <h1 className="text-3xl md:text-4xl font-bold font-roboto tracking-tight">Complete Your Booking</h1>
+              <h1 className="text-3xl md:text-4xl font-bold font-outfit  ">Complete Your Booking</h1>
               <p className="text-muted-foreground mt-2 md:text-lg">You're just one step away from your perfect stay</p>
             </div>
 
@@ -116,7 +116,7 @@ const PriceSummary = ({ reservations }) => {
 
 const SecurityNotice = () => {
   return (
-    <div className="bg-muted/50 rounded-lg p-4 border border-border/50">
+    <div className="bg-muted/50 rounded-lg p-4 border ">
       <div className="flex items-start gap-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"

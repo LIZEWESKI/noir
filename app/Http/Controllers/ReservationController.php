@@ -58,7 +58,7 @@ class ReservationController extends Controller
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
         // Check for overlapping reservations
-        $overlap = Reservation::where('room_id', $request->room_id)->where('status','active')
+        $overlap = Reservation::where('room_id', $request->room_id)->where('status','completed')
         ->where(function ($query) use ($request) {
             $query->whereBetween('check_in', [$request->check_in, $request->check_out])
                 ->orWhereBetween('check_out', [$request->check_in, $request->check_out])

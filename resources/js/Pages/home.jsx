@@ -16,7 +16,7 @@ const Home = ({ auth, rooms, bg_hero}) => {
           duration: 3000,
           position: "top-center",
           style: {
-            backgroundColor: "var(--danger)",
+            backgroundColor: "hsl(var(--destructive))",
             color: "#fff",
           }
         })

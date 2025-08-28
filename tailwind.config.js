@@ -29,6 +29,20 @@ export default {
     				'Geist',
     				'serif'
     			],
+    			paytone: [
+    				'Paytone One',
+    				'Karla',
+    				'Instrument Sans',
+    				'Geist',
+    				'serif'
+    			],
+    			outfit: [
+    				'Outfit',
+    				'Karla',
+    				'Instrument Sans',
+    				'Geist',
+    				'serif'
+    			],
     			sans: [
     				'Figtree',
                     ...defaultTheme.fontFamily.sans
@@ -40,8 +54,8 @@ export default {
     			sm: 'calc(var(--radius) - 4px)'
     		},
     		colors: {
-    			success: 'var(--success)',
-    			danger: 'var(--danger)',
+    			success: 'hsl(var(--success))',
+    			danger: 'hsl(var( --destructive))',
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
     			card: {

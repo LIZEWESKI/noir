@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { format } from "date-fns"
 import { Link, router } from '@inertiajs/react'
 const OrderSummary = ({reservations}) => {
-    const [isLoading, setIsLoading] = useState(false)
     const [totalAmount, setTotalAmount] = useState(0)
     // Calculate total amount
     useEffect(() => {
@@ -21,11 +20,7 @@ const OrderSummary = ({reservations}) => {
   
     // Handle checkout
     const handleCheckout = () => {
-      setIsLoading(true)
-      setTimeout(() => {
-        setIsLoading(false)
         router.visit('/payment')
-      }, 1500)
     }
   return (
     <div className="w-full md:w-1/3">
@@ -70,15 +65,9 @@ const OrderSummary = ({reservations}) => {
                     </AlertDescription>
                 </Alert>
 
-                <Button size="lg" className="w-full" onClick={handleCheckout} disabled={isLoading}>
-                {isLoading ? (
-                    "Processing..."
-                ) : (
-                    <>
+                <Button size="lg" className="w-full" onClick={handleCheckout}>
                     <CreditCard className="mr-2 h-4 w-4" />
                     Proceed to Payment
-                    </>
-                )}
                 </Button>
 
                 <div className="text-center">

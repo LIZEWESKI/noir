@@ -15,13 +15,13 @@ const NotFound = () => {
         </div>
 
         {/* Error code with elegant styling */}
-        <h1 className="text-8xl font-light tracking-tighter">
+        <h1 className="text-8xl font-light  er">
           4<span className="text-primary">0</span>4
         </h1>
 
         {/* Message */}
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold tracking-tight">Page Not Found</h2>
+          <h2 className="text-2xl font-semibold  ">Page Not Found</h2>
           <p className="text-muted-foreground">
             It seems you've ventured off the map. The page you're looking for has been moved or doesn't exist.
           </p>

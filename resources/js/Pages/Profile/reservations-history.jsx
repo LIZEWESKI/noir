@@ -72,7 +72,7 @@ const  ReservationsHistory = ({ reservations, payments}) => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Reservations & Payments</h1>
+        <h1 className="text-2xl font-bold  ">Reservations & Payments</h1>
         <p className="text-muted-foreground">View and manage your booking history and payment information.</p>
       </div>
 

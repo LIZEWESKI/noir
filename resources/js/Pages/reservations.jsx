@@ -15,7 +15,7 @@ const Index = ({reservations}) => {
       duration: 3000,
       position: "top-center",
       style: {
-        backgroundColor: "var(--success)",
+        backgroundColor: "var(--primary)",
         color: "#fff",
       }
     })

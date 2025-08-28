@@ -12,7 +12,7 @@ const Login = () => {
       duration: 5000,
       position: "top-center",
       style: {
-        backgroundColor: "var(--success)",
+        backgroundColor: "hsl(var(--primary))",
         color: "#fff",
       },
     })
@@ -23,7 +23,7 @@ const Login = () => {
       duration: 9000,
       position: "top-center",
       style: {
-        backgroundColor: "var(--danger)",
+        backgroundColor: "hsl(var(--destructive))",
         color: "#fff",
       },
     })

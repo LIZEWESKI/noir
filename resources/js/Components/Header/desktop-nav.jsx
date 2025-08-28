@@ -13,7 +13,7 @@ const DesktopNav = ({user, url, navigation, className, legalNavigation}) => {
         <nav className='flex gap-3 items-center'>
           <Link href="/" className="flex items-center space-x-2 transition-colors hover:opacity-90">
             <AppLogo />
-            <span className="font-extrabold text-xl">
+            <span className="font-extrabold text-xl font-outfit tracking-wide">
               Noir<span className="text-primary">.</span>
             </span>
           </Link>

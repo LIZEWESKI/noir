@@ -9,7 +9,7 @@ const Reservations = ({reservations}) => {
             <div className="flex flex-col md:flex-row justify-between items-start gap-8">
                 <div className="w-full md:w-2/3 space-y-8">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold tracking-tight">Reservations</h1>
+                        <h1 className="text-3xl font-bold  ">Reservations</h1>
                         <Badge variant="outline" className="text-sm px-3 py-1">
                         {reservations.length} {reservations.length === 1 ? "Room" : "Rooms"}
                         </Badge>

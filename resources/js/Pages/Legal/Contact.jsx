@@ -108,7 +108,7 @@ const Contact = () => {
               Back to Legal Information
             </Button>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Contact Our Legal Team</h1>
+          <h1 className="text-3xl md:text-4xl font-bold  ">Contact Our Legal Team</h1>
           <p className="text-xl text-muted-foreground max-w-3xl">
             Have questions about our terms, privacy policy, or other legal matters? Our team is here to help.
           </p>

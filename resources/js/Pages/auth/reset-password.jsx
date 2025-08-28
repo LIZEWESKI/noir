@@ -32,14 +32,14 @@ const ResetPassword = ({email,token}) => {
       </CardHeader>
       <CardContent>
         {errors.token && (
-          <Alert  className="mb-6 text-danger border-danger">
+          <Alert  className="mb-6 text-destructive border-danger">
               <AlertCircle className="h-4 w-4 stroke-danger"/>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription >{errors.token}</AlertDescription>
           </Alert>
         )}
         {errors.email && (
-          <Alert  className="mb-6 text-danger border-danger">
+          <Alert  className="mb-6 text-destructive border-danger">
               <AlertCircle className="h-4 w-4 stroke-danger"/>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription >{errors.email}</AlertDescription>
@@ -61,7 +61,7 @@ const ResetPassword = ({email,token}) => {
             <p className="text-xs text-muted-foreground">
             Choose a new password. Make sure it’s secure and unique.
             </p>
-            {errors.password && <p className="text-sm text-danger font-medium">{errors.password}</p>}
+            {errors.password && <p className="text-sm text-destructive font-medium">{errors.password}</p>}
           </div>
 
           <div className="space-y-2">

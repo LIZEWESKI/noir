@@ -11,7 +11,7 @@ const Legal = () =>  {
       <div className="container px-4 md:px-6 max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16 space-y-4">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Legal Information</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold  ">Legal Information</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Important information about your rights and our policies at Noir Hotel
           </p>

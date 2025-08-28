@@ -31,7 +31,7 @@ const RoomCard = ({room, index}) => {
             </div>
 
             {/* Room Title */}
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{room.name}</h2>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-wide">{room.name}</h2>
 
             {/* Room Specs */}
             <div className={`grid grid-cols-2 md:grid-cols-4 gap-1 ${index % 2 === 1 ? "md:[&>*]:justify-end" : ""}`}>

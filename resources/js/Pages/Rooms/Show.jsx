@@ -14,7 +14,7 @@ const Show = ({room, related_rooms,unavailable_dates}) => {
       duration: 5000,
       position: "top-center",
       style: {
-        backgroundColor: "var(--danger)",
+        backgroundColor: "var(--destructive)",
         color: "#fff",
       }
     })
@@ -25,7 +25,7 @@ const Show = ({room, related_rooms,unavailable_dates}) => {
       duration: 9000,
       position: "top-center",
       style: {
-        backgroundColor: "var(--danger)",
+        backgroundColor: "hsl(var(--destructive))",
         color: "#fff",
       }
     })

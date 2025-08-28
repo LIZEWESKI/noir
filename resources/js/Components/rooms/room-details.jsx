@@ -47,7 +47,7 @@ const RoomDetails = ({room}) => {
                 </Badge>
               ))}
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{room.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold   mb-4">{room.name}</h1>
             <div className="flex flex-wrap gap-6 text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Maximize2 className="h-5 w-5" />

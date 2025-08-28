@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
               Back to Home
             </Button>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Privacy Policy</h1>
+          <h1 className="text-3xl md:text-4xl font-bold  ">Privacy Policy</h1>
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground">Last updated: {lastUpdated}</p>
             <Button variant="outline" size="sm" onClick={() => window.print()}>
