@@ -37,7 +37,6 @@ import {
 import { z } from "zod"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
@@ -47,6 +46,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -304,9 +308,16 @@ const columns = [
           </span>
         ))}
         {row.original.features.length > 2 && (
-          <span className="inline-flex items-center rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-            +{row.original.features.length - 2}
-          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground cursor-default">
+                +{row.original.features.length - 2}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              {row.original.features[row.original.features.length - 1].name}
+            </TooltipContent>
+          </Tooltip>
         )}
       </div>
     ),

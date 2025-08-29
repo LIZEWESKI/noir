@@ -6,43 +6,69 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X, Upload, Check } from "lucide-react"
-import { roomStatuses, roomTypes } from './rooms-data';
-const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
+import { roomStatuses, roomTypes, bedTypes } from './rooms-data';
+import { useForm } from "@inertiajs/react"
+const RoomModal = ({ room, isOpen, onClose, features }) => {
+
   const defaultRoom = {
-    name: "",
-    room_number: "",
-    type: "Standard",
-    price: "",
-    status: "available",
+    name: "Rick's Single Room",
+    room_number: "404",
+    type: "Single",
+    price: "149.32",
+    status: "Available",
     image_path: "",
-    size: "",
+    size: "80 m²",
     guests: 1,
     bathrooms: 1,
-    bed: "1 Queen Bed",
-    description: "",
+    bed: "1 King Bed",
+    description: "This is Rick's Single Room, This is room isn't a casual one! cause this room is where the Science HAPPEND",
     features: [],
   }
-  const [formData, setFormData] = useState(room || defaultRoom)
-  const bedTypes = ["1 Single Bed", "1 King Bed", "1 Queen Bed", "2 King Beds", "2 King Beds, 1 Single Bed","1 King Bed, 2 Single Beds","1 Queen Bed, 1 Sofa Bed","1 King Bed, 1 Sofa Bed"]
+  const { data, setData, post,put, processing, errors } = useForm(defaultRoom)
+  function handleSubmit(e) {
+      e.preventDefault();
+
+      if (!data.image_path || data.image_path === "") {
+        delete data.image_path;
+      }
+
+      if(data.id) {
+        console.log("clicked")
+        console.log(data)
+        put(route('admin.rooms_management.update',data.id), data)
+        onClose();
+      }else {
+        console.log("or I clicked here")
+        post(route('admin.rooms_management.store'),{
+          onSuccess: () => {
+            onClose()
+          }}
+        )
+      }
+  }
 
   const [selectedFile, setSelectedFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(room?.image_path || "")
 
   useEffect(() => {
-  if (room) {
-    setFormData(room);
-  } else {
-    setFormData(defaultRoom);
-  }
-  if(!isOpen) {
-    setSelectedFile(null)
-    setImagePreview(null)
-  }
-}, [room, isOpen]);
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    onSave(formData)
-  }
+    if (!isOpen) {
+      setData(defaultRoom);
+      setSelectedFile(null);
+      setImagePreview(null);
+      return;
+    }
+    if (room && isOpen) {
+      const editedFeature = room.features.map(f => f.name)
+      setData({
+        ...defaultRoom,
+        ...room,
+        features: editedFeature,
+        image_path: null,
+      })
+    } else {
+      setData(defaultRoom);
+    }
+  }, [room, isOpen]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
@@ -52,22 +78,22 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
       const previewUrl = URL.createObjectURL(file)
       setImagePreview(previewUrl)
 
-      setFormData({ ...formData, image_path: file.name })
+      setData({ ...data, image_path: file })
     }
   }
 
   const toggleFeature = (feature) => {
-    const isSelected = formData.features.some((f) => f.id === feature.id)
+    const isSelected = data.features.some((f) => f === feature)
     if (isSelected) {
-      setFormData({
-        ...formData,
-        features: formData.features.filter((f) => f.id !== feature.id),
+      setData({
+        ...data,
+        features: data.features.filter((f) => f !== feature),
       })
     } else {
-      if (formData.features.length < 3) {
-        setFormData({
-          ...formData,
-          features: [...formData.features, feature],
+      if (data.features.length < 3) {
+        setData({
+          ...data,
+          features: [...data.features, feature],
         })
       }
     }
@@ -86,17 +112,18 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="name">Room Name</Label>
                 <Input
                   id="name"
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={data.name}
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
                   required
                 />
+                {errors.name && <p className="text-sm text-destructive font-medium">{errors.name}</p>}
               </div>
 
               <div>
@@ -104,15 +131,16 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                 <Input
                   id="room_number"
                   type="text"
-                  value={formData.room_number}
-                  onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
+                  value={data.room_number}
+                  onChange={(e) => setData({ ...data, room_number: e.target.value })}
                   required
                 />
+                {errors.room_number && <p className="text-sm text-destructive font-medium">{errors.room_number}</p>}
               </div>
 
               <div>
                 <Label htmlFor="type">Type</Label>
-                <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+                <Select value={data.type} onValueChange={(value) => setData({ ...data, type: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -124,6 +152,7 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.type && <p className="text-sm text-destructive font-medium">{errors.type}</p>}
               </div>
 
               <div>
@@ -132,15 +161,16 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                   id="price"
                   type="number"
                   step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: Number.parseFloat(e.target.value) })}
+                  value={data.price}
+                  onChange={(e) => setData({ ...data, price: Number.parseFloat(e.target.value) })}
                   required
                 />
+                {errors.price && <p className="text-sm text-destructive font-medium">{errors.price}</p>}
               </div>
 
               <div>
                 <Label htmlFor="status">Status</Label>
-                <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                <Select value={data.status} onValueChange={(value) => setData({ ...data, status: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -152,6 +182,7 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.status && <p className="text-sm text-destructive font-medium">{errors.status}</p>}
               </div>
 
               <div>
@@ -159,11 +190,12 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                 <Input
                   id="size"
                   type="text"
-                  value={formData.size}
-                  onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                  value={data.size}
+                  onChange={(e) => setData({ ...data, size: e.target.value })}
                   placeholder="e.g., 45 m²"
                   required
                 />
+                {errors.size && <p className="text-sm text-destructive font-medium">{errors.size}</p>}
               </div>
 
               <div>
@@ -172,10 +204,11 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                   id="guests"
                   type="number"
                   min="1"
-                  value={formData.guests}
-                  onChange={(e) => setFormData({ ...formData, guests: Number.parseInt(e.target.value) })}
+                  value={data.guests}
+                  onChange={(e) => setData({ ...data, guests: Number.parseInt(e.target.value) })}
                   required
                 />
+                {errors.guests && <p className="text-sm text-destructive font-medium">{errors.guests}</p>}
               </div>
 
               <div>
@@ -184,15 +217,16 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                   id="bathrooms"
                   type="number"
                   min="1"
-                  value={formData.bathrooms}
-                  onChange={(e) => setFormData({ ...formData, bathrooms: Number.parseInt(e.target.value) })}
+                  value={data.bathrooms}
+                  onChange={(e) => setData({ ...data, bathrooms: Number.parseInt(e.target.value) })}
                   required
                 />
+                {errors.bathrooms && <p className="text-sm text-destructive font-medium">{errors.bathrooms}</p>}
               </div>
 
               <div>
                 <Label htmlFor="bed">Bed Type</Label>
-                <Select value={formData.bed} onValueChange={(value) => setFormData({ ...formData, bed: value })}>
+                <Select value={data.bed} onValueChange={(value) => setData({ ...data, bed: value })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -204,6 +238,7 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.bed && <p className="text-sm text-destructive font-medium">{errors.bed}</p>}
               </div>
             </div>
 
@@ -222,6 +257,7 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                       Browse
                     </Button>
                 </div>
+                {errors.image_path && <p className="text-sm text-destructive font-medium">{errors.image_path}</p>}
               </div>
                 {imagePreview && (
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
@@ -239,25 +275,26 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                value={data.description}
+                onChange={(e) => setData({ ...data, description: e.target.value })}
                 rows={3}
                 required
               />
+              {errors.description && <p className="text-sm text-destructive font-medium">{errors.description}</p>}
             </div>
 
             <div>
               <Label>
                 Features
-                <span className="text-sm text-muted-foreground ml-2">({formData.features.length}/3 selected)</span>
+                <span className="text-sm text-muted-foreground ml-2">({data.features.length}/3 selected)</span>
               </Label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {features.map((feature) => {
-                  const isSelected = formData.features.some((f) => f.id === feature.id)
-                  const isDisabled = !isSelected && formData.features.length >= 3
+                  const isSelected = data.features.some((f) => f === feature)
+                  const isDisabled = !isSelected && data.features.length >= 3
                   return (
                     <Button
-                      key={feature.id}
+                      key={feature}
                       type="button"
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
@@ -266,18 +303,24 @@ const RoomModal = ({ room, isOpen, onClose, onSave, features }) => {
                       className="justify-start"
                     >
                       {isSelected && <Check className="h-3 w-3 mr-2" />}
-                      {feature.name}
+                      {feature}
                     </Button>
                   )
                 })}
               </div>
+              {errors.features && <p className="text-sm text-destructive font-medium">{errors.features}</p>}
             </div>
 
             <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">{room ? "Update Room" : "Create Room"}</Button>
+              <Button 
+              type="submit"
+              disabled={processing}
+              >
+                {room ? "Update Room" : "Create Room"}
+              </Button>
             </div>
           </form>
         </CardContent>

@@ -4,15 +4,12 @@ use App\Models\Room;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomController;
-use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\RoomsManagementController;
 
 Route::get('/', function () {
     $rooms = Room::latest()->get();
@@ -58,15 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
 });
 
-// Middleware Admin Resource
-Route::middleware(['auth', AdminMiddleware::class])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-    Route::get("/rooms-management",[RoomsManagementController::class, 'index']);
-});
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
 require __DIR__.'/api.php';

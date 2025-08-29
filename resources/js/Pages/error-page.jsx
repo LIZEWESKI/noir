@@ -19,6 +19,7 @@ const ErrorPage = ({ status }) =>  {
       <div>
         <h1>{title}</h1>
         <div>{description}</div>
+        <code>I'm lazy to style this page :D</code>
       </div>
     )
 }

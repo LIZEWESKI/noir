@@ -17,12 +17,13 @@ const DesktopNav = ({user, url, navigation, className, legalNavigation}) => {
               Noir<span className="text-primary">.</span>
             </span>
           </Link>
+        </nav>
           <nav className="flex gap-4 items-center">
           {navigation.map((item) =>
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary 
+              className={` font-medium transition-colors hover:text-primary 
                 ${url === item.href ? "text-foreground" : "text-muted-foreground"}`}
             >
               {item.name}
@@ -32,7 +33,7 @@ const DesktopNav = ({user, url, navigation, className, legalNavigation}) => {
             <DropdownMenu >
                 <DropdownMenuTrigger asChild>
                   <button
-                    className={`text-sm font-medium transition-colors hover:text-primary flex items-center gap-1
+                    className={`font-medium transition-colors hover:text-primary flex items-center gap-1
                     ${
                       url.startsWith("/legal") || url === "/terms-of-service" || url === "/privacy-policy" || url === "/about" || url === "/contact"
                         ? "text-foreground"
@@ -55,7 +56,6 @@ const DesktopNav = ({user, url, navigation, className, legalNavigation}) => {
             </DropdownMenu>
           
           </nav>
-        </nav>
         <div className='space-x-2 flex items-center'>
           {user ? <UserDropdown user={user}/>: <GuestDropdown/>}
         </div>

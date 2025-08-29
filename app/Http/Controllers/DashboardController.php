@@ -53,6 +53,6 @@ class DashboardController extends Controller
         $reservations = Reservation::latestReservations();
         $charts_data = Reservation::recentBookingsForChart();
 
-        return Inertia::render("dashboard", compact("metrics","reservations","charts_data"));
+        return Inertia::render("admin/dashboard", compact("metrics","reservations","charts_data"));
     }
 }

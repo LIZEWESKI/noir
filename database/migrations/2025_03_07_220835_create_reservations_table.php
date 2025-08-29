@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Room::class);
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Room::class)->constrained()->cascadeOnDelete();
             $table->date('check_in');
             $table->date('check_out');
             $table->integer('nights');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
             $table->index('check_in');
             $table->index('check_out');
+            $table->softDeletes();
         });
     }
 

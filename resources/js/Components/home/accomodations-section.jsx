@@ -109,61 +109,63 @@ export default function AccommodationsSection({rooms}) {
         <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {accomodationsRooms.map((room, index) => (
             <Card key={index} className="group relative overflow-hidden border-0 bg-background aspect-[4/5] md:aspect-[3/4]">
-              {/* Background Image with Overlay */}
-              <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                style={{ backgroundImage: `url(${room.image})` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 " />
-              </div>
-
-              <CardContent className="relative h-full p-6 flex flex-col justify-between text-white">
-                {/* Price Tag */}
-                <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full text-sm font-medium">
-                  FROM ${room.price}/Night
+              <Link href={`rooms/${room.id}`} prefetch>
+                {/* Background Image with Overlay */}
+                <div
+                  className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                  style={{ backgroundImage: `url(${room.image})` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 " />
                 </div>
 
-                {/* Content */}
-                <div className="space-y-4 mt-auto">
-                  <h3 className="text-2xl font-semibold">{room.title}</h3>
+                <CardContent className="relative h-full p-6 flex flex-col justify-between text-white">
+                  {/* Price Tag */}
+                  <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-sm px-4 py-1 rounded-full text-sm font-medium">
+                    FROM ${room.price}/Night
+                  </div>
 
-                  {/* Amenities */}
-                  <div className="flex gap-4 flex-wrap">
-                    {room.amentities.map((amenity, i) => (
-                      <div key={i} className="text-white/80 hover:text-white transition-colors">
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger>{amenity.icon}</TooltipTrigger>
-                            <TooltipContent>
-                              <p>{amenity.name}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                  {/* Content */}
+                  <div className="space-y-4 mt-auto">
+                    <h3 className="text-2xl font-semibold">{room.title}</h3>
+
+                    {/* Amenities */}
+                    <div className="flex gap-4 flex-wrap">
+                      {room.amentities.map((amenity, i) => (
+                        <div key={i} className="text-white/80 hover:text-white transition-colors">
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger>{amenity.icon}</TooltipTrigger>
+                              <TooltipContent>
+                                <p>{amenity.name}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex items-center gap-4 text-sm text-white/80">
+                      <div className="flex items-center gap-1">
+                        <Bed className="h-4 w-4" />
+                        {room.bed}
                       </div>
-                    ))}
-                  </div>
-
-                  {/* Details */}
-                  <div className="flex items-center gap-4 text-sm text-white/80">
-                    <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
-                      {room.bed}
+                      <div className="flex items-center gap-1">
+                        <Users className="h-4 w-4" />
+                        {room.guests}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {room.guests}
-                    </div>
-                  </div>
 
-                  {/* CTA */}
-                  <Link href={`rooms/${room.id}`}>
-                    <Button variant="link" className="p-0 h-auto font-semibold group/btn text-white hover:text-white/90">
-                      {room.cta}
-                      <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
+                    {/* CTA */}
+                    <Link href={`rooms/${room.id}`}>
+                      <Button variant="link" className="p-0 h-auto font-semibold group/btn text-white hover:text-white/90">
+                        {room.cta}
+                        <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Link>
             </Card>
           ))}
         </div>

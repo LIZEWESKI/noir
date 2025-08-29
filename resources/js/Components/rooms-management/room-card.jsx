@@ -21,10 +21,10 @@ const RoomCard = ({ room, onEdit, onDelete }) => (
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
-            <Edit className="h-4 w-4" />
+            <Edit className="h-4 w-4 text-primary" />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onDelete(room.id)}>
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
       </div>

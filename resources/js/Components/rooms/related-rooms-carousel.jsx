@@ -28,27 +28,29 @@ export default function RelatedRoomsCarousel({ relatedRooms }) {
           {relatedRooms.map((relatedRoom) => (
             <CarouselItem key={relatedRoom.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
               <Card className="overflow-hidden group h-full">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img
-                    src={relatedRoom.image_path_url || "/placeholder.svg"}
-                    alt={relatedRoom.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-semibold">{relatedRoom.name}</h3>
-                    <span>${Number.parseFloat(relatedRoom.price).toFixed(2)}/night</span>
+                <Link href={`/rooms/${relatedRoom.id}`} prefetch>
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={relatedRoom.image_path_url || "/placeholder.svg"}
+                      alt={relatedRoom.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
                   </div>
-                  <div className="mt-4">
-                    <Link href={`/rooms/${relatedRoom.id}`}>
-                      <Button variant="link" className="p-0 h-auto font-semibold group/btn">
-                        Discover More
-                        <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold">{relatedRoom.name}</h3>
+                      <span>${Number.parseFloat(relatedRoom.price).toFixed(2)}/night</span>
+                    </div>
+                    <div className="mt-4">
+                      <Link href={`/rooms/${relatedRoom.id}`}>
+                        <Button variant="link" className="p-0 h-auto font-semibold group/btn">
+                          Discover More
+                          <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Link>
               </Card>
             </CarouselItem>
           ))}

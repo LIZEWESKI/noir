@@ -9,21 +9,18 @@ export default function TestimonialsSection() {
       avatar: "https://i.pravatar.cc/100?img=21",
       quote: "Absolutely loved our stay at Noir! The service was impeccable.",
       rating: 4,
-      role: "Business Traveler",
     },
     {
       name: "Michael B.",
       avatar: "https://i.pravatar.cc/100?img=52",
       quote: "Perfect location and smooth booking experience.",
       rating: 5,
-      role: "Family Vacation",
     },
     {
       name: "Sophie T.",
       avatar: "https://i.pravatar.cc/100?img=38",
       quote: "Best hotel I've stayed at! Everything was just perfect.",
       rating: 4,
-      role: "Leisure Stay",
     },
   ]
 
@@ -48,16 +45,16 @@ export default function TestimonialsSection() {
               <CardContent className="p-6">
                 
                 {/* Quote Icon */}
-                <Quote className="absolute top-6 right-6 h-12 w-12 text-muted-foreground/20" />
+                <Quote className="absolute top-6 right-6 h-12 w-12 text-muted-foreground/90" />
 
                 {/* Rating */}
                 <div className="flex gap-0.5 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-[#d2a70b] stroke-primary stroke-[0.7px] " />
+                    <Star key={i} className="h-5 w-5 fill-[#d2a70b] stroke-[#d2a70b] stroke-[0.7px] " />
                   ))}
                   {testimonial.rating < 5 && 
                     [...Array(5 - testimonial.rating)].map((_,i) => (
-                      <Star key={i} className="h-5 w-5 fill-transparent stroke-primary stroke-[0.7px] " />
+                      <Star key={i} className="h-5 w-5 fill-transparent stroke-[#d2a70b] stroke-[0.7px] " />
                     ))
                   }
                 </div>
@@ -78,7 +75,6 @@ export default function TestimonialsSection() {
                   </Avatar>
                   <div>
                     <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
                   </div>
                 </div>
               </CardContent>
