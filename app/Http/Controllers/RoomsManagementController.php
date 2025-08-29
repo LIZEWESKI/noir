@@ -15,17 +15,16 @@ class RoomsManagementController extends Controller
 {
     public function index() {
         $rooms_management = Room::latest()->with("features:name,id")->get();
-        $features_collection = Feature::get(['name']);
-        $features = $features_collection->map(function ($item) {
-            return (string) $item->name; 
-        })->toArray();
-        return Inertia::render('admin/rooms-management/index',compact('rooms_management','features'));
+        return Inertia::render('admin/rooms-management/index',compact('rooms_management'));
     }
 
     public function create()
     {
-
-        return Inertia::render('admin/rooms-management/create');
+        $features_collection = Feature::get(['name']);
+        $features = $features_collection->map(function ($item) {
+            return (string) $item->name; 
+        })->toArray();
+        return Inertia::render('admin/rooms-management/create',compact("features"));
     }
 
     public function store(StoreRoomRequest $request)

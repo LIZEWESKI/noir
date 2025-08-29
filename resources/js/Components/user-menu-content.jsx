@@ -2,7 +2,7 @@ import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSep
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { Link, router } from '@inertiajs/react';
-import { LogOut, Settings } from 'lucide-react';
+import { Home, LogOut, Settings } from 'lucide-react';
 import { ThemeToggle } from './header/theme-toggle';
 
 
@@ -27,6 +27,12 @@ export function UserMenuContent({ user }) {
                     <Link className="block w-full" href={route('profile.edit')} as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2" />
                         Settings
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link className="block w-full" href='/' as="button" prefetch onClick={cleanup}>
+                        <Home className="mr-2" />
+                        Home
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>

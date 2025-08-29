@@ -18,7 +18,7 @@ const breadcrumbs= [
     },
 ];
 
-export default function Index({rooms_management, features}) {
+export default function Index({rooms_management}) {
   const {flash} = usePage().props
   const [rooms, setRooms] = useState(rooms_management)
   const [searchTerm, setSearchTerm] = useState("")
@@ -128,7 +128,7 @@ export default function Index({rooms_management, features}) {
             </div>
           </>)}
 
-          <RoomModal
+          {/* <RoomModal
             room={editingRoom}
             isOpen={isModalOpen}
             features={features}
@@ -137,7 +137,7 @@ export default function Index({rooms_management, features}) {
               setEditingRoom(null)
               console.log("got here")
             }}
-          />
+          /> */}
         </div>
         <Toaster/>
     </AppLayout>
