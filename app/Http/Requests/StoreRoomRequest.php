@@ -35,7 +35,7 @@ class StoreRoomRequest extends FormRequest
             "bathrooms"   => ["required", "integer", "min:1"],
             "bed"         => ["required", "string", "max:100",Rule::in("1 Single Bed", "1 King Bed", "1 Queen Bed", "2 King Beds", "2 King Beds, 1 Single Bed","1 King Bed, 2 Single Beds","1 Queen Bed, 1 Sofa Bed","1 King Bed, 1 Sofa Bed")],
             "description" => ["required", "string"],
-            "features" => ["nullable"]
+            "features"    => ["required"]
         ];
     }
 }

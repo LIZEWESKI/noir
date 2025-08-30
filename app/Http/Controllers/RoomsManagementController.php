@@ -46,6 +46,16 @@ class RoomsManagementController extends Controller
         return redirect()->route('admin.rooms_management.index')->with('success', 'Room created successfully.');
     }
 
+    public function edit(Room $room)
+    {
+        $room->loadMissing('features:name,id');
+        $features_collection = Feature::get(['name']);
+        $features = $features_collection->map(function ($item) {
+            return (string) $item->name; 
+        })->toArray();
+        return Inertia::render('admin/rooms-management/edit',compact("room","features"));
+    }
+
     public function update(UpdateRoomRequest $request, Room $room)
     {
         $data = $request->validated();

@@ -104,7 +104,7 @@ export default function Index({rooms_management}) {
         <div>
         </div>
         {viewMode === "table" ? (
-        <RoomsDataTable data={rooms_management} onEdit={handleEditRoom} onDelete={handleDeleteRoom} />) : 
+        <RoomsDataTable data={rooms_management} onEdit={(handleEditRoom)} onDelete={handleDeleteRoom} />) : 
         (
           <>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -122,7 +122,7 @@ export default function Index({rooms_management}) {
                 <RoomCard 
                   key={room.id} 
                   room={room} 
-                  onEdit={handleEditRoom} 
+                  onEdit={() => router.visit(`/admin/rooms-management/edit/${room.id}`)} 
                   onDelete={handleDeleteRoom} />
                 ))}
             </div>

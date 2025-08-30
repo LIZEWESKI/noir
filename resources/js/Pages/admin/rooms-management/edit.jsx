@@ -15,36 +15,29 @@ const breadcrumbs= [
       href: '/admin/rooms-management',
     },
     {
-      title: 'Create Room',
-      href: '/admin/rooms-management/create',
+      title: 'Edit Room',
+      href: '/admin/rooms-management/edit',
     },
 ];
 
-export default function Create({features}) {
+export default function Edit({features, room}) {
 
-  const defaultRoom = {
-    name: "",
-    room_number: "",
-    type: "",
-    price: "",
-    status: "",
-    image_path: "",
-    size: "",
-    guests: 1,
-    bathrooms: 1,
-    bed: "",
-    description: "",
-    features: [],
-  }
-  const { data, setData, post, processing, errors } = useForm(defaultRoom)
-  const [imagePreview, setImagePreview] = useState(data.image_path || null)
+  const { data, setData, put, processing, errors } = useForm(room)
+  const [imagePreview, setImagePreview] = useState(data.image_path_url || null)
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("clicked?")
-    post(route('admin.rooms_management.store'))
+    put(route('admin.rooms_management.update',data.id),data)
   }
-  console.log(errors)
-  console.log(data)
+  useEffect(() => {
+    if (room) {
+      const editedFeature = room.features.map(f => f.name)
+      setData({
+        ...room,
+        features: editedFeature,
+      })
+    }
+  }, [room]);
   const toggleFeature = (feature) => {
     const isSelected = data.features.some((f) => f === feature)
     if (isSelected) {
@@ -69,7 +62,7 @@ export default function Create({features}) {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Create Room"/>
+      <Head title="Edit Room"/>
       <div className="min-h-screen ">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-8">
@@ -133,7 +126,7 @@ export default function Create({features}) {
 
                   <div className="mt-6">
                     <Label htmlFor="description" className="text-sm font-medium">
-                      Description <span className="text-destructive">*</span>
+                      Description
                     </Label>
                     <Textarea
                       id="description"
@@ -141,9 +134,8 @@ export default function Create({features}) {
                       onChange={(e) => setData({ ...data, description: e.target.value })}
                       placeholder="Describe the room amenities and unique features..."
                       rows={3}
-                      className={`mt-2 resize-none bg-background ${errors.room_number ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
+                      className="mt-2 resize-none focus-visible:ring-primary bg-background"
                     />
-                    {errors.description && <p className="text-xs text-destructive mt-2">{errors.description}</p>}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
@@ -189,7 +181,7 @@ export default function Create({features}) {
                       </Label>
                       <Select value={data.status} onValueChange={(value) => setData({ ...data, status: value })}>
                         <SelectTrigger className="h-11 focus:ring-primary">
-                          <SelectValue placeholder="Select room status"/>
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           {roomStatuses.map((status) => (
@@ -199,7 +191,6 @@ export default function Create({features}) {
                           ))}
                         </SelectContent>
                       </Select>
-                      {errors.status && <p className="text-xs text-destructive">{errors.status}</p>}
                     </div>
                   </div>
 
@@ -298,7 +289,6 @@ export default function Create({features}) {
                         )
                       })}
                     </div>
-                    {errors.features && <p className="text-xs text-destructive mt-2">{errors.features}</p>}
 
                     {data.features.length >= 3 && (
                       <p className="text-xs text-muted-foreground mt-3 p-2 bg-muted/50 rounded-md">
@@ -383,7 +373,7 @@ export default function Create({features}) {
                   type="submit"
                   disabled={processing}
                   >
-                    Create Room
+                    Edit Room
                   </Button>
                 </div>
               </div>
