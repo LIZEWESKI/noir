@@ -126,7 +126,7 @@ export default function AccommodationsSection({rooms}) {
 
                   {/* Content */}
                   <div className="space-y-4 mt-auto">
-                    <h3 className="text-2xl font-semibold">{room.title}</h3>
+                    <h3 className="text-2xl font-semibold truncate">{room.title}</h3>
 
                     {/* Amenities */}
                     <div className="flex gap-4 flex-wrap">

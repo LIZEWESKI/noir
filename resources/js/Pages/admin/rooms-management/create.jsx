@@ -247,6 +247,7 @@ export default function Create({features}) {
                         onChange={(e) => setData({ ...data, bathrooms: Number.parseInt(e.target.value) })}
                         placeholder="0"
                         min="1"
+                        max="5"
                         className={`h-11 ${errors.bathrooms ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
                       />
                       {errors.bathrooms && <p className="text-xs text-destructive">{errors.bathrooms}</p>}

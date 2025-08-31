@@ -3,8 +3,8 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/react';
-import { ScrollText, LayoutGrid,House,Calendar,Users, BadgeDollarSign } from 'lucide-react';
-import AppLogo from './app-logo';
+import { ScrollText, LayoutGrid, House, Calendar, Users, BadgeDollarSign } from 'lucide-react';
+import IconAppLogo from '@/components/icon-app-logo';
 
 const mainNavItems = [
     {
@@ -48,13 +48,9 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu className="flex justify-center items-start">
                     <SidebarMenuItem >
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/admin/dashboard" prefetch>
-                            <div className="flex aspect-square size-8 items-center justify-center rounded-md">
-                                <AppLogo />
-                            </div>
-                            </Link>
-                        </SidebarMenuButton>
+                        <Link href="/admin/dashboard" prefetch> 
+                            <IconAppLogo/>
+                        </Link>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>

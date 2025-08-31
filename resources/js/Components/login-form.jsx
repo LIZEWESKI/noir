@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import AppLogo from "@/components/app-logo"
+import IconAppLogo from "@/components/icon-app-logo"
 import { useForm, Link} from "@inertiajs/react"
 
 export function LoginForm({className,...props}) {
@@ -26,8 +26,7 @@ export function LoginForm({className,...props}) {
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl flex items-center gap-1 justify-center rounded-md">
-            <AppLogo/>
-            <h1 className='text-extrabold'>Noir.</h1>
+          <IconAppLogo/>
         </CardTitle>
           <CardDescription>
               Login with your Google account

@@ -32,7 +32,7 @@ class StoreRoomRequest extends FormRequest
             "image_path"  => ["required", File::types("jpg,png,webp"), "max:2048"],
             "size"        => ["required", "string",],
             "guests"      => ["required", "integer", "min:1","max:5"],
-            "bathrooms"   => ["required", "integer", "min:1"],
+            "bathrooms"   => ["required", "integer", "min:1","max:5"],
             "bed"         => ["required", "string", "max:100",Rule::in("1 Single Bed", "1 King Bed", "1 Queen Bed", "2 King Beds", "2 King Beds, 1 Single Bed","1 King Bed, 2 Single Beds","1 Queen Bed, 1 Sofa Bed","1 King Bed, 1 Sofa Bed")],
             "description" => ["required", "string"],
             "features"    => ["required"]

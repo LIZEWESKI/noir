@@ -24,8 +24,6 @@ export default function Index({rooms_management}) {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingRoom, setEditingRoom] = useState(null)
   const [viewMode, setViewMode] = useState("grid")
 
   const filteredRooms = rooms.filter((room) => {
@@ -36,6 +34,15 @@ export default function Index({rooms_management}) {
 
     return matchesSearch && matchesStatus && matchesType
   })
+
+    const DELETING_ALERT = {
+      title : "Delete Room",
+      description : "Are you sure you want to delete this room? This action cannot be undone and will permanently remove all related reservations and data.",
+      action(roomId) {
+        console.log("deleted id", roomId)
+        router.delete(`/admin/rooms-management/${roomId}`);
+      },
+    }
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 
@@ -47,20 +54,9 @@ export default function Index({rooms_management}) {
       }
     })
   }, [flash]);
-  const handleAddRoom = () => {
-    setEditingRoom(null)
-    setIsModalOpen(true)
-  }
 
   const handleEditRoom = (room) => {
-    setEditingRoom(room)
-    setIsModalOpen(true)
-  }
-
-  const handleDeleteRoom = (roomId) => {
-    if (confirm("Are you sure you want to delete this room?")) {
-      setRooms(rooms.filter((room) => room.id !== roomId))
-    }
+    router.visit(`/admin/rooms-management/edit/${room.id}`)
   }
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -104,7 +100,7 @@ export default function Index({rooms_management}) {
         <div>
         </div>
         {viewMode === "table" ? (
-        <RoomsDataTable data={rooms_management} onEdit={(handleEditRoom)} onDelete={handleDeleteRoom} />) : 
+        <RoomsDataTable data={rooms_management} onEdit={(handleEditRoom)} onDelete={DELETING_ALERT} />) : 
         (
           <>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -123,21 +119,10 @@ export default function Index({rooms_management}) {
                   key={room.id} 
                   room={room} 
                   onEdit={() => router.visit(`/admin/rooms-management/edit/${room.id}`)} 
-                  onDelete={handleDeleteRoom} />
+                  onDelete={DELETING_ALERT} />
                 ))}
             </div>
           </>)}
-
-          {/* <RoomModal
-            room={editingRoom}
-            isOpen={isModalOpen}
-            features={features}
-            onClose={() => {
-              setIsModalOpen(false)
-              setEditingRoom(null)
-              console.log("got here")
-            }}
-          /> */}
         </div>
         <Toaster/>
     </AppLayout>

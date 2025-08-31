@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash2, Users, Bath, Bed, Maximize } from "lucide-react"
 import StatusBadge from './status-badge'
+import DeleteAlertDialog from '../ui/delete-alert-dialog'
 const RoomCard = ({ room, onEdit, onDelete }) => (
   <Card className="overflow-hidden hover:shadow-lg transition-shadow pt-0 dark:border-primary/20">
     <div className="relative">
@@ -16,16 +17,20 @@ const RoomCard = ({ room, onEdit, onDelete }) => (
     <CardContent className="p-4">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h3 className="font-semibold text-foreground truncate ">{room.name}</h3>
+          <h3 className="font-semibold text-foreground truncate">{room.name}</h3>
           <p className="text-sm text-muted-foreground">Room {room.room_number}</p>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
             <Edit className="h-4 w-4 text-primary" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => onDelete(room.id)}>
-            <Trash2 className="h-4 w-4 text-destructive" />
-          </Button>
+          <DeleteAlertDialog 
+            title={onDelete.title}
+            description={onDelete.description}
+            action={() => onDelete.action(room.id)}
+          >
+            <Trash2 className="h-5 w-5 text-destructive" />
+          </DeleteAlertDialog>
         </div>
       </div>
 

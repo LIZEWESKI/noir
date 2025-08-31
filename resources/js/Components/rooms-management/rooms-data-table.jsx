@@ -56,6 +56,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import StatusBadge from "./status-badge"
+import DeleteAlertDialog from "../ui/delete-alert-dialog"
 
 export const schema = z.object({
   id: z.number(),
@@ -339,10 +340,18 @@ const columns = [
             Edit
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive" onClick={() => table.options.meta?.onDelete?.(row.original)}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
+          <DeleteAlertDialog 
+            title={table.options.meta.onDelete.title} 
+            description={table.options.meta.onDelete.description} 
+            action={() => table.options.meta.onDelete.action(row.original.id)}
+          >
+            <DropdownMenuItem 
+              className="text-destructive" 
+              // onClick={() => table.options.meta?.onDelete?.(row.original)}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DeleteAlertDialog>
         </DropdownMenuContent>
       </DropdownMenu>
     ),

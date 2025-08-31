@@ -1,23 +1,19 @@
 import React from 'react'
-import { Trash2, Calendar, Users, Bed } from "lucide-react"
+import {  Calendar, Users, Bed, Trash2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { format } from "date-fns"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
 import { router } from '@inertiajs/react'
+import DeleteAlertDialog from '../ui/delete-alert-dialog'
 
 const ReservationCard = ({reservation}) => {
-
+    const CANCELLATION_ALERT = {
+        title : "Are you sure you want to cancel this reservation?",
+        description : "This action cannot be undone. Your booking will be marked as canceled, and you may need to make a new reservation if you change your mind.",
+        action() {
+            router.put(`/reservations/${reservation.id}/cancel`)
+        },
+    }
   return (
     <Card className="overflow-hidden">
         <CardContent className="p-0">
@@ -33,33 +29,20 @@ const ReservationCard = ({reservation}) => {
 
             <div className="p-6 flex-1 flex flex-col">
                 <div className="flex justify-between">
-                <div>
-                    <h3 className="font-semibold text-lg">{reservation.room.name}</h3>
-                    <p className="text-muted-foreground text-sm">
-                    {reservation.room.bed} • {reservation.room.size}
-                    </p>
-                </div>
-                <AlertDialog>
-                    <AlertDialogTrigger>
+                    <div>
+                        <h3 className="font-semibold text-lg">{reservation.room.name}</h3>
+                        <p className="text-muted-foreground text-sm">
+                        {reservation.room.bed} • {reservation.room.size}
+                        </p>
+                    </div>
+                    <DeleteAlertDialog 
+                        title={CANCELLATION_ALERT.title}
+                        description={CANCELLATION_ALERT.description}
+                        action={() => CANCELLATION_ALERT.action()}
+                    >
                         <Trash2 className="h-5 w-5 text-destructive" />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure you want to cancel this reservation?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. Your booking will be marked as canceled, 
-                            and you may need to make a new reservation if you change your mind.
-                        </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>Close</AlertDialogCancel>
-                        <AlertDialogAction 
-                        className="bg-danger text-white transition-colors duration-300 hover:text-destructive hover:bg-white" 
-                        onClick={() => router.put(`/reservations/${reservation.id}/cancel`)}
-                        >Confirm Cancellation</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                    </DeleteAlertDialog>
+
                 </div>
 
                 <Separator className="my-4" />

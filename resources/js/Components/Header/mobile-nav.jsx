@@ -72,9 +72,6 @@ const MobileNav = ({user, url, navigation, className, legalNavigation}) => {
     </Drawer>
         <Link href="/" className="flex items-center space-x-2 transition-colors hover:opacity-90">
           <AppLogo />
-          <span className="font-bold text-xl font-outfit tracking-wide">
-            Noir<span className="text-primary ">.</span>
-          </span>
         </Link>
         <div className='space-x-2 flex items-center'>
           {user ? <UserDropdown user={user}/>: <GuestDropdown/>}

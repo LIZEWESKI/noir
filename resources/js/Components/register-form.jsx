@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import InputField from "@/components/ui/input-field"
-import AppLogo from "@/components/app-logo"
+import IconAppLogo from "@/components/icon-app-logo"
 import { useForm, Link } from '@inertiajs/react'
 export function RegisterForm({className,...props}) {
     const { data, setData, post, processing, errors } = useForm({
@@ -32,8 +32,7 @@ export function RegisterForm({className,...props}) {
       <Card>
         <CardHeader className="text-center">
         <CardTitle className="text-xl flex items-center justify-center gap-1 rounded-md">
-            <AppLogo />
-            <h1 className='text-extrabold'>Noir.</h1>
+            <IconAppLogo />
         </CardTitle>
           <CardDescription>
             Sign up with your Google account
