@@ -141,7 +141,7 @@ export default function Create({features}) {
                       onChange={(e) => setData({ ...data, description: e.target.value })}
                       placeholder="Describe the room amenities and unique features..."
                       rows={3}
-                      className={`mt-2 resize-none bg-background ${errors.room_number ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
+                      className={`mt-2 resize-none bg-background ${errors.description ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
                     />
                     {errors.description && <p className="text-xs text-destructive mt-2">{errors.description}</p>}
                   </div>

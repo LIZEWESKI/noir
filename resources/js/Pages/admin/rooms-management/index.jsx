@@ -25,6 +25,7 @@ export default function Index({rooms_management}) {
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
   const [viewMode, setViewMode] = useState("grid")
+  console.log(rooms_management)
 
   const filteredRooms = rooms.filter((room) => {
     const matchesSearch =
@@ -35,14 +36,20 @@ export default function Index({rooms_management}) {
     return matchesSearch && matchesStatus && matchesType
   })
 
-    const DELETING_ALERT = {
-      title : "Delete Room",
-      description : "Are you sure you want to delete this room? This action cannot be undone and will permanently remove all related reservations and data.",
-      action(roomId) {
-        console.log("deleted id", roomId)
-        router.delete(`/admin/rooms-management/${roomId}`);
-      },
-    }
+  const DELETING_ALERT = {
+    title : "Delete Room",
+    description : "Are you sure you want to delete this room? This action cannot be undone and will permanently remove all related reservations and data.",
+    action(roomId) {
+      router.delete(`/admin/rooms-management/${roomId}`, {
+        onSuccess: () => {
+          // Filtering rooms for optimistic UI (since you have to refresh in order to render the updated data)
+          // const filtered_rooms = rooms.filter(r => r.id !== roomId)
+          setRooms(prev => prev.filter(r => r.id !== roomId));
+        }
+      });
+    },
+  }
+
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 
@@ -58,6 +65,7 @@ export default function Index({rooms_management}) {
   const handleEditRoom = (room) => {
     router.visit(`/admin/rooms-management/edit/${room.id}`)
   }
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Room Management"/>
@@ -100,7 +108,7 @@ export default function Index({rooms_management}) {
         <div>
         </div>
         {viewMode === "table" ? (
-        <RoomsDataTable data={rooms_management} onEdit={(handleEditRoom)} onDelete={DELETING_ALERT} />) : 
+        <RoomsDataTable key={rooms.length} data={rooms} onEdit={(handleEditRoom)} onDelete={DELETING_ALERT} />) : 
         (
           <>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -119,7 +127,8 @@ export default function Index({rooms_management}) {
                   key={room.id} 
                   room={room} 
                   onEdit={() => router.visit(`/admin/rooms-management/edit/${room.id}`)} 
-                  onDelete={DELETING_ALERT} />
+                  onDelete={DELETING_ALERT} 
+                />
                 ))}
             </div>
           </>)}

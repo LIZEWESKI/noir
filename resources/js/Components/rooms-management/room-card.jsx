@@ -29,7 +29,9 @@ const RoomCard = ({ room, onEdit, onDelete }) => (
             description={onDelete.description}
             action={() => onDelete.action(room.id)}
           >
-            <Trash2 className="h-5 w-5 text-destructive" />
+            <Button variant="ghost" size="sm" className="hover:bg-destructive-foreground">
+              <Trash2 className="h-5 w-5 text-destructive"  />
+            </Button>
           </DeleteAlertDialog>
         </div>
       </div>

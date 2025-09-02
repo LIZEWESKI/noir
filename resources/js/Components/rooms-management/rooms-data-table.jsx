@@ -340,18 +340,13 @@ const columns = [
             Edit
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DeleteAlertDialog 
-            title={table.options.meta.onDelete.title} 
-            description={table.options.meta.onDelete.description} 
-            action={() => table.options.meta.onDelete.action(row.original.id)}
+          <DropdownMenuItem 
+            className="text-destructive hover:bg-destructive-foreground"
+            onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
           >
-            <DropdownMenuItem 
-              className="text-destructive" 
-              // onClick={() => table.options.meta?.onDelete?.(row.original)}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DeleteAlertDialog>
+            <Trash2 className="mr-2 h-4 w-4"/>
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -382,7 +377,7 @@ function DraggableRow({ row }) {
   )
 }
 
-function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
+function RoomsDataTable({ data: initialData, onEdit, onDelete, key }) {
   const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
@@ -396,6 +391,8 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}))
 
   const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
+  const [selectedRoomId, setSelectedRoomId] = React.useState(null)
 
   const table = useReactTable({
     data,
@@ -403,6 +400,13 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     meta: {
       onEdit,
       onDelete,
+      onDeleteClick: (id) => {
+        setSelectedRoomId(id)
+        setIsDeleteOpen(true)
+      },
+      isDeleteOpen,
+      setIsDeleteOpen,
+      selectedRoomId,
     },
     state: {
       sorting,
@@ -588,6 +592,13 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
           </div>
         </div>
       </TabsContent>
+        <DeleteAlertDialog
+          open={isDeleteOpen}
+          onOpenChange={setIsDeleteOpen}
+          title={onDelete.title} 
+          description={onDelete.description} 
+          action={() => onDelete.action(selectedRoomId)}
+        />
     </Tabs>
   )
 }

@@ -10,6 +10,7 @@ import {
 import InputField from "@/components/ui/input-field"
 import IconAppLogo from "@/components/icon-app-logo"
 import { useForm, Link } from '@inertiajs/react'
+import { LoaderCircle } from "lucide-react"
 export function RegisterForm({className,...props}) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -71,7 +72,7 @@ export function RegisterForm({className,...props}) {
               />
               ))}
                 <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
-                  Sign up
+                  {processing && <LoaderCircle className="animate-spin"/>} Login Sign up
                 </Button>
               </div>
               <div className="text-center text-sm">

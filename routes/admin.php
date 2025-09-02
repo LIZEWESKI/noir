@@ -30,7 +30,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     Route::get("/rooms-management/edit/{room}",[RoomsManagementController::class, 'edit'])
         ->name('rooms_management.edit');
 
-    Route::put("/rooms-management/{room}",[RoomsManagementController::class, 'update'])
+    Route::post("/rooms-management/{room}",[RoomsManagementController::class, 'update'])
         ->name('rooms_management.update');
 
     Route::delete('/rooms-management/{room}',[RoomsManagementController::class, 'destroy'])

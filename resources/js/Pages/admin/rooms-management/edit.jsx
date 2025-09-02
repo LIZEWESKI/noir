@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import AppLayout from "@/layouts/app-layout"
-import { Head, useForm } from "@inertiajs/react"
+import { Head, router, useForm } from "@inertiajs/react"
 import { Upload, X, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { roomStatuses,bedTypes, roomTypes } from "@/components/rooms-management/rooms-data"
+
 const breadcrumbs= [
     {
       title: 'Rooms Management',
@@ -22,22 +23,28 @@ const breadcrumbs= [
 
 export default function Edit({features, room}) {
 
-  const { data, setData, put, processing, errors } = useForm(room)
+  const { data, setData, post, processing, errors } = useForm(room)
   const [imagePreview, setImagePreview] = useState(data.image_path_url || null)
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("clicked?")
-    put(route('admin.rooms_management.update',data.id),data)
+    post(route('admin.rooms_management.update',data.id),{
+      ...data,
+    })
   }
+
   useEffect(() => {
     if (room) {
       const editedFeature = room.features.map(f => f.name)
       setData({
         ...room,
+        image_path: undefined, 
+        existing_image: room.image_path_url,
         features: editedFeature,
       })
     }
   }, [room]);
+
   const toggleFeature = (feature) => {
     const isSelected = data.features.some((f) => f === feature)
     if (isSelected) {
@@ -49,12 +56,11 @@ export default function Edit({features, room}) {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+
     if (file) {
-      setData((prev) => ({
-        ...prev,
-        image_path: file,
-      }))
+      setData({...data, image_path: file})
     }
+
     const previewUrl = URL.createObjectURL(file)
     setImagePreview(previewUrl)
   }
@@ -134,8 +140,9 @@ export default function Edit({features, room}) {
                       onChange={(e) => setData({ ...data, description: e.target.value })}
                       placeholder="Describe the room amenities and unique features..."
                       rows={3}
-                      className="mt-2 resize-none focus-visible:ring-primary bg-background"
-                    />
+                      className={`mt-2 resize-none bg-background ${errors.description ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
+                      />
+                      {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
@@ -180,7 +187,7 @@ export default function Edit({features, room}) {
                         Status <span className="text-destructive">*</span>
                       </Label>
                       <Select value={data.status} onValueChange={(value) => setData({ ...data, status: value })}>
-                        <SelectTrigger className="h-11 focus:ring-primary">
+                        <SelectTrigger className={`h-11 ${errors.bed ? "border-destructive" : "focus:ring-primary"}`}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -191,6 +198,7 @@ export default function Edit({features, room}) {
                           ))}
                         </SelectContent>
                       </Select>
+                      {errors.status && <p className="text-xs text-destructive">{errors.status}</p>}
                     </div>
                   </div>
 
@@ -366,7 +374,7 @@ export default function Edit({features, room}) {
                   </CardContent>
                 </Card>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="destructive" onClick={() => window.history.back()}>
+                  <Button type="button" variant="destructive" onClick={() => router.visit(route('admin.rooms_management.index'))}>
                     Cancel
                   </Button>
                   <Button 

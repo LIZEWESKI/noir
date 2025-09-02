@@ -27,7 +27,7 @@ class Reservation extends Model
         return $this->belongsTo(User::class);
     }
     function room():BelongsTo {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Room::class)->withTrashed();
     }
     public function payments()
     {

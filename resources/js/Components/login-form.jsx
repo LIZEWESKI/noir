@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import IconAppLogo from "@/components/icon-app-logo"
 import { useForm, Link} from "@inertiajs/react"
+import { LoaderCircle } from "lucide-react"
 
 export function LoginForm({className,...props}) {
       const { data, setData, post, processing, errors } = useForm({
@@ -84,7 +85,7 @@ export function LoginForm({className,...props}) {
                   {errors.password && <p className="text-sm text-destructive font-medium">{errors.password}</p>}
                 </div>
                 <Button type="submit" variant="outline" className="w-full px-8 border-[1px] " disabled={processing}>
-                  Login
+                  {processing && <LoaderCircle className="animate-spin"/>} Login
                 </Button>
               </div>
               <div className="text-center text-sm">

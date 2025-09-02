@@ -7,9 +7,10 @@ use Inertia\Inertia;
 use App\Models\Feature;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreRoomRequest;
-use App\Http\Requests\UpdateRoomRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateRoomRequest;
 
 class RoomsManagementController extends Controller
 {
@@ -59,11 +60,12 @@ class RoomsManagementController extends Controller
     public function update(UpdateRoomRequest $request, Room $room)
     {
         $data = $request->validated();
-        
+
         if ($request->hasFile('image_path')) {
             $path = $request->file('image_path')->store('rooms');
             $data['image_path'] = $path;
-        }else {
+        }
+        else {
             unset($data['image_path']);
         }
 
@@ -81,9 +83,12 @@ class RoomsManagementController extends Controller
 
     public function destroy(Room $room)
     {
-        if ($room->image_path && Storage::disk('public')->exists($room->image_path)) {
-            Storage::disk('public')->delete($room->image_path);
-        }
+
+        // we may want to keep the room image if want to restore the room in the future
+
+        // if ($room->image_path && Storage::disk('public')->exists($room->image_path)) {
+        //     Storage::disk('public')->delete($room->image_path);
+        // }
 
         $room->delete();
 
