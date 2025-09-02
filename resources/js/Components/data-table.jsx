@@ -74,6 +74,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
 
 export const schema = z.object({
   id: z.number(),
@@ -114,11 +116,19 @@ const columns = [
   {
     accessorKey: "guest",
     header: "Guest Name",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       // return <TableCellViewer item={row.original} />;
-      return <div className="w-32">
+      const user = row.original.user 
+      const userImage = user.google_id ? user.profile_picture_path : user.profile_picture_url;
+      return <div className="w-32 flex items-center gap-2 px-1 py-1.5 text-left">
+              <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                  <AvatarImage src={userImage} alt={user.name} />
+                  <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                    {table.options.meta.getInitials(user.name)}
+                  </AvatarFallback>
+              </Avatar>
               <Badge variant="outline" className="text-muted-foreground px-1.5">
-                {row.original.user.name}
+                {user.name}
               </Badge>
           </div>
     },
@@ -216,12 +226,15 @@ export function DataTable({
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
   )
-
+  const getInitials = useInitials();
   const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
 
   const table = useReactTable({
     data,
     columns,
+    meta: {
+      getInitials
+    },
     state: {
       sorting,
       columnVisibility,

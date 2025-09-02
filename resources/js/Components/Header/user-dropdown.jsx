@@ -13,18 +13,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./theme-toggle"
 import { router, usePage } from "@inertiajs/react"
+import { useInitials } from "@/hooks/use-initials"
 export function UserDropdown({user}) {
   const {auth} = usePage().props;
+  const getInitials = useInitials()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
             <span className="sr-only">Open user menu</span>
             <AvatarImage src={user.profile_picture_url} />
-            <AvatarFallback>{user.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
+            <AvatarFallback>
+              {getInitials(user.name)}
             </AvatarFallback>
       </Avatar>
     </DropdownMenuTrigger>

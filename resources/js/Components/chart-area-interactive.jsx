@@ -145,8 +145,8 @@ export function ChartAreaInteractive({chartData}) {
             <CartesianGrid vertical={true} />
             <XAxis
               dataKey="date"
-              tickLine={true}
-              axisLine={true}
+              tickLine
+              axisLine
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {

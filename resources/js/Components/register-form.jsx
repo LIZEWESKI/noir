@@ -72,7 +72,7 @@ export function RegisterForm({className,...props}) {
               />
               ))}
                 <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
-                  {processing && <LoaderCircle className="animate-spin"/>} Login Sign up
+                  {processing && <LoaderCircle className="animate-spin"/>} Sign up
                 </Button>
               </div>
               <div className="text-center text-sm">

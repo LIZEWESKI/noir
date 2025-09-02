@@ -28,9 +28,7 @@ export default function Edit({features, room}) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(route('admin.rooms_management.update',data.id),{
-      ...data,
-    })
+    post(route('admin.rooms_management.update',data.id),data)
   }
 
   useEffect(() => {

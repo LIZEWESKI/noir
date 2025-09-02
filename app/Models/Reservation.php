@@ -54,7 +54,7 @@ class Reservation extends Model
     public static function latestReservations()
     {
         return self::select(['id','user_id','room_id','check_in','total_price','status'])
-            ->with(['room:id,room_number', 'user:id,name'])
+            ->with(['room:id,room_number', 'user:id,name,profile_picture_path,google_id'])
             ->latest()
             ->get();
     }
