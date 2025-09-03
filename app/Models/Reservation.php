@@ -58,4 +58,18 @@ class Reservation extends Model
             ->latest()
             ->get();
     }
+
+    /**
+     * Get reservations with rooms, replacing deleted rooms with ghost data.
+    */
+    public static function withGhostedRooms()
+    {
+        return self::with(["room", "user"])->get()->map(function ($reservation) {
+            if ($reservation->room && $reservation->room->trashed()) {
+                // Replace room properties with ghost data
+                $reservation->room = (object) Room::$ghostData;
+            }
+            return $reservation;
+        });
+    }
 }

@@ -40,6 +40,31 @@ class Room extends Model
         return $this->belongsToMany(Feature::class);
     }
     
+    public static $ghostData = [
+        'name' => '[Deleted Room]',
+        'room_number' => '[Deleted]',
+        'type' => '[Deleted]',
+        'price' => 0.00,
+        'status' => 'deleted',
+        'image_path' => '/rooms/4YB1jLI54Y7H7GhRoKZwRdLIdoqqzfFMQyWS9O4t.jpg',
+        'size' => '[Deleted]',
+        'guests' => 0,
+        'bathrooms' => 0,
+        'bed' => '[Deleted]',
+        'description' => '[Deleted]',
+    ];
+
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+
+        if ($this->trashed()) {
+            return array_merge($array, self::$ghostData);
+        }
+
+        return $array;
+    }
+
     public static function availableCount(): int
     {
         return self::where('status', 'available')->count();
