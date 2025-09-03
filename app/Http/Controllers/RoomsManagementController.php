@@ -36,7 +36,7 @@ class RoomsManagementController extends Controller
             $path = $request->file('image_path')->store('rooms');
             $data['image_path'] = $path;
         }
-
+        $data['size'] = $data['size'] . ' m²';
         $room = Room::create(Arr::except($data,"features"));
         if($data["features"] ?? false) {
            foreach($data["features"] as $feature) {

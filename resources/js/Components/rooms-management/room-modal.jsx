@@ -33,12 +33,9 @@ const RoomModal = ({ room, isOpen, onClose, features }) => {
       }
 
       if(data.id) {
-        console.log("clicked")
-        console.log(data)
         put(route('admin.rooms_management.update',data.id), data)
         onClose();
       }else {
-        console.log("or I clicked here")
         post(route('admin.rooms_management.store'),{
           onSuccess: () => {
             onClose()

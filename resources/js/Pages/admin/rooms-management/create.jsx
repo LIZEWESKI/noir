@@ -40,11 +40,8 @@ export default function Create({features}) {
   const [imagePreview, setImagePreview] = useState(data.image_path || null)
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("clicked?")
     post(route('admin.rooms_management.store'))
   }
-  console.log(errors)
-  console.log(data)
   const toggleFeature = (feature) => {
     const isSelected = data.features.some((f) => f === feature)
     if (isSelected) {

@@ -25,6 +25,9 @@ class ReservationFactory extends Factory
         $nights = $checkIn->diff($checkOut)->days;
         $room = Room::inRandomOrder()->first();
 
+        // created_at = sometime before or equal to check_in
+        $createdAt = fake()->dateTimeBetween('-90 days', $checkIn);
+
         return [
             'user_id' => User::factory(),
             'room_id' => $room->id ?? Room::factory(), 
@@ -35,6 +38,8 @@ class ReservationFactory extends Factory
             'service_fee' => 15,
             'total_price' => fake()->numberBetween(100, 1000),
             'status' => fake()->randomElement(['pending', 'completed', 'cancelled']),
+            'created_at' => $createdAt,
+            'updated_at' => $createdAt,
         ];
     }
 }

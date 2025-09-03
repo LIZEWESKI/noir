@@ -37,10 +37,10 @@ class Reservation extends Model
 
     public static function recentBookingsForChart(int $months = 3)
     {
-        return self::selectRaw('DATE(check_in) as date,
+        return self::selectRaw('DATE(created_at) as date,
             SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed_count,
             SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) as cancelled_count')
-            ->where('check_in', '>=', now()->subMonths($months)->startOfDay())
+            ->where('created_at', '>=', now()->subMonths($months)->startOfDay())
             ->groupBy('date')
             ->orderBy('date', 'asc')
             ->get()
