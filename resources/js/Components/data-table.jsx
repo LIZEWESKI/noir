@@ -119,10 +119,9 @@ const columns = [
     cell: ({ row, table }) => {
       // return <TableCellViewer item={row.original} />;
       const user = row.original.user 
-      const userImage = user.google_id ? user.profile_picture_path : user.profile_picture_url;
       return <div className="w-32 flex items-center gap-2 px-1 py-1.5 text-left">
               <Avatar className="h-8 w-8 overflow-hidden rounded-full">
-                  <AvatarImage src={userImage} alt={user.name} />
+                  <AvatarImage src={user.profile_picture_url} alt={user.name} />
                   <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                     {table.options.meta.getInitials(user.name)}
                   </AvatarFallback>
@@ -306,7 +305,7 @@ export function DataTable({
       </div>
       <TabsContent
         value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
+        className="relative flex flex-col gap-4 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           <DndContext
             collisionDetection={closestCenter}

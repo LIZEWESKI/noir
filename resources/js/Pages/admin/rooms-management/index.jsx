@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import RoomModal from "@/components/rooms-management/room-modal"
 import RoomCard from "@/components/rooms-management/room-card"
 import AppLayout from "@/layouts/app-layout"
 import { Head, router, usePage } from "@inertiajs/react"
@@ -24,7 +23,7 @@ export default function Index({rooms_management}) {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
-  const [viewMode, setViewMode] = useState("table")
+  const [viewMode, setViewMode] = useState("grid")
 
   const filteredRooms = rooms.filter((room) => {
     const matchesSearch =

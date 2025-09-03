@@ -3,27 +3,15 @@ import AppLayout from "@/layouts/app-layout"
 import { Head, router, usePage } from "@inertiajs/react"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
-  Search,
-  Filter,
-  Calendar,
-  TrendingUp,
-  TrendingDown,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
   Plus,
 } from "lucide-react"
 import IconToolTip from "@/components/ui/icon-tooltip"
 import RecentReservations from "@/components/reservations-management/recent-reservations"
 import ReservationsDataTable from "@/components/reservations-management/reservations-data-table"
+import ReservationTimeline from "@/components/reservations-management/reservations-timeline"
+import ReservationStats from "@/components/reservations-management/Reservations-stats"
 
 const breadcrumbs= [
     {
@@ -32,9 +20,9 @@ const breadcrumbs= [
     },
 ];
 
-export default function Index() {
+export default function Index({reservations,stats,timeline,recent_reservations}) {
   const {flash} = usePage().props;
-
+  console.log(timeline);
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 
@@ -55,7 +43,6 @@ export default function Index() {
     title: "Cancel Reservation",
     description: "Are you sure you want to cancel this reservation? This action cannot be undone.",
     action: (reservationId) => {
-      console.log("[v0] Cancel reservation:", reservationId)
       // Handle cancellation logic here
     },
   }
@@ -63,9 +50,10 @@ export default function Index() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Reservation Management"/>
-            <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6">
 
-            <div className="flex flex-col items-end justify-end gap-4">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-muted-foreground mt-1">Manage and track all hotel reservations</p>
               <IconToolTip label="Add Reservation" className="rounded-full p-1 flex justify-between items-center">
                 <Button 
                   size="sm"
@@ -76,10 +64,14 @@ export default function Index() {
               </IconToolTip>
             </div>
 
-            {/* Reservations Table */}
-            <RecentReservations />
-            <ReservationsDataTable onEdit={handleEditReservation} onDelete={handleDeleteReservation} />
+            <ReservationStats stats={stats}/>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ReservationTimeline timelineData={timeline}/>
+              <RecentReservations recentReservations={recent_reservations} />
             </div>
+            <ReservationsDataTable key={reservations.length} onEdit={handleEditReservation} onDelete={handleDeleteReservation} />
+          </div>
         <Toaster/>
     </AppLayout>
   )

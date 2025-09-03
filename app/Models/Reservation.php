@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reservation extends Model
 {
@@ -34,7 +35,7 @@ class Reservation extends Model
         return $this->belongsToMany(Payment::class, 'payment_reservation');
     }
 
-
+    // for dashboard page
     public static function recentBookingsForChart(int $months = 3)
     {
         return self::selectRaw('DATE(created_at) as date,
@@ -53,10 +54,115 @@ class Reservation extends Model
 
     public static function latestReservations()
     {
-        return self::select(['id','user_id','room_id','check_in','total_price','status'])
-            ->with(['room:id,room_number', 'user:id,name,profile_picture_path,google_id'])
+        return self::select(['id','user_id','room_id','check_in','check_out','total_price','status'])
+            ->with(['room:id,room_number,name', 'user:id,name,profile_picture_path,google_id'])
             ->latest()
             ->get();
+    }
+
+    // for reservations management page
+
+    public static function quickStats(): array
+    {
+        $todayCheckIns = self::whereDate('check_in', today())->count();
+
+        $todayCheckOuts = self::whereDate('check_out', today())->count();
+
+        $totalRooms = Room::count();
+
+        $occupiedRooms = self::where('status', 'completed')
+            ->whereDate('check_in', '<=', today())
+            ->whereDate('check_out', '>=', today())
+            ->count();
+
+        $occupancyPercentage = $totalRooms > 0
+            ? round(($occupiedRooms / $totalRooms) * 100, 2)
+            : 0;
+
+        $pendingActions = self::where('status', 'pending')->count();
+
+        return [
+            [
+                "key" => "checkins",
+                'title' => "Today's Check-ins",
+                'value' => $todayCheckIns,
+                'description' => 'Expected arrivals',
+            ],
+            [
+                "key" => "checkouts",
+                'title' => "Today's Check-outs",
+                'value' => $todayCheckOuts,
+                'description' => 'Scheduled departures',
+            ],
+            [
+                "key" => "occupancy",
+                'title' => "Current Occupancy",
+                'value' => $occupancyPercentage . '%',
+                'description' => "{$occupiedRooms} of {$totalRooms} rooms",
+            ],
+            [
+                "key" => "pending",
+                'title' => "Pending Actions",
+                'value' => $pendingActions,
+                'description' => 'Require attention',
+            ],
+        ];
+    }
+
+    public static function recentLimitedReservations()
+    {
+        return self::select(['id','user_id','room_id','check_in','check_out','total_price','status'])
+            ->with(['room:id,room_number,name', 'user:id,name,profile_picture_path,google_id'])
+            ->latest()
+            ->limit(8)
+            ->get();
+    }
+
+    public static function timeline(): Collection
+    {
+        $today = Carbon::today();
+        $tomorrow = Carbon::tomorrow();
+
+        $dates = [
+            'Today' => $today,
+            'Tomorrow' => $tomorrow,
+        ];
+
+        $timeline = collect();
+
+        foreach ($dates as $label => $date) {
+            $checkIns = self::with(['user', 'room'])
+                ->whereDate('check_in', $date)
+                ->limit(2)
+                ->get()
+                ->map(fn($res) => [
+                    'id' => $res->id,
+                    'user_name' => $res->user->name,
+                    'room_number' => $res->room->room_number,
+                    'profile_picture_path' => $res->user->profile_picture_path,
+                    'profile_picture_url' => $res->user->profile_picture_url,
+                ]);
+                
+            $checkOuts = self::with(['user', 'room'])
+                ->whereDate('check_out', $date)
+                ->limit(2)
+                ->get()
+                ->map(fn($res) => [
+                    'id' => $res->id,
+                    'user_name' => $res->user->name,
+                    'room_number' => $res->room->room_number,
+                    'profile_picture_path' => $res->user->profile_picture_path,
+                    'profile_picture_url' => $res->user->profile_picture_url,
+                ]);
+
+            $timeline->push([
+                'date' => $label,
+                'checkOuts' => $checkOuts,
+                'checkIns' => $checkIns,
+            ]);
+        }
+
+        return $timeline;
     }
 
     /**
