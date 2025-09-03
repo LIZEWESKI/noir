@@ -13,23 +13,23 @@ const mainNavItems = [
         icon: LayoutGrid,
     },
     {
-        title: "Rooms Management",
+        title: "Rooms",
         href: "/admin/rooms-management",
         icon: House,
     },
     {
         title: "Reservations",
-        href: "/admin/reservations",
+        href: "/admin/reservations-management",
         icon: Calendar,
     },
     {
         title: "Guests",
-        href: "/admin/guests",
+        href: "/admin/guests-management",
         icon: Users,
     },
     {
         title: "Payments",
-        href: "/admin/payments",
+        href: "/admin/payments-management",
         icon: BadgeDollarSign,
     },
 ];

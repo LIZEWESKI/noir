@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reservation extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     
     protected $fillable = [
         'user_id',
@@ -29,8 +30,7 @@ class Reservation extends Model
     function room():BelongsTo {
         return $this->belongsTo(Room::class)->withTrashed();
     }
-    public function payments()
-    {
+    public function payments():BelongsToMany {
         return $this->belongsToMany(Payment::class, 'payment_reservation');
     }
 

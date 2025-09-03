@@ -12,7 +12,7 @@ use App\Http\Requests\StoreRoomRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateRoomRequest;
 
-class RoomsManagementController extends Controller
+class RoomManagementController extends Controller
 {
     public function index() {
         $rooms_management = Room::latest()->with("features:name,id")->get();

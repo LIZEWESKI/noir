@@ -24,7 +24,7 @@ export default function Index({rooms_management}) {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
-  const [viewMode, setViewMode] = useState("grid")
+  const [viewMode, setViewMode] = useState("table")
 
   const filteredRooms = rooms.filter((room) => {
     const matchesSearch =

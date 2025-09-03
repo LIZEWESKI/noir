@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\RoomsManagementController;
+use App\Http\Controllers\ReservationManagementController;
+use App\Http\Controllers\RoomManagementController;
 
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
@@ -17,22 +18,21 @@ Route::middleware(['auth', AdminMiddleware::class])
     
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
-
-    Route::get("/rooms-management",[RoomsManagementController::class, 'index'])
+    // Rooms Management ressource (I could use Resource instead but I don't feel like it)
+    Route::get("/rooms-management",[RoomManagementController::class, 'index'])
         ->name('rooms_management.index');
-
-    Route::get("/rooms-management/create",[RoomsManagementController::class, 'create'])
+    Route::get("/rooms-management/create",[RoomManagementController::class, 'create'])
         ->name('rooms_management.create');
-
-    Route::post("/rooms-management",[RoomsManagementController::class, 'store'])
+    Route::post("/rooms-management",[RoomManagementController::class, 'store'])
         ->name('rooms_management.store');
-
-    Route::get("/rooms-management/edit/{room}",[RoomsManagementController::class, 'edit'])
+    Route::get("/rooms-management/edit/{room}",[RoomManagementController::class, 'edit'])
         ->name('rooms_management.edit');
-
-    Route::post("/rooms-management/{room}",[RoomsManagementController::class, 'update'])
+    Route::post("/rooms-management/{room}",[RoomManagementController::class, 'update'])
         ->name('rooms_management.update');
-
-    Route::delete('/rooms-management/{room}',[RoomsManagementController::class, 'destroy'])
+    Route::delete('/rooms-management/{room}',[RoomManagementController::class, 'destroy'])
         ->name('rooms_management.destroy');
+
+    // Reservations Management ressource
+    Route::get("/reservations-management",[ReservationManagementController::class, 'index'])
+        ->name('reservations_management.index');
 });
