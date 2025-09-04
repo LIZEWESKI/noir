@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
         // Should redirect to dashboard 
+        // return redirect()->back();
         return redirect(route("home"));
     }
 

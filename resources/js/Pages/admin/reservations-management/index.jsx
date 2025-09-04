@@ -20,9 +20,13 @@ const breadcrumbs= [
     },
 ];
 
-export default function Index({reservations,stats,timeline,recent_reservations}) {
+export default function Index({
+  reservations_management,
+  stats,
+  timeline,
+  recent_reservations
+}) {
   const {flash} = usePage().props;
-  console.log(timeline);
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 
@@ -34,17 +38,27 @@ export default function Index({reservations,stats,timeline,recent_reservations})
       }
     })
   }, [flash]);
-
+  
   const handleEditReservation = (reservation) => {
     router.visit(`/admin/reservations-management/edit/${reservation.id}`)
+  }
+
+  const viewRoom = (room) => {
+    router.visit(`/rooms/${room.id}`)
+  }
+
+  const viewGuest = (user) => {
+    router.visit(`/admin/users-management/edit/${user.id}`)
   }
 
   const handleDeleteReservation = {
     title: "Cancel Reservation",
     description: "Are you sure you want to cancel this reservation? This action cannot be undone.",
     action: (reservationId) => {
-      // Handle cancellation logic here
-    },
+      router.post(`/admin/reservations-management/cancel/${reservationId}`,{id: reservationId},{
+        preserveState: false,
+      })
+    }
   }
 
   return (
@@ -70,7 +84,13 @@ export default function Index({reservations,stats,timeline,recent_reservations})
               <ReservationTimeline timelineData={timeline}/>
               <RecentReservations recentReservations={recent_reservations} />
             </div>
-            <ReservationsDataTable key={reservations.length} onEdit={handleEditReservation} onDelete={handleDeleteReservation} />
+            <ReservationsDataTable 
+              data={reservations_management}
+              onEdit={handleEditReservation} 
+              onDelete={handleDeleteReservation}
+              viewGuest={viewGuest}
+              viewRoom={viewRoom}
+            />
           </div>
         <Toaster/>
     </AppLayout>

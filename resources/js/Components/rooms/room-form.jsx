@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator"
 import { Calendar, Info } from "lucide-react"
 import { useForm } from "@inertiajs/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useFormatDate } from "@/hooks/use-format-date"
 
 const RoomForm = ({ room, unavailableDates = [] }) => {
   // Convert string dates to Date objects if they're not already
@@ -16,22 +17,15 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
-  const formatDateForBackend = (date) => {
-  if (!date) return ""
-  // Use local timezone formatting instead of UTC
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
+  const getFormatDate = useFormatDate();
   
   // Calculate nights and total when dates change
   const [checkInDate, setCheckInDate] = useState()
   const [checkOutDate, setCheckOutDate] = useState()
   const { data, setData, post, processing, errors } = useForm({
     room_id: room.id,
-    check_in: formatDateForBackend(checkInDate),
-    check_out: formatDateForBackend(checkOutDate),
+    check_in: getFormatDate(checkInDate),
+    check_out: getFormatDate(checkOutDate),
   })
   const [guestCount, setGuestCount] = useState(room.guests)
   const [nights, setNights] = useState(differenceInDays(checkOutDate, checkInDate))
@@ -59,7 +53,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     setCheckOutDate(null)
     setData({
       ...data,
-      check_in: formatDateForBackend(checkIn),
+      check_in: getFormatDate(checkIn),
       check_out: "", 
     })
   }
@@ -68,7 +62,7 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     setCheckOutDate(checkOut)
     setData({
       ...data,
-      check_out: formatDateForBackend(checkOut),
+      check_out: getFormatDate(checkOut),
     })
   }
 

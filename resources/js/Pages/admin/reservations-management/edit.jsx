@@ -9,72 +9,70 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { roomStatuses,bedTypes, roomTypes } from "@/components/rooms-management/rooms-data"
+import { format, differenceInDays, addDays, startOfDay, isWithinInterval, isSameDay } from "date-fns"
 
 const breadcrumbs= [
     {
-      title: 'Rooms Management',
-      href: '/admin/rooms-management',
+      title: 'Reservations Management',
+      href: '/admin/reservations-management',
     },
     {
-      title: 'Edit Room',
-      href: '/admin/rooms-management/edit/{:id}',
+      title: 'Edit Reservation',
+      href: '/admin/reservations-management/edit/{:id}',
     },
 ];
 
-export default function Edit({features, room}) {
+export default function Edit({reservation}) {
 
-  const { data, setData, post, processing, errors } = useForm(room)
-  const [imagePreview, setImagePreview] = useState(data.image_path_url || null)
+  const { data, setData, post, processing, errors } = useForm(reservation)
+  const [checkInDate, setCheckInDate] = useState()
+  const [checkOutDate, setCheckOutDate] = useState()
+  const [nights, setNights] = useState(differenceInDays(checkOutDate, checkInDate))
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(route('admin.rooms_management.update',data.id),data)
+    post(route('admin.reservations_management.update',data.id),data)
   }
 
-  useEffect(() => {
-    if (room) {
-      const editedFeature = room.features.map(f => f.name)
-      setData({
-        ...room,
-        image_path: undefined, 
-        existing_image: room.image_path_url,
-        features: editedFeature,
-      })
-    }
-  }, [room]);
+  // useEffect(() => {
+  //   if (reservation) {
 
-  const toggleFeature = (feature) => {
-    const isSelected = data.features.some((f) => f === feature)
-    if (isSelected) {
-      setData({...data,features: data.features.filter((f) => f !== feature)})
-    } else {
-      if (data.features.length < 3) setData({...data,features: [...data.features, feature]})
-    }
+  //     setData({...reservation})
+  //   }
+  // }, [reservation]);
+
+    const handleCheckIn = (checkIn) => {
+    setCheckInDate(checkIn)
+    // Reset the check-out date
+    setCheckOutDate(null)
+    setData({
+      ...data,
+      check_in: getFormatDate(checkIn),
+      check_out: "", 
+    })
   }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]
-
-    if (file) {
-      setData({...data, image_path: file})
-    }
-
-    const previewUrl = URL.createObjectURL(file)
-    setImagePreview(previewUrl)
+  const handleCheckOut = (checkOut) => {
+    setCheckOutDate(checkOut)
+    setData({
+      ...data,
+      check_out: getFormatDate(checkOut),
+    })
   }
+
 
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Edit Room"/>
-      <div className="min-h-screen ">
+      <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {/* Main Information Section */}
             <div className="space-y-6">
               <div>
                 <h2 className="text-lg font-semibold text-foreground mb-1">Main Information</h2>
-                <p className="text-sm text-muted-foreground">Essential details about the room</p>
+                <p className="text-sm text-muted-foreground">Essential details about the reservation</p>
               </div>
 
               <Card className="border shadow-sm bg-card">

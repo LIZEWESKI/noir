@@ -26,7 +26,6 @@ import {
   Trash2,
   ChevronUp,
   Calendar,
-  CreditCard,
   MapPin,
   User,
 } from "lucide-react"
@@ -56,124 +55,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
+import { useInitials } from "@/hooks/use-initials"
+import DeleteAlertDialog from "../ui/delete-alert-dialog"
 
-const mockReservationsData = [
-  {
-    id: 1,
-    user: {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.j@email.com",
-      avatar: "/diverse-woman-portrait.png",
-    },
-    room: {
-      id: 301,
-      number: "301",
-      name: "Ocean View Suite",
-    },
-    checkIn: "2025-01-15",
-    checkOut: "2025-01-18",
-    nights: 3,
-    cleaningFee: 50.0,
-    serviceFee: 25.0,
-    totalPrice: 850.0,
-    status: "confirmed",
-    paymentStatus: "paid",
-    createdAt: "2025-01-10",
-  },
-  {
-    id: 2,
-    user: {
-      id: 2,
-      name: "Marcus Chen",
-      email: "m.chen@email.com",
-      avatar: "/thoughtful-man.png",
-    },
-    room: {
-      id: 205,
-      number: "205",
-      name: "Standard Double",
-    },
-    checkIn: "2025-01-20",
-    checkOut: "2025-01-23",
-    nights: 3,
-    cleaningFee: 30.0,
-    serviceFee: 15.0,
-    totalPrice: 420.0,
-    status: "pending",
-    paymentStatus: "pending",
-    createdAt: "2025-01-12",
-  },
-  {
-    id: 3,
-    user: {
-      id: 3,
-      name: "Elena Rodriguez",
-      email: "elena.r@email.com",
-      avatar: null,
-    },
-    room: {
-      id: 102,
-      number: "102",
-      name: "Garden View Room",
-    },
-    checkIn: "2025-01-25",
-    checkOut: "2025-01-27",
-    nights: 2,
-    cleaningFee: 30.0,
-    serviceFee: 10.0,
-    totalPrice: 320.0,
-    status: "confirmed",
-    paymentStatus: "paid",
-    createdAt: "2025-01-14",
-  },
-  {
-    id: 4,
-    user: {
-      id: 4,
-      name: "David Kim",
-      email: "d.kim@email.com",
-      avatar: null,
-    },
-    room: {
-      id: 404,
-      number: "404",
-      name: "Penthouse Suite",
-    },
-    checkIn: "2025-02-01",
-    checkOut: "2025-02-05",
-    nights: 4,
-    cleaningFee: 100.0,
-    serviceFee: 50.0,
-    totalPrice: 1200.0,
-    status: "cancelled",
-    paymentStatus: "refunded",
-    createdAt: "2025-01-16",
-  },
-  {
-    id: 5,
-    user: {
-      id: 5,
-      name: "Amanda Foster",
-      email: "a.foster@email.com",
-      avatar: null,
-    },
-    room: {
-      id: 203,
-      number: "203",
-      name: "Deluxe King",
-    },
-    checkIn: "2025-02-10",
-    checkOut: "2025-02-14",
-    nights: 4,
-    cleaningFee: 40.0,
-    serviceFee: 20.0,
-    totalPrice: 680.0,
-    status: "confirmed",
-    paymentStatus: "paid",
-    createdAt: "2025-01-18",
-  },
-]
 
 function DragHandle({ id }) {
   const { attributes, listeners } = useSortable({
@@ -234,7 +118,7 @@ function SelectColumnFilter({ column, title, options }) {
 
 const getStatusColor = (status) => {
   switch (status) {
-    case "confirmed":
+    case "completed":
       return "bg-primary/10 text-primary border-primary/20"
     case "pending":
       return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
@@ -245,18 +129,6 @@ const getStatusColor = (status) => {
   }
 }
 
-const getPaymentStatusColor = (status) => {
-  switch (status) {
-    case "paid":
-      return "bg-primary/10 text-primary border-primary/20"
-    case "pending":
-      return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
-    case "refunded":
-      return "bg-blue-500/10 text-blue-600 border-blue-500/20"
-    default:
-      return "bg-gray-500/10 text-gray-600 border-gray-500/20"
-  }
-}
 
 const columns = [
   {
@@ -280,17 +152,13 @@ const columns = [
         <ColumnFilter column={column} title="Guest" />
       </div>
     ),
-    cell: ({ row }) => {
+    cell: ({ row,table }) => {
       const user = row.original.user
-      const initials = user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-
+      const initials = table.options.meta.getInitials(user.name);
       return (
         <div className="flex items-center gap-3 min-w-48">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+            <AvatarImage src={user.profile_picture_url} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">{initials}</AvatarFallback>
           </Avatar>
           <div>
@@ -328,7 +196,7 @@ const columns = [
       return (
         <div className="space-y-1">
           <Badge variant="outline" className="text-xs px-2 py-1">
-            Room {room.number}
+            Room {room.room_number}
           </Badge>
           <div className="text-xs text-muted-foreground">{room.name}</div>
         </div>
@@ -336,7 +204,7 @@ const columns = [
     },
     filterFn: (row, id, value) => {
       return (
-        row.original.room.number.includes(value) || row.original.room.name.toLowerCase().includes(value.toLowerCase())
+        row.original.room.room_number.includes(value) || row.original.room.name.toLowerCase().includes(value.toLowerCase())
       )
     },
   },
@@ -357,15 +225,15 @@ const columns = [
     ),
     cell: ({ row }) => (
       <div className="space-y-1 min-w-32">
-        <div className="text-sm font-medium">{row.original.checkIn}</div>
-        <div className="text-xs text-muted-foreground">to {row.original.checkOut}</div>
+        <div className="text-sm font-medium">{row.original.check_in}</div>
+        <div className="text-xs text-muted-foreground">to {row.original.check_out}</div>
         <Badge variant="secondary" className="text-xs">
           {row.original.nights} nights
         </Badge>
       </div>
     ),
     sortingFn: (rowA, rowB) => {
-      return new Date(rowA.original.checkIn) - new Date(rowB.original.checkIn)
+      return new Date(rowA.original.check_in) - new Date(rowB.original.check_in)
     },
     enableSorting: true,
   },
@@ -385,9 +253,9 @@ const columns = [
     ),
     cell: ({ row }) => (
       <div className="space-y-1">
-        <div className="font-semibold">${row.original.totalPrice.toFixed(2)}</div>
+        <div className="font-semibold">${Number(row.original.total_price).toFixed(2)}</div>
         <div className="text-xs text-muted-foreground">
-          +${(row.original.cleaningFee + row.original.serviceFee).toFixed(2)} fees
+          +${row.original.cleaning_fee} + {row.original.service_fee} fees
         </div>
       </div>
     ),
@@ -419,10 +287,6 @@ const columns = [
     cell: ({ row }) => (
       <div className="space-y-2">
         <Badge className={`text-xs px-2 py-1 ${getStatusColor(row.original.status)}`}>{row.original.status}</Badge>
-        <Badge className={`text-xs px-2 py-1 ${getPaymentStatusColor(row.original.paymentStatus)}`}>
-          <CreditCard className="h-3 w-3 mr-1" />
-          {row.original.paymentStatus}
-        </Badge>
       </div>
     ),
   },
@@ -441,22 +305,24 @@ const columns = [
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={()=> table.options.meta.viewGuest(row.original.user)}>
             <User className="mr-2 h-4 w-4" />
             View Guest
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={()=> table.options.meta.viewRoom(row.original.room)}>
             <MapPin className="mr-2 h-4 w-4" />
             View Room
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive hover:bg-destructive-foreground"
-            onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Cancel
-          </DropdownMenuItem>
+          {row.original.status !== 'cancelled' &&
+            <DropdownMenuItem
+              className="text-destructive hover:bg-destructive-foreground"
+              onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Cancel
+            </DropdownMenuItem>          
+          }
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -487,8 +353,8 @@ function DraggableRow({ row }) {
   )
 }
 
-function ReservationsDataTable({ data = mockReservationsData, onEdit, onDelete }) {
-  const [tableData, setTableData] = React.useState(() => data)
+function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom }) {
+  const [tableData, setTableData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
@@ -503,13 +369,16 @@ function ReservationsDataTable({ data = mockReservationsData, onEdit, onDelete }
   const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
-
+  const getInitials = useInitials()
   const table = useReactTable({
     data: tableData,
     columns,
     meta: {
+      getInitials,
       onEdit,
       onDelete,
+      viewRoom,
+      viewGuest,
       onDeleteClick: (id) => {
         setSelectedReservationId(id)
         setIsDeleteOpen(true)
@@ -702,6 +571,13 @@ function ReservationsDataTable({ data = mockReservationsData, onEdit, onDelete }
           </div>
         </div>
       </TabsContent>
+      <DeleteAlertDialog
+        open={isDeleteOpen}
+        onOpenChange={setIsDeleteOpen}
+        title={onDelete.title} 
+        description={onDelete.description} 
+        action={() => onDelete.action(selectedReservationId)}
+      />
     </Tabs>
   )
 }

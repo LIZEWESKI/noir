@@ -377,7 +377,7 @@ function DraggableRow({ row }) {
   )
 }
 
-function RoomsDataTable({ data: initialData, onEdit, onDelete, key }) {
+function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})

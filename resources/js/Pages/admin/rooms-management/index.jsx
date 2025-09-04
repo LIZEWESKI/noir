@@ -39,11 +39,7 @@ export default function Index({rooms_management}) {
     description : "Are you sure you want to delete this room? This action cannot be undone and will permanently remove all related reservations and data.",
     action(roomId) {
       router.delete(`/admin/rooms-management/${roomId}`, {
-        onSuccess: () => {
-          // Filtering rooms for optimistic UI (since you have to refresh in order to render the updated data)
-          // const filtered_rooms = rooms.filter(r => r.id !== roomId)
-          setRooms(prev => prev.filter(r => r.id !== roomId));
-        }
+        preserveState: false,
       });
     },
   }
@@ -106,7 +102,7 @@ export default function Index({rooms_management}) {
         <div>
         </div>
         {viewMode === "table" ? (
-        <RoomsDataTable key={rooms.length} data={rooms} onEdit={(handleEditRoom)} onDelete={DELETING_ALERT} />) : 
+        <RoomsDataTable  data={rooms} onEdit={(handleEditRoom)} onDelete={DELETING_ALERT} />) : 
         (
           <>
             <div className="flex flex-col sm:flex-row gap-4">

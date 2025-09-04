@@ -35,4 +35,8 @@ Route::middleware(['auth', AdminMiddleware::class])
     // Reservations Management ressource
     Route::get("/reservations-management",[ReservationManagementController::class, 'index'])
         ->name('reservations_management.index');
+    Route::get("/reservations-management/edit/{reservation}",[ReservationManagementController::class, 'edit'])
+        ->name('reservations_management.edit');
+    Route::post('/reservations-management/cancel/{reservation}',[ReservationManagementController::class,'cancel'])
+        ->name('reservations_management.cancel');
 });
