@@ -1,15 +1,29 @@
-import { useEffect, useState } from "react"
-import AppLayout from "@/layouts/app-layout"
-import { Head, router, useForm } from "@inertiajs/react"
-import { Upload, X, Info } from "lucide-react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { format, differenceInDays, addDays, isWithinInterval, isSameDay } from "date-fns"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { roomStatuses,bedTypes, roomTypes } from "@/components/rooms-management/rooms-data"
-import { format, differenceInDays, addDays, startOfDay, isWithinInterval, isSameDay } from "date-fns"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Calendar,
+  User,
+  MapPin,
+  CreditCard,
+  Clock,
+  Bed,
+  Users,
+  MessageSquare,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react"
+import AppLayout from "@/layouts/app-layout"
+import { Head } from "@inertiajs/react"
 
 const breadcrumbs= [
     {
@@ -22,369 +36,515 @@ const breadcrumbs= [
     },
 ];
 
-export default function Edit({reservation}) {
+const EditReservationForm = () => {
+    const reservation = {
+    id: "RSV-001",
+    guest: {
+      name: "Sarah Johnson",
+      email: "sarah.johnson@email.com",
+      phone: "+1 (555) 123-4567",
+      avatar: "/diverse-woman-portrait.png",
+    },
+    room: {
+      id: 101,
+      number: "101",
+      type: "Standard Single Room",
+      price: 85.0,
+      maxGuests: 2,
+    },
+    checkIn: new Date("2025-01-15"),
+    checkOut: new Date("2025-01-18"),
+    guests: 1,
+    status: "confirmed",
+    totalPrice: 267.0,
+    specialRequests: "Late check-in requested",
+    paymentStatus: "paid",
+  }
+  const unavailableDates = []
+  const availableRooms = [
+    { id: 101, number: "101", type: "Standard Single Room", price: 85.0, maxGuests: 2 },
+    { id: 102, number: "102", type: "Standard Single Room - Ocean View", price: 95.0, maxGuests: 2 },
+    { id: 201, number: "201", type: "Deluxe Double Room", price: 120.0, maxGuests: 4 },
+  ]
+  // Parse unavailable dates excluding current reservation
+  const parsedUnavailableDates = unavailableDates
+    .filter((range) => range.reservation_id !== reservation.id)
+    .map((range) => ({
+      checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
+      checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
+    }))
 
-  const { data, setData, post, processing, errors } = useForm(reservation)
-  const [checkInDate, setCheckInDate] = useState()
-  const [checkOutDate, setCheckOutDate] = useState()
-  const [nights, setNights] = useState(differenceInDays(checkOutDate, checkInDate))
+  // Form state
+  const [formData, setFormData] = useState({
+    guestName: reservation.guest.name,
+    guestEmail: reservation.guest.email,
+    guestPhone: reservation.guest.phone,
+    roomId: reservation.room.id,
+    checkInDate: reservation.checkIn,
+    checkOutDate: reservation.checkOut,
+    guests: reservation.guests,
+    specialRequests: reservation.specialRequests || "",
+    status: reservation.status,
+  })
+
+  const [nights, setNights] = useState(0)
+  const [pricing, setPricing] = useState({
+    roomPrice: 0,
+    subtotal: 0,
+    cleaningFee: 25,
+    serviceFee: 15,
+    total: 0,
+  })
+
+  // Get selected room details
+  const selectedRoom = availableRooms.find((room) => room.id === formData.roomId) || reservation.room
+
+  // Calculate nights and pricing
+  useEffect(() => {
+    if (formData.checkInDate && formData.checkOutDate) {
+      const nightsCount = differenceInDays(formData.checkOutDate, formData.checkInDate)
+      setNights(nightsCount > 0 ? nightsCount : 0)
+
+      const roomPrice = selectedRoom.price
+      const subtotal = roomPrice * nightsCount
+      const total = subtotal + pricing.cleaningFee + pricing.serviceFee
+
+      setPricing((prev) => ({
+        ...prev,
+        roomPrice,
+        subtotal,
+        total,
+      }))
+    }
+  }, [formData.checkInDate, formData.checkOutDate, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
+
+  // Date validation functions (similar to room-form)
+  const isDateUnavailable = (date) => {
+    if (!unavailableDates || unavailableDates.length === 0) return false
+
+    return parsedUnavailableDates.some((range) => {
+      if (!(range.checkIn instanceof Date) || !(range.checkOut instanceof Date)) return false
+
+      return (
+        isWithinInterval(date, { start: range.checkIn, end: range.checkOut }) ||
+        isSameDay(date, range.checkIn) ||
+        isSameDay(date, range.checkOut)
+      )
+    })
+  }
+
+  const isCheckoutDateInvalid = (date) => {
+    if (!formData.checkInDate) return false
+    if (!unavailableDates || unavailableDates.length === 0) return false
+
+    let currentDate = new Date(formData.checkInDate)
+    while (differenceInDays(date, currentDate) >= 0) {
+      if (isDateUnavailable(currentDate)) return true
+      currentDate = addDays(currentDate, 1)
+    }
+    return false
+  }
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleCheckInChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      checkInDate: date,
+      checkOutDate: null, // Reset checkout when checkin changes
+    }))
+  }
+
+  const handleCheckOutChange = (date) => {
+    setFormData((prev) => ({ ...prev, checkOutDate: date }))
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    post(route('admin.reservations_management.update',data.id),data)
+    e.preventDefault()
+    console.log("[v0] Updating reservation:", formData)
+    // Handle form submission
   }
 
-  // useEffect(() => {
-  //   if (reservation) {
-
-  //     setData({...reservation})
-  //   }
-  // }, [reservation]);
-
-    const handleCheckIn = (checkIn) => {
-    setCheckInDate(checkIn)
-    // Reset the check-out date
-    setCheckOutDate(null)
-    setData({
-      ...data,
-      check_in: getFormatDate(checkIn),
-      check_out: "", 
-    })
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "confirmed":
+        return "bg-primary text-primary-foreground"
+      case "pending":
+        return "bg-yellow-500 text-white"
+      case "cancelled":
+        return "bg-red-500 text-white"
+      case "completed":
+        return "bg-green-500 text-white"
+      default:
+        return "bg-gray-500 text-white"
+    }
   }
-
-  const handleCheckOut = (checkOut) => {
-    setCheckOutDate(checkOut)
-    setData({
-      ...data,
-      check_out: getFormatDate(checkOut),
-    })
-  }
-
-
 
   return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Edit Room"/>
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Main Information Section */}
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground mb-1">Main Information</h2>
-                <p className="text-sm text-muted-foreground">Essential details about the reservation</p>
-              </div>
-
-              <Card className="border shadow-sm bg-card">
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-medium">
-                        Room Name <span className="text-destructive">*</span> 
-                      </Label>
-                      <Input
-                        id="name"
-                        value={data.name}
-                        onChange={(e) => setData({ ...data, name: e.target.value })}
-                        placeholder="Ocean View Suite"
-                        className={`h-11 ${errors.name ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="type" className="text-sm font-medium">
-                        Room Category <span className="text-destructive">*</span>
-                      </Label>
-                      <Select value={data.type} onValueChange={(value) => setData({ ...data, type: value })}>
-                        <SelectTrigger className={`h-11 ${errors.type ? "border-destructive" : "focus:ring-primary"}`}>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roomTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.type && <p className="text-xs text-destructive">{errors.type}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="room_number" className="text-sm font-medium">
-                        Room Number <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="room_number"
-                        value={data.room_number}
-                        onChange={(e) => setData({ ...data, room_number: e.target.value })}
-                        placeholder="101"
-                        className={`h-11 ${errors.room_number ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.room_number && <p className="text-xs text-destructive">{errors.room_number}</p>}
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <Label htmlFor="description" className="text-sm font-medium">
-                      Description
-                    </Label>
-                    <Textarea
-                      id="description"
-                      value={data.description}
-                      onChange={(e) => setData({ ...data, description: e.target.value })}
-                      placeholder="Describe the room amenities and unique features..."
-                      rows={3}
-                      className={`mt-2 resize-none bg-background ${errors.description ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="price" className="text-sm font-medium">
-                        Price per Night <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="price"
-                        type="number"
-                        value={data.price}
-                        onChange={(e) => setData({ ...data, price: Number.parseFloat(e.target.value) })}
-                        placeholder="0.00"
-                        min="0"
-                        step="0.01"
-                        className={`h-11 ${errors.price ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.price && <p className="text-xs text-destructive">{errors.price}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bed" className="text-sm font-medium">
-                        Bed Type <span className="text-destructive">*</span>
-                      </Label>
-                      <Select value={data.bed} onValueChange={(value) => setData({ ...data, bed: value })}>
-                        <SelectTrigger className={`h-11 ${errors.bed ? "border-destructive" : "focus:ring-primary"}`}>
-                          <SelectValue placeholder="Select bed type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {bedTypes.map((bed) => (
-                            <SelectItem key={bed} value={bed}>
-                              {bed}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.bed && <p className="text-xs text-destructive">{errors.bed}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="status" className="text-sm font-medium">
-                        Status <span className="text-destructive">*</span>
-                      </Label>
-                      <Select value={data.status} onValueChange={(value) => setData({ ...data, status: value })}>
-                        <SelectTrigger className={`h-11 ${errors.bed ? "border-destructive" : "focus:ring-primary"}`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {roomStatuses.map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.status && <p className="text-xs text-destructive">{errors.status}</p>}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="size" className="text-sm font-medium">
-                        Size (sq ft) <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="size"
-                        type="text"
-                        value={data.size}
-                        onChange={(e) => setData({ ...data, size: e.target.value})}
-                        placeholder="e.g., 45 m²"
-                        className={`h-11 ${errors.size ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.size && <p className="text-xs text-destructive">{errors.size}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="guests" className="text-sm font-medium">
-                        Max Guests <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="guests"
-                        type="number"
-                        value={data.guests}
-                        onChange={(e) => setData({ ...data, guests: Number.parseInt(e.target.value) })}
-                        placeholder="0"
-                        min="1"
-                        max="5"
-                        className={`h-11 ${errors.guests ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.guests && <p className="text-xs text-destructive">{errors.guests}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bathrooms" className="text-sm font-medium">
-                        Bathrooms <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="bathrooms"
-                        type="number"
-                        value={data.bathrooms}
-                        onChange={(e) => setData({ ...data, bathrooms: Number.parseInt(e.target.value) })}
-                        placeholder="0"
-                        min="1"
-                        className={`h-11 ${errors.bathrooms ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
-                      />
-                      {errors.bathrooms && <p className="text-xs text-destructive">{errors.bathrooms}</p>}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+    <AppLayout breadcrumbs={breadcrumbs} >
+      <Head title="Edit Reservation"/>
+      <div className="p-6 space-y-6">
+        <div className="flex items-start justify-between">
+          <div className="space-y-3">
+            <p className="text-muted-foreground mt-1">Modify booking details and preferences</p>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>Reservation ID:</span>
+              <code className="px-2 py-1 bg-muted rounded font-mono text-foreground">{reservation.id}</code>
             </div>
-
-            {/* Features & Media Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Features */}
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground mb-1">Room Features</h2>
-                  <p className="text-sm text-muted-foreground">Select up to 3 key features</p>
-                </div>
-
-                <Card className="border shadow-sm bg-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Info className="h-4 w-4 text-primary" />
-                      <span className="text-sm text-muted-foreground">
-                        {data.features.length}/3 features selected
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-2">
-                      {features.map((feature) => {
-                        const isSelected = data.features.some((f) => f === feature)
-                        const isDisabled = !isSelected && data.features.length >= 3
-
-                        return (
-                          <Button
-                            key={feature}
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            size="sm"
-                            disabled={isDisabled}
-                            onClick={() => toggleFeature(feature)}
-                            className={`justify-center h-9 ${
-                              isSelected
-                                ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                                : "hover:bg-primary/10 hover:border-primary/50"
-                            }`}
-                          >
-                            {feature}
-                          </Button>
-                        )
-                      })}
-                    </div>
-
-                    {data.features.length >= 3 && (
-                      <p className="text-xs text-muted-foreground mt-3 p-2 bg-muted/50 rounded-md">
-                        Maximum features reached. Remove a feature to add another.
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Image Upload */}
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground mb-1">Room Image</h2>
-                  <p className="text-sm text-muted-foreground">Upload a high-quality image</p>
-                </div>
-
-                <Card className={`shadow-sm bg-card ${errors.image_path ? "border-destructive": "border"}`}>
-                  <CardContent className="p-6">
-                    {!imagePreview ? (
-                      <Label htmlFor="image" className="cursor-pointer block">
-                        <div className="border-2 border-dashed border-primary/20 rounded-lg p-8 text-center hover:border-primary/40 hover:bg-primary/5 transition-all duration-200">
-                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Upload className="h-6 w-6 text-primary" />
-                          </div>
-                          <p className="text-sm font-medium text-foreground mb-1">Upload Room Image</p>
-                          <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
-                        </div>
-                        <Input id="image" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                      </Label>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="relative group">
-                          <img
-                            src={imagePreview}
-                            alt="Room preview"
-                            className="w-full h-48 object-cover rounded-lg border"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            className="absolute top-2 right-2 h-8 w-8 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={
-                              () => {
-                                setData((prev) => ({ ...prev, image_path: ""}))
-                                setImagePreview(null)
-                              }
-                            }
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <Label htmlFor="image" className="cursor-pointer mt-4 ">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="w-full bg-transparent mt-2 pointer-events-none"
-                          >
-                            <Upload className="h-4 w-4 mr-2" />
-                            Replace Image
-                          </Button>
-                          <Input
-                            id="image"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="hidden"
-                          />
-                        </Label>
-                      </div>
-                    )}
-                    {errors.image_path && <p className="text-xs text-destructive">{errors.image_path}</p>}
-                  </CardContent>
-                </Card>
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="destructive" onClick={() => router.visit(route('admin.rooms_management.index'))}>
-                    Cancel
-                  </Button>
-                  <Button 
-                  type="submit"
-                  disabled={processing}
-                  >
-                    Edit Room
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </form>
+          </div>
+          <div className="flex flex-col items-end gap-2">
+            <Badge className={getStatusColor(formData.status)} variant="outline">
+              {formData.status.charAt(0).toUpperCase() + formData.status.slice(1)}
+            </Badge>
+            <div className="text-xs text-muted-foreground">Last updated: {format(new Date(), "MMM dd, yyyy")}</div>
+          </div>
         </div>
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Guest Information */}
+          <Card className="lg:col-span-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">
+                Guest Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-6 p-6 bg-background rounded-xl border border-border">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src={reservation.guest.avatar || "/placeholder.svg"} />
+                  <AvatarFallback className="font-semibold text-lg">
+                    {reservation.guest.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-3">
+                  <div>
+                    <h3 className="font-semibold text-lg">{reservation.guest.name}</h3>
+                    <p className="text-muted-foreground text-sm">Primary Guest</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <span className="text-muted-foreground">Email:</span>
+                      <span className="font-medium">{reservation.guest.email}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="lg:col-span-2 ">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">
+                Reservation Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-8">
+            {/* Room Selection */}
+            <div className="space-y-2">
+              <Label>Room Assignment</Label>
+              <Select
+                value={formData.roomId.toString()}
+                onValueChange={(value) => handleInputChange("roomId", Number.parseInt(value))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableRooms.map((room) => (
+                    <SelectItem key={room.id} value={room.id.toString()}>
+                      <div className="flex items-center justify-between w-full">
+                        <span>
+                          Room {room.number} - {room.type}
+                        </span>
+                        <span className="text-muted-foreground ml-2">${room.price}/night</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+              <div className="space-y-4">
+                <Label className="text-base font-medium flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  Stay Duration
+                </Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium text-muted-foreground">Check-in Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start h-12 bg-transparent border-primary/20 hover:border-primary/40"
+                        >
+                          <Calendar className="mr-3 h-4 w-4 text-primary" />
+                          <div className="text-left">
+                            <div className="font-medium">
+                              {formData.checkInDate ? format(formData.checkInDate, "MMM dd, yyyy") : "Select date"}
+                            </div>
+                            {formData.checkInDate && (
+                              <div className="text-xs text-muted-foreground">{format(formData.checkInDate, "EEEE")}</div>
+                            )}
+                          </div>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarComponent
+                          mode="single"
+                          selected={formData.checkInDate}
+                          onSelect={handleCheckInChange}
+                          disabled={(date) =>
+                            date < new Date() ||
+                            (formData.checkOutDate && date >= formData.checkOutDate) ||
+                            isDateUnavailable(date)
+                          }
+                          modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
+                          modifiersClassNames={{
+                            unavailable:
+                              "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium text-muted-foreground">Check-out Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start h-12 bg-transparent border-primary/20 hover:border-primary/40"
+                        >
+                          <Calendar className="mr-3 h-4 w-4 text-primary" />
+                          <div className="text-left">
+                            <div className="font-medium">
+                              {formData.checkOutDate ? format(formData.checkOutDate, "MMM dd, yyyy") : "Select date"}
+                            </div>
+                            {formData.checkOutDate && (
+                              <div className="text-xs text-muted-foreground">{format(formData.checkOutDate, "EEEE")}</div>
+                            )}
+                          </div>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarComponent
+                          mode="single"
+                          selected={formData.checkOutDate}
+                          onSelect={handleCheckOutChange}
+                          disabled={(date) =>
+                            date <= new Date() ||
+                            (formData.checkInDate && date <= formData.checkInDate) ||
+                            isCheckoutDateInvalid(date) ||
+                            isDateUnavailable(date)
+                          }
+                          modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
+                          modifiersClassNames={{
+                            unavailable:
+                              "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {formData.checkInDate && formData.checkOutDate && nights > 0 && (
+                  <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                    <div className="flex items-center gap-2 text-sm">
+                      <div className="w-3 h-3 bg-primary rounded-full"></div>
+                      <span className="font-medium">{format(formData.checkInDate, "MMM dd")}</span>
+                    </div>
+                    <div className="flex-1 flex items-center gap-2">
+                      <div className="flex-1 h-0.5 bg-primary/30"></div>
+                      <div className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-medium">
+                        {nights} {nights === 1 ? "night" : "nights"}
+                      </div>
+                      <div className="flex-1 h-0.5 bg-primary/30"></div>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-medium">{format(formData.checkOutDate, "MMM dd")}</span>
+                      <div className="w-3 h-3 bg-primary rounded-full"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label className="text-base font-medium flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    Number of Guests
+                  </Label>
+                  <Select
+                    value={formData.guests.toString()}
+                    onValueChange={(value) => handleInputChange("guests", Number.parseInt(value))}
+                  >
+                    <SelectTrigger className="h-12">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[...Array(selectedRoom.maxGuests)].map((_, i) => (
+                        <SelectItem key={i} value={(i + 1).toString()}>
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            {i + 1} {i === 0 ? "Guest" : "Guests"}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-base font-medium flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4" />
+                    Reservation Status
+                  </Label>
+                  <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
+                    <SelectTrigger className="h-12">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                          Pending
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="completed">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          Completed
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="cancelled">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          Cancelled
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="lg:row-span-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">
+                Pricing Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="p-4 bg-muted/30 rounded-lg space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Selected Room</span>
+                  <Badge variant="outline" className="text-xs">
+                    Room {selectedRoom.number}
+                  </Badge>
+                </div>
+                <div className="font-medium">{selectedRoom.type}</div>
+              </div>
+
+              {nights > 0 && (
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Room rate</span>
+                      <span className="font-medium">${pricing.roomPrice.toFixed(2)} / night</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">
+                        {nights} {nights === 1 ? "night" : "nights"}
+                      </span>
+                      <span className="font-medium">${pricing.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Cleaning fee</span>
+                      <span className="font-medium">${pricing.cleaningFee.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Service fee</span>
+                      <span className="font-medium">${pricing.serviceFee.toFixed(2)}</span>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg">
+                    <span className="font-bold text-lg">Total Amount</span>
+                    <span className="font-bold text-xl text-primary">${pricing.total.toFixed(2)}</span>
+                  </div>
+
+                  {pricing.total !== reservation.totalPrice && (
+                    <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-4 w-4 text-yellow-600" />
+                        <span className="font-medium text-sm">Price Change Detected</span>
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Original Total:</span>
+                          <span>${reservation.totalPrice.toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center justify-between font-medium">
+                          <span>Difference:</span>
+                          <span className={pricing.total > reservation.totalPrice ? "text-red-600" : "text-green-600"}>
+                            {pricing.total > reservation.totalPrice ? "+" : ""}$
+                            {(pricing.total - reservation.totalPrice).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <Separator />
+              {formData.status === "completed" && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Payment Status</span>
+                    <Badge
+                      className="flex items-center gap-1"
+                    >
+                      <CheckCircle2 className="h-3 w-3" />
+                      {reservation.paymentStatus.charAt(0).toUpperCase() + reservation.paymentStatus.slice(1)}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-3 pt-4">
+                <Button type="submit" className="w-full h-12 text-base font-medium" size="lg">
+                  Update Reservation
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-12 bg-transparent border-primary/20 hover:border-primary/40"
+                >
+                  Cancel Changes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </form>
       </div>
     </AppLayout>
   )
 }
+
+export default EditReservationForm

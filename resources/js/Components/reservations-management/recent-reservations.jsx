@@ -3,19 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Calendar, MapPin } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case "completed":
-      return "bg-primary/10 text-primary border-primary/20"
-    case "pending":
-      return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
-    case "cancelled":
-      return "bg-red-500/10 text-red-600 border-red-500/20"
-    default:
-      return "bg-gray-500/10 text-gray-600 border-gray-500/20"
-  }
-}
+import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
 
 export default function RecentReservations({recentReservations}) {
   
@@ -35,7 +23,7 @@ export default function RecentReservations({recentReservations}) {
             <div className="flex items-center gap-4">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={reservation.user.profile_picture_url} alt={reservation.user.name} />
-                <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                <AvatarFallback className="">
                   {getInitials(reservation.user.name)}
                 </AvatarFallback>
               </Avatar>

@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import {
   closestCenter,
@@ -56,7 +54,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
-import DeleteAlertDialog from "../ui/delete-alert-dialog"
+import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
+import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
 
 
 function DragHandle({ id }) {
@@ -116,20 +115,6 @@ function SelectColumnFilter({ column, title, options }) {
   )
 }
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "completed":
-      return "bg-primary/10 text-primary border-primary/20"
-    case "pending":
-      return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
-    case "cancelled":
-      return "bg-red-500/10 text-red-600 border-red-500/20"
-    default:
-      return "bg-gray-500/10 text-gray-600 border-gray-500/20"
-  }
-}
-
-
 const columns = [
   {
     id: "drag",
@@ -159,7 +144,7 @@ const columns = [
         <div className="flex items-center gap-3 min-w-48">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.profile_picture_url} alt={user.name} />
-            <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">{initials}</AvatarFallback>
+            <AvatarFallback >{initials}</AvatarFallback>
           </Avatar>
           <div>
             <div className="font-medium text-sm">{user.name}</div>
@@ -228,7 +213,7 @@ const columns = [
         <div className="text-sm font-medium">{row.original.check_in}</div>
         <div className="text-xs text-muted-foreground">to {row.original.check_out}</div>
         <Badge variant="secondary" className="text-xs">
-          {row.original.nights} nights
+          {row.original.nights} {row.original.nights > 1 ? " nights" : " night"}
         </Badge>
       </div>
     ),
@@ -301,18 +286,22 @@ const columns = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit
-          </DropdownMenuItem>
+
           <DropdownMenuItem onClick={()=> table.options.meta.viewGuest(row.original.user)}>
             <User className="mr-2 h-4 w-4" />
             View Guest
           </DropdownMenuItem>
+
           <DropdownMenuItem onClick={()=> table.options.meta.viewRoom(row.original.room)}>
             <MapPin className="mr-2 h-4 w-4" />
             View Room
           </DropdownMenuItem>
+          
+          <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit Reservation
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
           {row.original.status !== 'cancelled' &&
             <DropdownMenuItem

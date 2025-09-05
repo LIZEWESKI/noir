@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Edit, Trash2, Users, Bath, Bed, Maximize } from "lucide-react"
 import StatusBadge from './status-badge'
-import DeleteAlertDialog from '../ui/delete-alert-dialog'
+import DeleteAlertDialog from '@/components/ui/delete-alert-dialog'
 const RoomCard = ({ room, onEdit, onDelete }) => (
   <Card className="overflow-hidden hover:shadow-lg transition-shadow pt-0 dark:border-primary/20">
     <div className="relative">

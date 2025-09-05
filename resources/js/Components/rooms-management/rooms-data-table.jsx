@@ -55,8 +55,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import StatusBadge from "./status-badge"
 import DeleteAlertDialog from "../ui/delete-alert-dialog"
+import { getStatusColor } from "@/components/rooms-management/get-room-status"
 
 export const schema = z.object({
   id: z.number(),
@@ -269,7 +269,11 @@ const columns = [
         </div>
       )
     },
-    cell: ({ row }) => <StatusBadge status={row.original.status} />,
+    cell: ({ row }) => (
+      <div className="space-y-2">
+        <Badge className={`text-xs px-2 py-1 ${getStatusColor(row.original.status)}`}>{row.original.status}</Badge>
+      </div>
+    ),
   },
   {
     accessorKey: "guests",

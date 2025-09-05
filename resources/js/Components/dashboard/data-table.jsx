@@ -76,6 +76,8 @@ import {
 } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
+import { getStatusColor } from "@/components/dashboard/get-reservation-status";
+
 
 export const schema = z.object({
   id: z.number(),
@@ -122,7 +124,7 @@ const columns = [
       return <div className="w-32 flex items-center gap-2 px-1 py-1.5 text-left">
               <Avatar className="h-8 w-8 overflow-hidden rounded-full">
                   <AvatarImage src={user.profile_picture_url} alt={user.name} />
-                  <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                  <AvatarFallback >
                     {table.options.meta.getInitials(user.name)}
                   </AvatarFallback>
               </Avatar>
@@ -157,16 +159,9 @@ const columns = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "completed" ? (
-          <BadgeCheck color="hsl(var(--success))"/>
-        ) : row.original.status === "cancelled" ?(
-          <CircleX color="hsl(var(--destructive))"/>
-        ) : (
-          <Loader />
-        )}
-        {row.original.status}
-      </Badge>
+      <div className="space-y-2">
+        <Badge className={`text-xs px-2 py-1 ${getStatusColor(row.original.status)}`}>{row.original.status}</Badge>
+      </div>
     ),
   },
   {

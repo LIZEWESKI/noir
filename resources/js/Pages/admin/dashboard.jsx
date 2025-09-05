@@ -1,8 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { SectionCards } from '@/components/section-card';
-import { DataTable } from '@/components/data-table';
-import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { SectionCards } from '@/components/dashboard/section-card';
+import { DataTable } from '@/components/dashboard/data-table';
+import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
 const breadcrumbs= [
     {
         title: 'Dashboard',
@@ -21,9 +21,7 @@ export default function Dashboard({metrics,reservations,charts_data}) {
                     )}
                 </div>
                 <DataTable data={reservations}/>
-                <div className="px-4 lg:px-6">
-                    <ChartAreaInteractive chartData={charts_data} />
-                </div>
+                <ChartAreaInteractive chartData={charts_data} />
             </div>
         </AppLayout>
     );
