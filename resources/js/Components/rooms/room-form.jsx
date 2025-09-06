@@ -18,20 +18,6 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
   const getFormatDate = useFormatDate();
-  // in case you want to know what useFormatDate hook looks like
-  
-  // export function useFormatDate() {
-  //     return useCallback((date) => {
-  //         if (!date) return ""
-  
-  //         // Use local timezone formatting instead of UTC
-  //         const year = date.getFullYear()
-  //         const month = String(date.getMonth() + 1).padStart(2, "0")
-  //         const day = String(date.getDate()).padStart(2, "0")
-  //         return `${year}-${month}-${day}`
-  //     }, []);
-  // }
-  
   
   // Calculate nights and total when dates change
   const [checkInDate, setCheckInDate] = useState()

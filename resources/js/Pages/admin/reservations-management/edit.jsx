@@ -23,7 +23,9 @@ import {
   AlertCircle,
 } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
-import { Head } from "@inertiajs/react"
+import { Head, useForm } from "@inertiajs/react"
+import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
+import { useInitials } from "@/hooks/use-initials"
 
 const breadcrumbs= [
     {
@@ -36,56 +38,23 @@ const breadcrumbs= [
     },
 ];
 
-const EditReservationForm = () => {
-    const reservation = {
-    id: "RSV-001",
-    guest: {
-      name: "Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      phone: "+1 (555) 123-4567",
-      avatar: "/diverse-woman-portrait.png",
-    },
-    room: {
-      id: 101,
-      number: "101",
-      type: "Standard Single Room",
-      price: 85.0,
-      maxGuests: 2,
-    },
-    checkIn: new Date("2025-01-15"),
-    checkOut: new Date("2025-01-18"),
-    guests: 1,
-    status: "confirmed",
-    totalPrice: 267.0,
-    specialRequests: "Late check-in requested",
-    paymentStatus: "paid",
-  }
-  const unavailableDates = []
-  const availableRooms = [
-    { id: 101, number: "101", type: "Standard Single Room", price: 85.0, maxGuests: 2 },
-    { id: 102, number: "102", type: "Standard Single Room - Ocean View", price: 95.0, maxGuests: 2 },
-    { id: 201, number: "201", type: "Deluxe Double Room", price: 120.0, maxGuests: 4 },
-  ]
+const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRooms }) => {
+  console.log("reservation", reservation)
+  console.log("unavailableDates", unavailable_dates)
+  console.log("rooms", availableRooms)
+  const getInitials = useInitials();
+  const { data, setData, post, processing, errors } = useForm(reservation)
+  const [unavailableDates, setUnavailableDates] = useState(() => unavailable_dates);
+  // const availableRooms = [
+  //   { id: 101, number: "101", type: "Standard Single Room", price: 85.0, maxGuests: 2 },
+  //   { id: 102, number: "102", type: "Standard Single Room - Ocean View", price: 95.0, maxGuests: 2 },
+  //   { id: 201, number: "201", type: "Deluxe Double Room", price: 120.0, maxGuests: 4 },
+  // ]
   // Parse unavailable dates excluding current reservation
-  const parsedUnavailableDates = unavailableDates
-    .filter((range) => range.reservation_id !== reservation.id)
-    .map((range) => ({
-      checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
-      checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
-    }))
-
-  // Form state
-  const [formData, setFormData] = useState({
-    guestName: reservation.guest.name,
-    guestEmail: reservation.guest.email,
-    guestPhone: reservation.guest.phone,
-    roomId: reservation.room.id,
-    checkInDate: reservation.checkIn,
-    checkOutDate: reservation.checkOut,
-    guests: reservation.guests,
-    specialRequests: reservation.specialRequests || "",
-    status: reservation.status,
-  })
+  const parsedUnavailableDates = unavailableDates.map((range) => ({
+    checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
+    checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
+  }))
 
   const [nights, setNights] = useState(0)
   const [pricing, setPricing] = useState({
@@ -97,12 +66,12 @@ const EditReservationForm = () => {
   })
 
   // Get selected room details
-  const selectedRoom = availableRooms.find((room) => room.id === formData.roomId) || reservation.room
+  const selectedRoom = availableRooms.find((room) => room.id === data.room.id) || reservation.room
 
   // Calculate nights and pricing
   useEffect(() => {
-    if (formData.checkInDate && formData.checkOutDate) {
-      const nightsCount = differenceInDays(formData.checkOutDate, formData.checkInDate)
+    if (data.check_in && data.check_out) {
+      const nightsCount = differenceInDays(data.check_out, data.check_in)
       setNights(nightsCount > 0 ? nightsCount : 0)
 
       const roomPrice = selectedRoom.price
@@ -116,11 +85,11 @@ const EditReservationForm = () => {
         total,
       }))
     }
-  }, [formData.checkInDate, formData.checkOutDate, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
+  }, [data.checkInDate, data.checkOutDate, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
 
   // Date validation functions (similar to room-form)
   const isDateUnavailable = (date) => {
-    if (!unavailableDates || unavailableDates.length === 0) return false
+    if (!unavailable_dates || unavailable_dates.length === 0) return false
 
     return parsedUnavailableDates.some((range) => {
       if (!(range.checkIn instanceof Date) || !(range.checkOut instanceof Date)) return false
@@ -134,10 +103,10 @@ const EditReservationForm = () => {
   }
 
   const isCheckoutDateInvalid = (date) => {
-    if (!formData.checkInDate) return false
-    if (!unavailableDates || unavailableDates.length === 0) return false
+    if (!data.checkInDate) return false
+    if (!unavailable_dates || unavailable_dates.length === 0) return false
 
-    let currentDate = new Date(formData.checkInDate)
+    let currentDate = new Date(data.checkInDate)
     while (differenceInDays(date, currentDate) >= 0) {
       if (isDateUnavailable(currentDate)) return true
       currentDate = addDays(currentDate, 1)
@@ -146,11 +115,11 @@ const EditReservationForm = () => {
   }
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleCheckInChange = (date) => {
-    setFormData((prev) => ({
+    setData((prev) => ({
       ...prev,
       checkInDate: date,
       checkOutDate: null, // Reset checkout when checkin changes
@@ -158,28 +127,13 @@ const EditReservationForm = () => {
   }
 
   const handleCheckOutChange = (date) => {
-    setFormData((prev) => ({ ...prev, checkOutDate: date }))
+    setData((prev) => ({ ...prev, checkOutDate: date }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("[v0] Updating reservation:", formData)
+    console.log("[v0] Updating reservation:", data)
     // Handle form submission
-  }
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "confirmed":
-        return "bg-primary text-primary-foreground"
-      case "pending":
-        return "bg-yellow-500 text-white"
-      case "cancelled":
-        return "bg-red-500 text-white"
-      case "completed":
-        return "bg-green-500 text-white"
-      default:
-        return "bg-gray-500 text-white"
-    }
   }
 
   return (
@@ -191,14 +145,14 @@ const EditReservationForm = () => {
             <p className="text-muted-foreground mt-1">Modify booking details and preferences</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Reservation ID:</span>
-              <code className="px-2 py-1 bg-muted rounded font-mono text-foreground">{reservation.id}</code>
+              <code className="px-2 py-1 bg-muted rounded font-mono text-foreground">RSV-{reservation.id}</code>
             </div>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <Badge className={getStatusColor(formData.status)} variant="outline">
-              {formData.status.charAt(0).toUpperCase() + formData.status.slice(1)}
+            <Badge className={getStatusColor(data.status)} variant="outline">
+              {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
             </Badge>
-            <div className="text-xs text-muted-foreground">Last updated: {format(new Date(), "MMM dd, yyyy")}</div>
+            <div className="text-xs text-muted-foreground">Last updated: {format(data.updated_at, "MMM dd, yyyy")}</div>
           </div>
         </div>
 
@@ -214,24 +168,21 @@ const EditReservationForm = () => {
             <CardContent>
               <div className="flex items-center gap-6 p-6 bg-background rounded-xl border border-border">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src={reservation.guest.avatar || "/placeholder.svg"} />
+                  <AvatarImage src={reservation.user.profile_picture_url} />
                   <AvatarFallback className="font-semibold text-lg">
-                    {reservation.guest.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
+                    {getInitials(reservation.user.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-3">
                   <div>
-                    <h3 className="font-semibold text-lg">{reservation.guest.name}</h3>
+                    <h3 className="font-semibold text-lg">{reservation.user.name}</h3>
                     <p className="text-muted-foreground text-sm">Primary Guest</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       <span className="text-muted-foreground">Email:</span>
-                      <span className="font-medium">{reservation.guest.email}</span>
+                      <span className="font-medium">{reservation.user.email}</span>
                     </div>
                   </div>
                 </div>
@@ -250,7 +201,7 @@ const EditReservationForm = () => {
             <div className="space-y-2">
               <Label>Room Assignment</Label>
               <Select
-                value={formData.roomId.toString()}
+                value={data.room.id.toString()}
                 onValueChange={(value) => handleInputChange("roomId", Number.parseInt(value))}
               >
                 <SelectTrigger>
@@ -261,7 +212,7 @@ const EditReservationForm = () => {
                     <SelectItem key={room.id} value={room.id.toString()}>
                       <div className="flex items-center justify-between w-full">
                         <span>
-                          Room {room.number} - {room.type}
+                          Room {room.room_number} - {room.name}
                         </span>
                         <span className="text-muted-foreground ml-2">${room.price}/night</span>
                       </div>
@@ -288,10 +239,10 @@ const EditReservationForm = () => {
                           <Calendar className="mr-3 h-4 w-4 text-primary" />
                           <div className="text-left">
                             <div className="font-medium">
-                              {formData.checkInDate ? format(formData.checkInDate, "MMM dd, yyyy") : "Select date"}
+                              {data.check_in ? format(data.check_in, "MMM dd, yyyy") : "Select date"}
                             </div>
-                            {formData.checkInDate && (
-                              <div className="text-xs text-muted-foreground">{format(formData.checkInDate, "EEEE")}</div>
+                            {data.check_in && (
+                              <div className="text-xs text-muted-foreground">{format(data.check_in, "EEEE")}</div>
                             )}
                           </div>
                         </Button>
@@ -299,11 +250,11 @@ const EditReservationForm = () => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <CalendarComponent
                           mode="single"
-                          selected={formData.checkInDate}
+                          selected={data.check_in}
                           onSelect={handleCheckInChange}
                           disabled={(date) =>
                             date < new Date() ||
-                            (formData.checkOutDate && date >= formData.checkOutDate) ||
+                            (data.check_out && date >= data.check_out) ||
                             isDateUnavailable(date)
                           }
                           modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
@@ -328,10 +279,10 @@ const EditReservationForm = () => {
                           <Calendar className="mr-3 h-4 w-4 text-primary" />
                           <div className="text-left">
                             <div className="font-medium">
-                              {formData.checkOutDate ? format(formData.checkOutDate, "MMM dd, yyyy") : "Select date"}
+                              {data.check_out ? format(data.check_out, "MMM dd, yyyy") : "Select date"}
                             </div>
-                            {formData.checkOutDate && (
-                              <div className="text-xs text-muted-foreground">{format(formData.checkOutDate, "EEEE")}</div>
+                            {data.check_out && (
+                              <div className="text-xs text-muted-foreground">{format(data.check_out, "EEEE")}</div>
                             )}
                           </div>
                         </Button>
@@ -339,11 +290,11 @@ const EditReservationForm = () => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <CalendarComponent
                           mode="single"
-                          selected={formData.checkOutDate}
+                          selected={data.check_out}
                           onSelect={handleCheckOutChange}
                           disabled={(date) =>
                             date <= new Date() ||
-                            (formData.checkInDate && date <= formData.checkInDate) ||
+                            (data.check_in && date <= data.check_in) ||
                             isCheckoutDateInvalid(date) ||
                             isDateUnavailable(date)
                           }
@@ -359,11 +310,11 @@ const EditReservationForm = () => {
                   </div>
                 </div>
 
-                {formData.checkInDate && formData.checkOutDate && nights > 0 && (
+                {data.check_in && data.check_out && nights > 0 && (
                   <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
                     <div className="flex items-center gap-2 text-sm">
                       <div className="w-3 h-3 bg-primary rounded-full"></div>
-                      <span className="font-medium">{format(formData.checkInDate, "MMM dd")}</span>
+                      <span className="font-medium">{format(data.check_in, "MMM dd")}</span>
                     </div>
                     <div className="flex-1 flex items-center gap-2">
                       <div className="flex-1 h-0.5 bg-primary/30"></div>
@@ -373,7 +324,7 @@ const EditReservationForm = () => {
                       <div className="flex-1 h-0.5 bg-primary/30"></div>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <span className="font-medium">{format(formData.checkOutDate, "MMM dd")}</span>
+                      <span className="font-medium">{format(data.check_out, "MMM dd")}</span>
                       <div className="w-3 h-3 bg-primary rounded-full"></div>
                     </div>
                   </div>
@@ -387,14 +338,14 @@ const EditReservationForm = () => {
                     Number of Guests
                   </Label>
                   <Select
-                    value={formData.guests.toString()}
+                    value={data.room.guests.toString()}
                     onValueChange={(value) => handleInputChange("guests", Number.parseInt(value))}
                   >
                     <SelectTrigger className="h-12">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {[...Array(selectedRoom.maxGuests)].map((_, i) => (
+                      {[...Array(selectedRoom.guests)].map((_, i) => (
                         <SelectItem key={i} value={(i + 1).toString()}>
                           <div className="flex items-center gap-2">
                             <Users className="h-4 w-4" />
@@ -411,7 +362,7 @@ const EditReservationForm = () => {
                     <AlertCircle className="h-4 w-4" />
                     Reservation Status
                   </Label>
-                  <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
+                  <Select value={data.status} onValueChange={(value) => handleInputChange("status", value)}>
                     <SelectTrigger className="h-12">
                       <SelectValue />
                     </SelectTrigger>
@@ -452,10 +403,10 @@ const EditReservationForm = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Selected Room</span>
                   <Badge variant="outline" className="text-xs">
-                    Room {selectedRoom.number}
+                    Room {selectedRoom.room_number}
                   </Badge>
                 </div>
-                <div className="font-medium">{selectedRoom.type}</div>
+                <div className="font-medium">{selectedRoom.name}</div>
               </div>
 
               {nights > 0 && (
@@ -463,7 +414,7 @@ const EditReservationForm = () => {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Room rate</span>
-                      <span className="font-medium">${pricing.roomPrice.toFixed(2)} / night</span>
+                      <span className="font-medium">${Number(pricing.roomPrice).toFixed(2)} / night</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">
@@ -488,7 +439,7 @@ const EditReservationForm = () => {
                     <span className="font-bold text-xl text-primary">${pricing.total.toFixed(2)}</span>
                   </div>
 
-                  {pricing.total !== reservation.totalPrice && (
+                  {pricing.total !== reservation.total_price && (
                     <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                       <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="h-4 w-4 text-yellow-600" />
@@ -497,13 +448,13 @@ const EditReservationForm = () => {
                       <div className="space-y-1 text-sm">
                         <div className="flex items-center justify-between">
                           <span className="text-muted-foreground">Original Total:</span>
-                          <span>${reservation.totalPrice.toFixed(2)}</span>
+                          <span>${Number(reservation.total_price).toFixed(2)}</span>
                         </div>
                         <div className="flex items-center justify-between font-medium">
                           <span>Difference:</span>
-                          <span className={pricing.total > reservation.totalPrice ? "text-red-600" : "text-green-600"}>
-                            {pricing.total > reservation.totalPrice ? "+" : ""}$
-                            {(pricing.total - reservation.totalPrice).toFixed(2)}
+                          <span className={pricing.total > reservation.total_price ? "text-red-600" : "text-green-600"}>
+                            {pricing.total > reservation.total_price ? "+" : ""}$
+                            {(pricing.total - reservation.total_price).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -513,7 +464,7 @@ const EditReservationForm = () => {
               )}
 
               <Separator />
-              {formData.status === "completed" && (
+              {data.status === "completed" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Payment Status</span>
@@ -521,7 +472,7 @@ const EditReservationForm = () => {
                       className="flex items-center gap-1"
                     >
                       <CheckCircle2 className="h-3 w-3" />
-                      {reservation.paymentStatus.charAt(0).toUpperCase() + reservation.paymentStatus.slice(1)}
+                      {/* {reservation.paymentStatus.charAt(0).toUpperCase() + reservation.paymentStatus.slice(1)} */}
                     </Badge>
                   </div>
                 </div>

@@ -141,6 +141,7 @@ class Reservation extends Model
                     'room_number' => $res->room->room_number,
                     'profile_picture_path' => $res->user->profile_picture_path,
                     'profile_picture_url' => $res->user->profile_picture_url,
+                    'google_id' => $res->user->google_id
                 ]);
                 
             $checkOuts = self::with(['user', 'room'])
@@ -153,6 +154,7 @@ class Reservation extends Model
                     'room_number' => $res->room->room_number,
                     'profile_picture_path' => $res->user->profile_picture_path,
                     'profile_picture_url' => $res->user->profile_picture_url,
+                    'google_id' => $res->user->google_id
                 ]);
 
             $timeline->push([

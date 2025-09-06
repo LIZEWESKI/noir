@@ -5,7 +5,7 @@ import { CalendarDays, Clock, MapPin } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
 
 const ReservationTimeline = ({timelineData}) => {
-
+  console.log(timelineData)
   const getInitials = useInitials();
 
   return (
