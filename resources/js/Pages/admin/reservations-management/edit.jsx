@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { format, differenceInDays, addDays, isWithinInterval, isSameDay } from "date-fns"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
@@ -23,6 +23,8 @@ import { toast } from "sonner"
 import { useFormatDate } from "@/hooks/use-format-date"
 import GuestInfo from "@/components/reservations-management/guest-info"
 import Heading from "@/components/reservations-management/heading"
+import RoomSelection from "@/components/reservations-management/room-selection"
+import DatePicker from "@/components/reservations-management/date-picker"
 
 const breadcrumbs= [
     {
@@ -36,7 +38,6 @@ const breadcrumbs= [
 ];
 
 const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRooms }) => {
-
   const getFormatDate = useFormatDate();
 
   const [unavailableDates, setUnavailableDates] = useState(() => unavailable_dates);
@@ -56,8 +57,6 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
     check_out: reservation.check_out,
     status: reservation.status
   })
-
-
 
   const [selectedRoom, setSelectedRoom] = useState(reservation.room);
   const [guestCount, setGuestCount] = useState(selectedRoom.guests)
@@ -186,30 +185,12 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
             </CardHeader>
             <CardContent className="space-y-8">
             {/* Room Selection */}
-            <div className="space-y-2">
-              <Label>Room Assignment</Label>
-              <Select
-                value={selectedRoom.id.toString()}
-                onValueChange={(value) => handleSelectedRoom(Number.parseInt(value))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableRooms.map((room) => (
-                    <SelectItem key={room.id} value={room.id.toString()}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>
-                          Room {room.room_number} - {room.name}
-                        </span>
-                        <span className="text-muted-foreground ml-2">${room.price}/night</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.room_id && <p className="text-sm text-destructive font-medium ">{errors.room_id}</p>}
-            </div>
+              <RoomSelection 
+                availableRooms={availableRooms}
+                selectedRoom={selectedRoom}
+                handleSelectedRoom={handleSelectedRoom}
+                roomError={errors.room_id}
+              />
 
               <div className="space-y-4">
                 <Label className="text-base font-medium flex items-center gap-2">
@@ -217,88 +198,25 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                   Stay Duration
                 </Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-muted-foreground">Check-in Date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start h-12 bg-transparent border-primary/20 hover:border-primary/40"
-                        >
-                          <Calendar className="mr-3 h-4 w-4 text-primary" />
-                          <div className="text-left">
-                            <div className="font-medium">
-                              {data.check_in ? format(data.check_in, "MMM dd, yyyy") : "Select date"}
-                            </div>
-                            {data.check_in && (
-                              <div className="text-xs text-muted-foreground">{format(data.check_in, "EEEE")}</div>
-                            )}
-                          </div>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <CalendarComponent
-                          mode="single"
-                          selected={checkInDate}
-                          onSelect={handleCheckIn}
-                          disabled={(date) =>
-                            date < new Date() ||
-                            (checkOutDate && date >= checkOutDate) ||
-                            isDateUnavailable(date)
-                          }
-                          modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
-                          modifiersClassNames={{
-                            unavailable:
-                              "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
-                          }}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    {errors.check_in && <p className="text-sm text-destructive font-medium ">{errors.check_in}</p>}
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-muted-foreground">Check-out Date</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start h-12 bg-transparent border-primary/20 hover:border-primary/40"
-                        >
-                          <Calendar className="mr-3 h-4 w-4 text-primary" />
-                          <div className="text-left">
-                            <div className="font-medium">
-                              {data.check_out ? format(data.check_out, "MMM dd, yyyy") : "Select date"}
-                            </div>
-                            {data.check_out && (
-                              <div className="text-xs text-muted-foreground">{format(data.check_out, "EEEE")}</div>
-                            )}
-                          </div>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <CalendarComponent
-                          mode="single"
-                          selected={checkOutDate}
-                          onSelect={handleCheckOut}
-                          disabled={(date) =>
-                            date <= new Date() ||
-                            (checkInDate && date <= checkInDate) ||
-                            isCheckoutDateInvalid(date) ||
-                            isDateUnavailable(date)
-                          }
-                          modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
-                          modifiersClassNames={{
-                            unavailable:
-                              "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
-                          }}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    {errors.check_out && <p className="text-sm text-destructive font-medium ">{errors.check_out}</p>}
-                  </div>
+                  {/* Date Picker for Check In */}
+                  <DatePicker 
+                    label="Check-in Date"
+                    selectedDate={checkInDate}
+                    setSelectedDate={handleCheckIn}
+                    isDateUnavailable={isDateUnavailable}
+                    otherDate={checkOutDate}
+                    compareType="max"
+                    error={errors.check_in}
+                  />
+                  <DatePicker 
+                    label="Check-out Date"
+                    selectedDate={checkOutDate}
+                    setSelectedDate={handleCheckOut}
+                    isDateUnavailable={isDateUnavailable}
+                    otherDate={checkInDate}
+                    isDateInvalid={isCheckoutDateInvalid}
+                    error={errors.check_out}
+                  />
                 </div>
 
                 {data.check_in && data.check_out && nights > 0 && (

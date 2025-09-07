@@ -213,9 +213,5 @@ class Reservation extends Model
             return $reservation;
         });
     }
-
-    protected $casts = [
-        'check_in' => 'datetime:Y-m-d H:i:s',
-        'check_out' => 'datetime:Y-m-d H:i:s',
-    ];
+    
 }
