@@ -5,7 +5,6 @@ import { CalendarDays, Clock, MapPin } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
 
 const ReservationTimeline = ({timelineData}) => {
-  console.log(timelineData)
   const getInitials = useInitials();
 
   return (
@@ -31,7 +30,7 @@ const ReservationTimeline = ({timelineData}) => {
                 {day.checkOuts.map((checkout) => (
                   <div key={checkout.id} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={checkout.profile_pic_url} alt={checkout.user_name} />
+                      <AvatarImage src={checkout.profile_picture_url} alt={checkout.user_name} />
                       <AvatarFallback>
                         {getInitials(checkout.user_name)}
                       </AvatarFallback>

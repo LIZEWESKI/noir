@@ -18,14 +18,14 @@ const mainNavItems = [
         icon: House,
     },
     {
-        title: "Reservations",
-        href: "/admin/reservations-management",
-        icon: Calendar,
-    },
-    {
         title: "Guests",
         href: "/admin/guests-management",
         icon: Users,
+    },
+    {
+        title: "Reservations",
+        href: "/admin/reservations-management",
+        icon: Calendar,
     },
     {
         title: "Payments",

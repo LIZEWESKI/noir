@@ -43,8 +43,7 @@ class ReservationController extends Controller
             'check_in' => 'required|date|before:check_out',
             'check_out' => 'required|date|after:check_in',
         ]);
-        // Get Room 
-        $room = Room::findOrFail($attributes['room_id']);
+
         // Check if it has more than two reservations if so redirect back with error message
         $reservations_count = Reservation::where('user_id',Auth::id())
             ->where('status', 'pending')
@@ -58,33 +57,14 @@ class ReservationController extends Controller
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
         // Check for overlapping reservations
-        $overlap = Reservation::where('room_id', $request->room_id)->where('status','completed')
-        ->where(function ($query) use ($request) {
-            $query->whereBetween('check_in', [$request->check_in, $request->check_out])
-                ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
-                ->orWhere(function ($query) use ($request) {
-                    $query->where('check_in', '<=', $request->check_in)
-                            ->where('check_out', '>=', $request->check_out);
-                });
-        })->exists();
-        if ($overlap) {
-            throw ValidationException::withMessages([
-                'date' => 'The selected dates overlap with an existing reservation.',
-            ]);
-        }
-        // Calculate nights count
-        $nightsCount =(int) max(0, $checkIn->diffInDays($checkOut));    
-        
-        // Prepare data for saving
-        $attributes['user_id'] = Auth::id();
-        $attributes['nights'] = $nightsCount;
-        $attributes['cleaning_fee'] = 25;
-        $attributes['service_fee'] = 15;
-        // Get room price and calculate total price
-        $totalPrice = ($room->price * $nightsCount) 
-                        + $attributes['cleaning_fee'] 
-                        + $attributes['service_fee'];
-        $attributes['total_price'] = $totalPrice;
+        Reservation::checkOverLap($request->room_id, $request->check_in, $request->check_out,null);
+
+        // Get Room 
+        $room = Room::findOrFail($attributes['room_id']);
+        // helper method to calculate nights count & the total price 
+        $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
+
+        $attributes = array_merge($attributes, ['user_id' => Auth::id()], $pricing);
         // Save reservation and Redirect
         Reservation::create($attributes);
         return redirect()->route('reservations.index')->with('success', 'Reservation created successfully.');

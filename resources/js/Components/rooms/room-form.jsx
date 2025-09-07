@@ -19,7 +19,6 @@ const RoomForm = ({ room, unavailableDates = [] }) => {
   }))
   const getFormatDate = useFormatDate();
   
-  // Calculate nights and total when dates change
   const [checkInDate, setCheckInDate] = useState()
   const [checkOutDate, setCheckOutDate] = useState()
   const { data, setData, post, processing, errors } = useForm({

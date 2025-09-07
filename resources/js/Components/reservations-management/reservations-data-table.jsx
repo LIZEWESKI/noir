@@ -238,7 +238,7 @@ const columns = [
     ),
     cell: ({ row }) => (
       <div className="space-y-1">
-        <div className="font-semibold">${Number(row.original.total_price).toFixed(2)}</div>
+        <div className="font-semibold">${Number(row.original.total_price - (Number(row.original.cleaning_fee) + Number(row.original.service_fee))).toFixed(2)}</div>
         <div className="text-xs text-muted-foreground">
           +${row.original.cleaning_fee} + {row.original.service_fee} fees
         </div>

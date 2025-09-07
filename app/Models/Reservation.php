@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -35,9 +36,45 @@ class Reservation extends Model
         return $this->belongsToMany(Payment::class, 'payment_reservation');
     }
 
+    public static function checkOverLap($roomId, $checkIn, $checkOut, $ignoreId = null): bool{
+        $overlap = self::where('room_id', $roomId)
+            ->where('status', 'completed')
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId)) // skip current reservation when editing
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->whereBetween('check_in', [$checkIn, $checkOut])
+                    ->orWhereBetween('check_out', [$checkIn, $checkOut])
+                    ->orWhere(function ($query) use ($checkIn, $checkOut) {
+                        $query->where('check_in', '<=', $checkIn)
+                            ->where('check_out', '>=', $checkOut);
+                    });
+            })
+        ->exists();
+        if ($overlap) {
+            throw ValidationException::withMessages([
+                'date' => 'The selected dates overlap with an existing reservation.',
+            ]);
+        }
+        return true;
+    }
+
+    public static function calculatePricing(Room $room, $checkIn, $checkOut): array {
+        $nights = max(0, $checkIn->diffInDays($checkOut));
+
+        $cleaningFee = 25;
+        $serviceFee  = 15;
+
+        $total = ($room->price * $nights) + $cleaningFee + $serviceFee;
+
+        return [
+            'nights'        => $nights,
+            'cleaning_fee'  => $cleaningFee,
+            'service_fee'   => $serviceFee,
+            'total_price'   => $total,
+        ];
+    }
+
     // for dashboard page
-    public static function recentBookingsForChart(int $months = 3)
-    {
+    public static function recentBookingsForChart(int $months = 3) {
         return self::selectRaw('DATE(created_at) as date,
             SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed_count,
             SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) as cancelled_count')
@@ -52,8 +89,7 @@ class Reservation extends Model
             ]);
     }
 
-    public static function latestReservations()
-    {
+    public static function latestReservations(){
         return self::select(['id','user_id','room_id','check_in','check_out','nights','total_price','service_fee','cleaning_fee','status'])
             ->with(['room:id,room_number,name', 'user:id,name,profile_picture_path,google_id,email'])
             ->latest()
@@ -62,8 +98,7 @@ class Reservation extends Model
 
     // for reservations management page
 
-    public static function quickStats(): array
-    {
+    public static function quickStats(): array {
         $todayCheckIns = self::whereDate('check_in', today())->count();
 
         $todayCheckOuts = self::whereDate('check_out', today())->count();
@@ -109,8 +144,7 @@ class Reservation extends Model
         ];
     }
 
-    public static function recentLimitedReservations()
-    {
+    public static function recentLimitedReservations() {
         return self::select(['id','user_id','room_id','check_in','check_out','total_price','status'])
             ->with(['room:id,room_number,name', 'user:id,name,profile_picture_path,google_id'])
             ->latest()
@@ -118,8 +152,7 @@ class Reservation extends Model
             ->get();
     }
 
-    public static function timeline(): Collection
-    {
+    public static function timeline(): Collection {
         $today = Carbon::today();
         $tomorrow = Carbon::tomorrow();
 
@@ -170,8 +203,8 @@ class Reservation extends Model
     /**
      * Get reservations with rooms, replacing deleted rooms with ghost data.
     */
-    public static function withGhostedRooms()
-    {
+    // This method still not workin yet but will keep it for ref x)
+    public static function withGhostedRooms(){
         return self::with(["room", "user"])->get()->map(function ($reservation) {
             if ($reservation->room && $reservation->room->trashed()) {
                 // Replace room properties with ghost data
@@ -180,4 +213,9 @@ class Reservation extends Model
             return $reservation;
         });
     }
+
+    protected $casts = [
+        'check_in' => 'datetime:Y-m-d H:i:s',
+        'check_out' => 'datetime:Y-m-d H:i:s',
+    ];
 }

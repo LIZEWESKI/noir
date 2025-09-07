@@ -2,30 +2,27 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { format, differenceInDays, addDays, isWithinInterval, isSameDay } from "date-fns"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Calendar,
-  User,
-  MapPin,
-  CreditCard,
   Clock,
-  Bed,
   Users,
-  MessageSquare,
   CheckCircle2,
   AlertCircle,
+  LoaderCircle,
 } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
-import { Head, useForm } from "@inertiajs/react"
-import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
-import { useInitials } from "@/hooks/use-initials"
+import { Head, router, useForm, usePage } from "@inertiajs/react"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+import { useFormatDate } from "@/hooks/use-format-date"
+import GuestInfo from "@/components/reservations-management/guest-info"
+import Heading from "@/components/reservations-management/heading"
 
 const breadcrumbs= [
     {
@@ -39,34 +36,67 @@ const breadcrumbs= [
 ];
 
 const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRooms }) => {
-  console.log("reservation", reservation)
-  console.log("unavailableDates", unavailable_dates)
-  console.log("rooms", availableRooms)
-  const getInitials = useInitials();
-  const { data, setData, post, processing, errors } = useForm(reservation)
+
+  const getFormatDate = useFormatDate();
+
   const [unavailableDates, setUnavailableDates] = useState(() => unavailable_dates);
-  // const availableRooms = [
-  //   { id: 101, number: "101", type: "Standard Single Room", price: 85.0, maxGuests: 2 },
-  //   { id: 102, number: "102", type: "Standard Single Room - Ocean View", price: 95.0, maxGuests: 2 },
-  //   { id: 201, number: "201", type: "Deluxe Double Room", price: 120.0, maxGuests: 4 },
-  // ]
   // Parse unavailable dates excluding current reservation
   const parsedUnavailableDates = unavailableDates.map((range) => ({
     checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
 
+  // Parse CheckIn and CheckOut dates for formatting and validating
+  const [checkInDate, setCheckInDate] = useState(reservation.check_in ? new Date(reservation.check_in) : null)
+  const [checkOutDate, setCheckOutDate] = useState(reservation.check_out ? new Date(reservation.check_out) : null)
+
+  const { data, setData, put, processing, errors } = useForm({
+    room_id: reservation.room_id,
+    check_in: reservation.check_in,
+    check_out: reservation.check_out,
+    status: reservation.status
+  })
+
+
+
+  const [selectedRoom, setSelectedRoom] = useState(reservation.room);
+  const [guestCount, setGuestCount] = useState(selectedRoom.guests)
+
   const [nights, setNights] = useState(0)
   const [pricing, setPricing] = useState({
-    roomPrice: 0,
+    roomPrice: selectedRoom.price,
     subtotal: 0,
     cleaningFee: 25,
     serviceFee: 15,
     total: 0,
   })
+  const handleSelectedRoom = (roomId) => {
+    const room = availableRooms.find((room) => room.id === roomId)
+    setSelectedRoom(room)
+    // set unavailable dates that corresponds with this new room
+    setUnavailableDates(room.unavailable_dates)
+    // Reset checkin & checkout when room changes
+    // update the room id
+    setData((prev) => ({
+      ...prev,
+      check_in: null,
+      check_out: null,
+      room_id: room.id
+    }))
+  }
 
-  // Get selected room details
-  const selectedRoom = availableRooms.find((room) => room.id === data.room.id) || reservation.room
+  const {errors : exceptionErrors} = usePage().props;
+  useEffect(() => {
+    exceptionErrors.date && toast.error(exceptionErrors.date, {
+      descriptionClassName: "text-white/90", 
+      duration: 5000,
+      position: "top-center",
+      style: {
+        backgroundColor: "hsl(var(--destructive))",
+        color: "#fff",
+      }
+    })
+  }, [exceptionErrors]);
 
   // Calculate nights and pricing
   useEffect(() => {
@@ -85,11 +115,11 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
         total,
       }))
     }
-  }, [data.checkInDate, data.checkOutDate, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
+  }, [data.check_in, data.check_out, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
 
   // Date validation functions (similar to room-form)
   const isDateUnavailable = (date) => {
-    if (!unavailable_dates || unavailable_dates.length === 0) return false
+    if (!unavailableDates || unavailableDates.length === 0) return false
 
     return parsedUnavailableDates.some((range) => {
       if (!(range.checkIn instanceof Date) || !(range.checkOut instanceof Date)) return false
@@ -103,10 +133,10 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
   }
 
   const isCheckoutDateInvalid = (date) => {
-    if (!data.checkInDate) return false
-    if (!unavailable_dates || unavailable_dates.length === 0) return false
+    if (!checkInDate) return false
+    if (!unavailableDates || unavailableDates.length === 0) return false
 
-    let currentDate = new Date(data.checkInDate)
+    let currentDate = checkInDate
     while (differenceInDays(date, currentDate) >= 0) {
       if (isDateUnavailable(currentDate)) return true
       currentDate = addDays(currentDate, 1)
@@ -114,82 +144,40 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
     return false
   }
 
-  const handleInputChange = (field, value) => {
-    setData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleCheckInChange = (date) => {
+  const handleCheckIn = (date) => {
+    // Making sure to always resetting check out date 
+    setCheckInDate(date)
+    setCheckOutDate(null)
     setData((prev) => ({
       ...prev,
-      checkInDate: date,
-      checkOutDate: null, // Reset checkout when checkin changes
+      check_in: date ? getFormatDate(date) : null,
+      check_out: "",
     }))
   }
 
-  const handleCheckOutChange = (date) => {
-    setData((prev) => ({ ...prev, checkOutDate: date }))
+  const handleCheckOut = (date) => {
+    setCheckOutDate(date)
+    setData((prev) => ({
+      ...prev,
+      check_out: date ? getFormatDate(date) : null,
+    }))
   }
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("[v0] Updating reservation:", data)
-    // Handle form submission
+    put(`/admin/reservations-management/${reservation.id}`)
   }
 
   return (
     <AppLayout breadcrumbs={breadcrumbs} >
       <Head title="Edit Reservation"/>
       <div className="p-6 space-y-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-3">
-            <p className="text-muted-foreground mt-1">Modify booking details and preferences</p>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Reservation ID:</span>
-              <code className="px-2 py-1 bg-muted rounded font-mono text-foreground">RSV-{reservation.id}</code>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-2">
-            <Badge className={getStatusColor(data.status)} variant="outline">
-              {data.status.charAt(0).toUpperCase() + data.status.slice(1)}
-            </Badge>
-            <div className="text-xs text-muted-foreground">Last updated: {format(data.updated_at, "MMM dd, yyyy")}</div>
-          </div>
-        </div>
 
+        <Heading data={data} reservation={reservation} />
+        <GuestInfo user={reservation.user} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Guest Information */}
-          <Card className="lg:col-span-2">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">
-                Guest Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-6 p-6 bg-background rounded-xl border border-border">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={reservation.user.profile_picture_url} />
-                  <AvatarFallback className="font-semibold text-lg">
-                    {getInitials(reservation.user.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 space-y-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">{reservation.user.name}</h3>
-                    <p className="text-muted-foreground text-sm">Primary Guest</p>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      <span className="text-muted-foreground">Email:</span>
-                      <span className="font-medium">{reservation.user.email}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
           <Card className="lg:col-span-2 ">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg">
@@ -201,8 +189,8 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
             <div className="space-y-2">
               <Label>Room Assignment</Label>
               <Select
-                value={data.room.id.toString()}
-                onValueChange={(value) => handleInputChange("roomId", Number.parseInt(value))}
+                value={selectedRoom.id.toString()}
+                onValueChange={(value) => handleSelectedRoom(Number.parseInt(value))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -220,6 +208,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                   ))}
                 </SelectContent>
               </Select>
+              {errors.room_id && <p className="text-sm text-destructive font-medium ">{errors.room_id}</p>}
             </div>
 
               <div className="space-y-4">
@@ -250,11 +239,11 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                       <PopoverContent className="w-auto p-0" align="start">
                         <CalendarComponent
                           mode="single"
-                          selected={data.check_in}
-                          onSelect={handleCheckInChange}
+                          selected={checkInDate}
+                          onSelect={handleCheckIn}
                           disabled={(date) =>
                             date < new Date() ||
-                            (data.check_out && date >= data.check_out) ||
+                            (checkOutDate && date >= checkOutDate) ||
                             isDateUnavailable(date)
                           }
                           modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
@@ -266,6 +255,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                         />
                       </PopoverContent>
                     </Popover>
+                    {errors.check_in && <p className="text-sm text-destructive font-medium ">{errors.check_in}</p>}
                   </div>
 
                   <div className="space-y-3">
@@ -290,11 +280,11 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                       <PopoverContent className="w-auto p-0" align="start">
                         <CalendarComponent
                           mode="single"
-                          selected={data.check_out}
-                          onSelect={handleCheckOutChange}
+                          selected={checkOutDate}
+                          onSelect={handleCheckOut}
                           disabled={(date) =>
                             date <= new Date() ||
-                            (data.check_in && date <= data.check_in) ||
+                            (checkInDate && date <= checkInDate) ||
                             isCheckoutDateInvalid(date) ||
                             isDateUnavailable(date)
                           }
@@ -307,6 +297,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                         />
                       </PopoverContent>
                     </Popover>
+                    {errors.check_out && <p className="text-sm text-destructive font-medium ">{errors.check_out}</p>}
                   </div>
                 </div>
 
@@ -338,8 +329,8 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                     Number of Guests
                   </Label>
                   <Select
-                    value={data.room.guests.toString()}
-                    onValueChange={(value) => handleInputChange("guests", Number.parseInt(value))}
+                    value={guestCount.toString()}
+                    onValueChange={(value) => setGuestCount(Number.parseInt(value))}
                   >
                     <SelectTrigger className="h-12">
                       <SelectValue />
@@ -362,7 +353,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                     <AlertCircle className="h-4 w-4" />
                     Reservation Status
                   </Label>
-                  <Select value={data.status} onValueChange={(value) => handleInputChange("status", value)}>
+                  <Select value={data.status} onValueChange={(value) => setData("status", value)}>
                     <SelectTrigger className="h-12">
                       <SelectValue />
                     </SelectTrigger>
@@ -387,6 +378,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.status && <p className="text-sm text-destructive font-medium ">{errors.status}</p>}
                 </div>
               </div>
             </CardContent>
@@ -439,7 +431,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                     <span className="font-bold text-xl text-primary">${pricing.total.toFixed(2)}</span>
                   </div>
 
-                  {pricing.total !== reservation.total_price && (
+                  {Number(pricing.total) !== Number(reservation.total_price) && (
                     <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                       <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="h-4 w-4 text-yellow-600" />
@@ -472,20 +464,27 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
                       className="flex items-center gap-1"
                     >
                       <CheckCircle2 className="h-3 w-3" />
-                      {/* {reservation.paymentStatus.charAt(0).toUpperCase() + reservation.paymentStatus.slice(1)} */}
+                      Paid
                     </Badge>
                   </div>
+                  <small className="text-muted-foreground">Payment method will be set to cash</small>
                 </div>
               )}
 
               <div className="space-y-3 pt-4">
-                <Button type="submit" className="w-full h-12 text-base font-medium" size="lg">
-                  Update Reservation
+                <Button 
+                type="submit" 
+                className="w-full h-12 text-base font-medium" 
+                size="lg"
+                disabled={processing}
+                >
+                  {processing && <LoaderCircle className="animate-spin"/>} Update Reservation
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full h-12 bg-transparent border-primary/20 hover:border-primary/40"
+                  onClick={() => router.visit(route('admin.reservations_management.index'))}
                 >
                   Cancel Changes
                 </Button>
@@ -494,6 +493,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
           </Card>
         </form>
       </div>
+      <Toaster/>
     </AppLayout>
   )
 }

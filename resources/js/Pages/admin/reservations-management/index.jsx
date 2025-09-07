@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import AppLayout from "@/layouts/app-layout"
 import { Head, router, usePage } from "@inertiajs/react"
 import { Toaster } from "@/components/ui/sonner"
@@ -65,7 +65,6 @@ export default function Index({
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Reservation Management"/>
           <div className="p-6 space-y-6">
-
             <div className="flex items-center justify-between gap-4">
               <p className="text-muted-foreground mt-1">Manage and track all hotel reservations</p>
               <IconToolTip label="Add Reservation" className="rounded-full p-1 flex justify-between items-center">
@@ -77,9 +76,7 @@ export default function Index({
                 </Button>
               </IconToolTip>
             </div>
-
             <ReservationStats stats={stats}/>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ReservationTimeline timelineData={timeline}/>
               <RecentReservations recentReservations={recent_reservations} />

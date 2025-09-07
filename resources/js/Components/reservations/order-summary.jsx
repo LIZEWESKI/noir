@@ -52,6 +52,7 @@ const OrderSummary = ({reservations}) => {
                         <span>Taxes</span>
                         <span>${Number.parseFloat(0 * 0.1).toFixed(2)}</span>
                     </div>
+                    <small className='text-muted-foreground'>We also hate paying taxes.</small>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">

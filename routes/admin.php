@@ -39,4 +39,6 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('reservations_management.edit');
     Route::post('/reservations-management/cancel/{reservation}',[ReservationManagementController::class,'cancel'])
         ->name('reservations_management.cancel');
+    Route::put('/reservations-management/{reservation}',[ReservationManagementController::class,'update'])
+        ->name('reservations_management.update');
 });
