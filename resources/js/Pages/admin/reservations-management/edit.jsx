@@ -165,8 +165,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
     <AppLayout breadcrumbs={breadcrumbs} >
       <Head title="Edit Reservation"/>
       <div className="p-6 space-y-6">
-
-        <Heading status={data.status} reservation={reservation} />
+        <Heading status={data.status} reservation={reservation} isEdit/>
         <GuestInfo user={reservation.user} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -246,6 +245,7 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
             rsvTotalPrice={reservation.total_price}
             status={data.status}
             processing={processing}
+            isEdit
           />
         </form>
       </div>

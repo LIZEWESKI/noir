@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Traits\HasAdminRole;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
@@ -29,7 +30,9 @@ class User extends Authenticatable
         'profile_picture_path',
         'password',
     ];
-
+    function reservations():HasMany {
+        return $this->hasMany(Reservation::class);
+    }
     protected $appends = ['profile_picture_url'];
     public function getProfilePictureUrlAttribute()
     {

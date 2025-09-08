@@ -16,6 +16,7 @@ import DateTracker from "@/components/reservations-management/date-tracker"
 import GuestSelect from "@/components/reservations-management/guest-select"
 import ReservationStatusSelect from "@/components/reservations-management/reservation-status-select"
 import PricingSummary from "@/components/reservations-management/pricing-summary"
+import UserSelection from "@/components/reservations-management/user-selection"
 
 const breadcrumbs= [
     {
@@ -28,9 +29,9 @@ const breadcrumbs= [
     },
 ];
 
-const EditReservationForm = ({ rooms: availableRooms }) => {
+const EditReservationForm = ({ rooms: availableRooms , users}) => {
   const getFormatDate = useFormatDate();
-  console.log(availableRooms)
+  console.log(users);
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
   const [guestCount, setGuestCount] = useState(selectedRoom.guests)
   const [unavailableDates, setUnavailableDates] = useState(selectedRoom.unavailable_dates);
@@ -45,7 +46,8 @@ const EditReservationForm = ({ rooms: availableRooms }) => {
   const [checkOutDate, setCheckOutDate] = useState(null)
 
   const { data, setData, post, processing, errors } = useForm({
-    room_id: null,
+    user_id : 2, // lets test with Morty :D
+    room_id: selectedRoom.id,
     check_in: null,
     check_out: null,
     status: 'pending'
@@ -166,7 +168,10 @@ const EditReservationForm = ({ rooms: availableRooms }) => {
       <div className="p-6 space-y-6">
 
         <Heading status={data.status} />
-        {/* <GuestInfo user={reservation.user} /> */}
+
+        <UserSelection 
+            existingUsers={users}
+        />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           <Card className="lg:col-span-2 ">

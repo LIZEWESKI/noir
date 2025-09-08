@@ -12,7 +12,8 @@ const PricingSummary = ({
     pricing,
     rsvTotalPrice,
     status,
-    processing
+    processing,
+    isEdit = false
 }) => {
   return (
     <Card className="lg:row-span-2">
@@ -32,7 +33,7 @@ const PricingSummary = ({
             <div className="font-medium">{selectedRoom.name}</div>
             </div>
 
-            {nights > 0 && (
+            {nights > 0 ? (
             <div className="space-y-4">
                 <div className="space-y-3">
                 <div className="flex justify-between items-center">
@@ -84,6 +85,15 @@ const PricingSummary = ({
                 </div>
                 )}
             </div>
+            ) : (
+                <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                    <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-4 w-4 text-yellow-600" />
+                        <span className="font-medium text-sm">
+                            please select your check-in and check-out dates
+                        </span>
+                    </div>
+                </div>
             )}
 
             <Separator />
@@ -109,7 +119,7 @@ const PricingSummary = ({
                 size="lg"
                 disabled={processing}
             >
-                {processing && <LoaderCircle className="animate-spin"/>} Update Reservation
+                {processing && <LoaderCircle className="animate-spin"/>} {isEdit ?  "Update " : "Create "} Reservation
             </Button>
             <Button
                 type="button"

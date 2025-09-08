@@ -4,11 +4,11 @@ import { format } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 
 
-const Heading = ({status,reservation}) => {
+const Heading = ({status,reservation, isEdit = false}) => {
   return (
     <div className="flex items-start justify-between">
         <div className="space-y-3">
-        <p className="text-muted-foreground mt-1">Modify booking details and preferences</p>
+        <p className="text-muted-foreground mt-1"> {isEdit ? "Modify" : "Create "} booking details and preferences</p>
         {reservation && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Reservation ID:</span>

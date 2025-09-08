@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\CancelReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 
@@ -37,7 +39,73 @@ class ReservationManagementController extends Controller
             ]);
             unset($room->reservations);
         });
-        return Inertia::render('admin/reservations-management/create',compact("rooms"));
+
+        // Fetching all users with their custom data e.g. last stay and stays count
+        $users = User::withCount([
+            'reservations as stays' => function ($query) {
+                $query->where('status', 'completed');
+            }
+        ])
+        ->with(['reservations' => function ($query) {
+            $query->where('status', 'completed')->latest('check_in')->limit(1);
+        }])
+        ->orderByDesc('stays')
+        ->get()
+        ->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile_picture_path' => $user->profile_picture_path,
+                'profile_picture_url' => $user->profile_picture_url,
+                'last_stay' => optional($user->reservations->first())->check_in,
+                'stays' => $user->stays,
+            ];
+        });
+
+        return Inertia::render('admin/reservations-management/create',compact("rooms","users"));
+    }
+
+    public function store(StoreReservationRequest $request) {
+
+        $attributes = $request->validated();
+        $room = Room::findOrFail($attributes['room_id']);
+        $user = User::findOrFail($attributes['user_id']);
+
+        // testing reservations logic first 
+        // $user = User::FirstOrCreate(['id' => $attributes['user_id']],[
+        //     'email' => 
+        // ]);
+
+        // Parse dates
+        $checkIn = Carbon::parse($attributes['check_in']);
+        $checkOut = Carbon::parse($attributes['check_out']);
+        
+        // Check for overlapping reservations
+        Reservation::checkOverLap(
+            $attributes['room_id'],
+            $attributes['check_in'],
+            $attributes['check_out']
+        );
+        // helper method to calculate nights count & the total price 
+        $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
+        $attributes = array_merge($attributes, $pricing);
+
+        $reservation = Reservation::create($attributes);
+
+        // if the reservation status is completed we need to create a new payment record
+        if ($attributes['status'] === 'completed') {
+            $newPayment = Payment::create([
+                'user_id' => $user->id,
+                'total_amount' => $attributes['total_price'],
+                'payment_status' => 'completed',
+                'payment_method' => 'cash',
+                'transaction_id' => 'CASH-RSV' . $reservation->id . '-' . now()->format('YmdHis'),
+            ]);
+            $reservation->payments()->attach($newPayment->id);
+        };
+        
+        return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation created successfully!');
     }
 
     public function edit(Reservation $reservation) {
