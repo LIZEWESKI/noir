@@ -12,12 +12,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 
 Route::get('/', function () {
-    $rooms = Room::latest()->get();
+    $rooms = Room::inRandomOrder()
+    ->limit(3)
+    ->get();
     return Inertia::render('home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'rooms' => $rooms,
-        'bg_hero' => asset('assets/hero_bg.jpg')
+        'rooms' => $rooms
     ]);
 })->name("home");
 // Invokable

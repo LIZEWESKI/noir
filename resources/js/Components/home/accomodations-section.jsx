@@ -10,89 +10,26 @@ import {
 import { Link } from "@inertiajs/react"
 
 export default function AccommodationsSection({rooms}) {
-  const accomodationsRooms = [
-    {
-      id: rooms[2].id,
-      title: rooms[2].name,
-      price: rooms[2].price,
-      image: rooms[2].image_path_url,
-      bed: "1 King Bed",
-      guests: "2 Guests",
-      cta: "View Details",
-      amentities: [
-        {
-          name: "Free WiFi",
-          icon: <Wifi key="wifi" />
-        },
-        {
-          name: "Air Conditioning",
-          icon: <Wind key="ac" />,
-        },
-        {
-          name: "Smart TV",
-          icon: <Tv key="tv" />,
-        },
-        {
-          name: "Breakfast Included",
-          icon: <Coffee key="breakfast" />,
-        },
-      ]
-    },
-    {
-      id: rooms[7].id,
-      title: rooms[7].name,
-      price: rooms[7].price,
-      image: rooms[7].image_path_url,
-      bed: "1 King Bed",
-      guests: "4 Guests",
-      cta: "Book Now",
-      amentities: [
-        {
-          name: "Jacuzzi",
-          icon: <Bath key="jacuzzi" />
-        },
-        {
-          name: "Ocean View",
-          icon: <Maximize2 key="view" />,
-        },
-        {
-          name: "Private Bar",
-          icon: <Utensils key="bar" />,
-        },
-        {
-          name: "24/7 Room Service",
-          icon: <Users key="service" />,
-        },
-      ]
-    },
-    {
-      id: rooms[14].id,
-      title: rooms[14].name,
-      price: rooms[14].price,
-      image: rooms[14].image_path_url,
-      bed: "2 Queen Beds",
-      guests: "4 Guests",
-      cta: "Check Availability",
-      amentities: [
-        {
-          name: "Spacious",
-          icon: <Maximize2 key="space" />
-        },
-        {
-          name: "2 Queen Beds",
-          icon: <Bed key="beds" />,
-        },
-        {
-          name: "Kids' Play Area",
-          icon: <Users key="kids" />,
-        },
-        {
-          name: "Kitchenette",
-          icon: <Utensils key="kitchen" />,
-        },
-      ]
-    },
-  ]
+  const amenities = [
+    [
+      { name: "Free WiFi", icon: <Wifi key="wifi" /> },
+      { name: "Air Conditioning", icon: <Wind key="ac" /> },
+      { name: "Smart TV", icon: <Tv key="tv" /> },
+      { name: "Breakfast Included", icon: <Coffee key="breakfast" /> },
+    ],
+    [
+      { name: "Jacuzzi", icon: <Bath key="jacuzzi" /> },
+      { name: "Ocean View", icon: <Maximize2 key="view" /> },
+      { name: "Private Bar", icon: <Utensils key="bar" /> },
+      { name: "24/7 Room Service", icon: <Users key="service" /> },
+    ],
+    [
+      { name: "Spacious", icon: <Maximize2 key="space" /> },
+      { name: "2 Queen Beds", icon: <Bed key="beds" /> },
+      { name: "Kids' Play Area", icon: <Users key="kids" /> },
+      { name: "Kitchenette", icon: <Utensils key="kitchen" /> },
+    ],
+  ];
 
   return (
     <section className="py-6 md:py-12">
@@ -107,13 +44,14 @@ export default function AccommodationsSection({rooms}) {
         </div>
 
         <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {accomodationsRooms.map((room, index) => (
+          {console.log(rooms)}
+          {rooms.map((room, index) => (
             <Card key={index} className="group relative overflow-hidden border-0 bg-background aspect-[4/5] md:aspect-[3/4]">
               <Link href={`rooms/${room.id}`} prefetch>
                 {/* Background Image with Overlay */}
                 <div
                   className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${room.image})` }}
+                  style={{ backgroundImage: `url(${room.image_path_url})` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 " />
                 </div>
@@ -126,11 +64,11 @@ export default function AccommodationsSection({rooms}) {
 
                   {/* Content */}
                   <div className="space-y-4 mt-auto">
-                    <h3 className="text-2xl font-semibold truncate">{room.title}</h3>
+                    <h3 className="text-2xl font-semibold truncate">{room.name}</h3>
 
                     {/* Amenities */}
                     <div className="flex gap-4 flex-wrap">
-                      {room.amentities.map((amenity, i) => (
+                      {amenities[index % amenities.length].map((amenity, i) => (
                         <div key={i} className="text-white/80 hover:text-white transition-colors">
                           <TooltipProvider delayDuration={100}>
                             <Tooltip>
@@ -159,7 +97,7 @@ export default function AccommodationsSection({rooms}) {
                     {/* CTA */}
                     <Link href={`rooms/${room.id}`}>
                       <Button variant="link" className="p-0 h-auto font-semibold group/btn text-white hover:text-white/90">
-                        {room.cta}
+                        View Detail
                         <ChevronRight className="h-4 w-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
                       </Button>
                     </Link>

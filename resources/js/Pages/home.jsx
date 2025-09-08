@@ -8,7 +8,7 @@ import TestimonialsSection from '@/components/home/testimonials-sections';
 import ContactBarSection from '@/components/home/contact-section';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
-const Home = ({ auth, rooms, bg_hero}) => {
+const Home = ({ rooms }) => {
     const { flash } = usePage().props;
       useEffect(() => {
         flash.error && toast.error(flash.error, {
@@ -24,7 +24,7 @@ const Home = ({ auth, rooms, bg_hero}) => {
     return (
         <>
             <Head title="Home"/>
-            <HeroSection backGroundImage={bg_hero} />
+            <HeroSection rooms={rooms} />
             <AccommodationsSection rooms={rooms}/>
             <WhyChooseSection/>
             <TestimonialsSection/>
