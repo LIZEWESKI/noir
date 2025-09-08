@@ -31,9 +31,11 @@ const breadcrumbs= [
 const EditReservationForm = ({ rooms: availableRooms }) => {
   const getFormatDate = useFormatDate();
   console.log(availableRooms)
-  const [unavailableDates, setUnavailableDates] = useState();
+  const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
+  const [guestCount, setGuestCount] = useState(selectedRoom.guests)
+  const [unavailableDates, setUnavailableDates] = useState(selectedRoom.unavailable_dates);
   // Parse unavailable dates excluding current reservation
-  const parsedUnavailableDates = unavailableDates?.map((range) => ({
+  const parsedUnavailableDates = unavailableDates.map((range) => ({
     checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
@@ -48,9 +50,6 @@ const EditReservationForm = ({ rooms: availableRooms }) => {
     check_out: null,
     status: 'pending'
   })
-
-  const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
-  const [guestCount, setGuestCount] = useState(selectedRoom.guests || 1)
 
   const [nights, setNights] = useState(0)
   const [pricing, setPricing] = useState({
