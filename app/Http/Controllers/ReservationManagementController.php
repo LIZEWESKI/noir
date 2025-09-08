@@ -20,6 +20,26 @@ class ReservationManagementController extends Controller
         $recent_reservations = Reservation::recentLimitedReservations();
         return Inertia::render('admin/reservations-management/index',compact("reservations_management","stats","timeline","recent_reservations"));
     }
+
+    public function create() {
+        // Fetching all rooms with their unavailable dates
+        $rooms = Room::select('id', 'name', 'room_number',"guests","price")
+            ->with(['reservations' => function ($q) {
+                $q->select('id', 'room_id', 'check_in', 'check_out')
+                ->where('status', 'completed');
+            }])
+            ->get();
+
+        $rooms->each(function ($room) {
+            $room->unavailable_dates = $room->reservations->map(fn($r) => [
+                'check_in' => $r->check_in,
+                'check_out' => $r->check_out,
+            ]);
+            unset($room->reservations);
+        });
+        return Inertia::render('admin/reservations-management/create',compact("rooms"));
+    }
+
     public function edit(Reservation $reservation) {
         $reservation->loadMissing(['user','room']);
         $unavailable_dates = Reservation::select('check_in','check_out')

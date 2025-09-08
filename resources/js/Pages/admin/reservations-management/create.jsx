@@ -23,38 +23,38 @@ const breadcrumbs= [
       href: '/admin/reservations-management',
     },
     {
-      title: 'Edit Reservation',
-      href: '/admin/reservations-management/edit/{:id}',
+      title: 'Create Reservation',
+      href: '/admin/reservations-management/create',
     },
 ];
 
-const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRooms }) => {
+const EditReservationForm = ({ rooms: availableRooms }) => {
   const getFormatDate = useFormatDate();
-
-  const [unavailableDates, setUnavailableDates] = useState(() => unavailable_dates);
+  console.log(availableRooms)
+  const [unavailableDates, setUnavailableDates] = useState();
   // Parse unavailable dates excluding current reservation
-  const parsedUnavailableDates = unavailableDates.map((range) => ({
+  const parsedUnavailableDates = unavailableDates?.map((range) => ({
     checkIn: range.check_in instanceof Date ? range.checkIn : new Date(range.check_in),
     checkOut: range.check_out instanceof Date ? range.checkOut : new Date(range.check_out),
   }))
 
   // Parse CheckIn and CheckOut dates for formatting and validating
-  const [checkInDate, setCheckInDate] = useState(reservation.check_in ? new Date(reservation.check_in) : null)
-  const [checkOutDate, setCheckOutDate] = useState(reservation.check_out ? new Date(reservation.check_out) : null)
+  const [checkInDate, setCheckInDate] = useState(null)
+  const [checkOutDate, setCheckOutDate] = useState(null)
 
-  const { data, setData, put, processing, errors } = useForm({
-    room_id: reservation.room_id,
-    check_in: reservation.check_in,
-    check_out: reservation.check_out,
-    status: reservation.status
+  const { data, setData, post, processing, errors } = useForm({
+    room_id: null,
+    check_in: null,
+    check_out: null,
+    status: 'pending'
   })
 
-  const [selectedRoom, setSelectedRoom] = useState(reservation.room);
-  const [guestCount, setGuestCount] = useState(selectedRoom.guests)
+  const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
+  const [guestCount, setGuestCount] = useState(selectedRoom.guests || 1)
 
   const [nights, setNights] = useState(0)
   const [pricing, setPricing] = useState({
-    roomPrice: selectedRoom.price,
+    roomPrice: selectedRoom.price || 0,
     subtotal: 0,
     cleaningFee: 25,
     serviceFee: 15,
@@ -92,8 +92,8 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
 
   // Calculate nights and pricing
   useEffect(() => {
-    if (data.check_in && data.check_out) {
-      const nightsCount = differenceInDays(data.check_out, data.check_in)
+    if (checkInDate && checkOutDate) {
+      const nightsCount = differenceInDays(checkOutDate, checkInDate)
       setNights(nightsCount > 0 ? nightsCount : 0)
 
       const roomPrice = selectedRoom.price
@@ -107,9 +107,9 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
         total,
       }))
     }
-  }, [data.check_in, data.check_out, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
+  }, [checkInDate, checkOutDate, selectedRoom.price, pricing.cleaningFee, pricing.serviceFee])
 
-  // Date validation functions (similar to room-form)
+  // Date validation functions
   const isDateUnavailable = (date) => {
     if (!unavailableDates || unavailableDates.length === 0) return false
 
@@ -158,16 +158,16 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    put(`/admin/reservations-management/${reservation.id}`)
+    post(`/admin/reservations-management/`)
   }
 
   return (
     <AppLayout breadcrumbs={breadcrumbs} >
-      <Head title="Edit Reservation"/>
+      <Head title="Create Reservation"/>
       <div className="p-6 space-y-6">
 
-        <Heading status={data.status} reservation={reservation} />
-        <GuestInfo user={reservation.user} />
+        <Heading status={data.status} />
+        {/* <GuestInfo user={reservation.user} /> */}
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           <Card className="lg:col-span-2 ">
@@ -243,7 +243,6 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
             selectedRoom={selectedRoom}
             nights={nights}
             pricing={pricing}
-            rsvTotalPrice={reservation.total_price}
             status={data.status}
             processing={processing}
           />

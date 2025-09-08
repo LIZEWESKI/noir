@@ -70,7 +70,7 @@ export default function Index({
               <IconToolTip label="Add Reservation" className="rounded-full p-1 flex justify-between items-center">
                 <Button 
                   size="sm"
-                  onClick={() => router.visit('/admin/reservation-management/create')}
+                  onClick={() => router.visit('/admin/reservations-management/create')}
                 >
                   <Plus className="h-6 w-6" />
                 </Button>

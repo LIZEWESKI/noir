@@ -372,7 +372,12 @@ export default function Edit({features, room}) {
                   </CardContent>
                 </Card>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="destructive" onClick={() => router.visit(route('admin.rooms_management.index'))}>
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    className="bg-transparent border-primary/20 hover:border-primary/40"
+                    onClick={() => router.visit(route('admin.rooms_management.index'))}
+                  >
                     Cancel
                   </Button>
                   <Button 

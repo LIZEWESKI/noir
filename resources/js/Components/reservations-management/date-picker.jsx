@@ -42,11 +42,16 @@ const DatePicker = ({
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 disabled={(date) => {
-                    let compareInvalid = false
-                    if (otherDate) compareInvalid = compareType === "max" ? date >= otherDate : date <= otherDate
+                    let compareInvalidOne = false;
+                    let compareInvalidTwo = false;
+                    // needs to be <= for check_out and < for check_in 
+                    if (otherDate) compareInvalidOne = compareType === "max" ? date < new Date() : date <= new Date()
+                    // needs to be <= for check_out and >= for check_in 
+                    if (otherDate) compareInvalidTwo = compareType === "max" ? date >= otherDate : date <= otherDate
                     return (
-                        date < new Date() ||
-                        (otherDate && compareInvalid) ||
+                        // fixed it but still not sure yet
+                        compareInvalidOne ||
+                        (otherDate && compareInvalidTwo) ||
                         isDateInvalid?.(date) ||
                         isDateUnavailable(date)
                     )

@@ -374,7 +374,12 @@ export default function Create({features}) {
                   </CardContent>
                 </Card>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="destructive" onClick={() => window.history.back()}>
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    className="bg-transparent border-primary/20 hover:border-primary/40" 
+                    onClick={() => window.history.back()}
+                  >
                     Cancel
                   </Button>
                   <Button 
