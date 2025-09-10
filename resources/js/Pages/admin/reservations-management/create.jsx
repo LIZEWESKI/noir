@@ -31,7 +31,7 @@ const breadcrumbs= [
 
 const EditReservationForm = ({ rooms: availableRooms , users}) => {
   const getFormatDate = useFormatDate();
-  console.log(users);
+
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
   const [guestCount, setGuestCount] = useState(selectedRoom.guests)
   const [unavailableDates, setUnavailableDates] = useState(selectedRoom.unavailable_dates);
@@ -44,14 +44,40 @@ const EditReservationForm = ({ rooms: availableRooms , users}) => {
   // Parse CheckIn and CheckOut dates for formatting and validating
   const [checkInDate, setCheckInDate] = useState(null)
   const [checkOutDate, setCheckOutDate] = useState(null)
+  // Guest Mode
+  const [mode, setMode] = useState("existing")
 
   const { data, setData, post, processing, errors } = useForm({
-    user_id : 2, // lets test with Morty :D
+    user_type: mode,
     room_id: selectedRoom.id,
     check_in: null,
     check_out: null,
-    status: 'pending'
+    status: 'pending',
+    user_id: null,
+    name: null,
+    email: null,
   })
+  console.log(errors)
+  const [selectedGuest, setSelectedGuest] = useState(null)
+  const [newGuestData, setNewGuestData] = useState({ name: "", email: "" })
+  const handleGuestSelect = (guestId) => {  
+    const guest = users.find((g) => g.id === Number.parseInt(guestId))
+    setSelectedGuest(guest)
+    setData('user_id',guest.id)
+  }
+
+  const handleRemoveGuestSelect = () => {
+    setSelectedGuest(null)
+    setData('user_id', null)
+  }
+
+  const handleNewGuestChange = (field, value) => {
+    const updatedData = {
+      ...newGuestData,
+      [field]: value,
+    }
+    setNewGuestData(updatedData)
+  }
 
   const [nights, setNights] = useState(0)
   const [pricing, setPricing] = useState({
@@ -159,7 +185,19 @@ const EditReservationForm = ({ rooms: availableRooms , users}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    post(`/admin/reservations-management/`)
+
+    data.user_type = mode === "existing" ? "existing" : "new"
+    if (mode === "existing" && selectedGuest) {
+      data.user_id = selectedGuest.id
+      data.name = null
+      data.email = null
+    } else if (mode === "new") {
+      data.user_id = null
+      data.name = newGuestData.name
+      data.email = newGuestData.email
+    }
+
+    post(route("admin.reservations_management.store"))
   }
 
   return (
@@ -169,8 +207,16 @@ const EditReservationForm = ({ rooms: availableRooms , users}) => {
 
         <Heading status={data.status} />
 
-        <UserSelection 
-            existingUsers={users}
+        <UserSelection
+          mode={mode}
+          setMode={setMode}
+          existingUsers={users}
+          selectedGuest={selectedGuest}
+          onGuestChange={handleGuestSelect}
+          onRemoveSelectedGuest={handleRemoveGuestSelect}
+          newGuestData={newGuestData}
+          onNewGuestChange={handleNewGuestChange}
+          errors={errors}
         />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 

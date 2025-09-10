@@ -7,6 +7,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Requests\StoreReservationRequest;
@@ -67,15 +68,23 @@ class ReservationManagementController extends Controller
     }
 
     public function store(StoreReservationRequest $request) {
-
         $attributes = $request->validated();
-        $room = Room::findOrFail($attributes['room_id']);
-        $user = User::findOrFail($attributes['user_id']);
 
-        // testing reservations logic first 
-        // $user = User::FirstOrCreate(['id' => $attributes['user_id']],[
-        //     'email' => 
-        // ]);
+        if ($attributes['user_type'] === 'new') {
+            // Create the new user
+            $user = User::create([
+                'name' => $attributes['name'],
+                'email' => $attributes['email'],
+                'password' => '12345678', // password should be crypted, set it to my default password for testing purposes
+                // bcrypt(str()->random(12))
+                'profile_picture_path' => 'avatars/4HVFSopizefGn97jTjzyIkbximVD4zF31hZ2HA7C.png'
+            ]);
+
+            // Inject new user_id into the request data
+            $attributes['user_id'] = $user->id;
+        }
+        
+        $room = Room::findOrFail($attributes['room_id']);
 
         // Parse dates
         $checkIn = Carbon::parse($attributes['check_in']);
@@ -89,14 +98,17 @@ class ReservationManagementController extends Controller
         );
         // helper method to calculate nights count & the total price 
         $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
+
         $attributes = array_merge($attributes, $pricing);
 
-        $reservation = Reservation::create($attributes);
+        $reservation_data = Arr::except($attributes, ['user_type','name','email']);
+
+        $reservation = Reservation::create($reservation_data);
 
         // if the reservation status is completed we need to create a new payment record
         if ($attributes['status'] === 'completed') {
             $newPayment = Payment::create([
-                'user_id' => $user->id,
+                'user_id' => $reservation->user->id,
                 'total_amount' => $attributes['total_price'],
                 'payment_status' => 'completed',
                 'payment_method' => 'cash',

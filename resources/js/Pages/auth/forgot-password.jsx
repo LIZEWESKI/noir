@@ -20,7 +20,7 @@ const ForgotPAssword = () => {
           duration: 3000,
           position: "top-center",
           style: {
-            backgroundColor: "var(--primary)",
+            backgroundColor: "hsl(var(--primary))",
             color: "#fff",
           }
         })

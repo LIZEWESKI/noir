@@ -8,14 +8,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Users, UserPlus, Search, Mail, User } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
 
-export default function UserSelection({ selectedGuest, onGuestChange, newGuestData, onNewGuestChange , existingUsers }) {
-  const [mode, setMode] = useState("existing")
+export default function UserSelection({
+  mode,
+  setMode, 
+  selectedGuest,
+  onGuestChange,
+  onRemoveSelectedGuest,
+  newGuestData,
+  onNewGuestChange,
+  existingUsers,
+  errors
+}) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [internalSelectedGuest, setInternalSelectedGuest] = useState(null)
-  const [internalNewGuestData, setInternalNewGuestData] = useState({ name: "", email: "" })
   const getInitials = useInitials()
-  const currentSelectedGuest = selectedGuest || internalSelectedGuest
-  const currentNewGuestData = newGuestData || internalNewGuestData
 
   const filteredGuests = existingUsers.filter(
     (guest) =>
@@ -23,59 +28,32 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
       guest.email.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  const handleGuestSelect = (guestId) => {
-    const guest = existingUsers.find((g) => g.id === Number.parseInt(guestId))
-    if (onGuestChange) {
-      onGuestChange(guest)
-    } else {
-      setInternalSelectedGuest(guest)
-    }
-  }
-
-  const handleNewGuestChange = (field, value) => {
-    const updatedData = {
-      ...currentNewGuestData,
-      [field]: value,
-    }
-    if (onNewGuestChange) {
-      onNewGuestChange(updatedData)
-    } else {
-      setInternalNewGuestData(updatedData)
-    }
-  }
-
   return (
     <div className="space-y-4">
-      {mode === "existing" && currentSelectedGuest && (
+      {mode === "existing" && selectedGuest && (
         <Card className="border-primary/50 bg-primary/5">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
               <Avatar className="h-12 w-12">
-                <AvatarImage src={currentSelectedGuest.profile_picture_url} />
+                <AvatarImage src={selectedGuest.profile_picture_url} />
                 <AvatarFallback className="bg-primary/20 text-primary font-medium">
-                  {getInitials(currentSelectedGuest.name)}
+                  {getInitials(selectedGuest.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-primary">Selected Guest</p>
                   <Badge variant="default" className="text-xs">
-                    {currentSelectedGuest.stays} stays
+                    {selectedGuest.stays} stays
                   </Badge>
                 </div>
-                <p className="font-medium">{currentSelectedGuest.name}</p>
-                <p className="text-sm text-muted-foreground">{currentSelectedGuest.email}</p>
+                <p className="font-medium">{selectedGuest.name}</p>
+                <p className="text-sm text-muted-foreground">{selectedGuest.email}</p>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  if (onGuestChange) {
-                    onGuestChange(null)
-                  } else {
-                    setInternalSelectedGuest(null)
-                  }
-                }}
+                onClick={() => onRemoveSelectedGuest()}
                 className="text-muted-foreground hover:text-foreground"
               >
                 Change
@@ -85,7 +63,7 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
         </Card>
       )}
 
-      {mode === "new" && (currentNewGuestData.name || currentNewGuestData.email) && (
+      {mode === "new" && (newGuestData.name || newGuestData.email) && (
         <Card className="border-primary/50 bg-primary/5">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
@@ -94,8 +72,8 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-primary">New Guest</p>
-                <p className="font-medium">{currentNewGuestData.name || "Unnamed Guest"}</p>
-                <p className="text-sm text-muted-foreground">{currentNewGuestData.email || "No email provided"}</p>
+                <p className="font-medium">{newGuestData.name || "Unnamed Guest"}</p>
+                <p className="text-sm text-muted-foreground">{newGuestData.email || "No email provided"}</p>
               </div>
             </div>
           </CardContent>
@@ -122,7 +100,10 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
               <Button
                 variant={mode === "new" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setMode("new")}
+                onClick={() => {
+                  setMode("new")
+                  onRemoveSelectedGuest()
+                }}
                 className="text-xs"
               >
                 <UserPlus className="h-3 w-3 mr-1" />
@@ -145,6 +126,7 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
                   className="pl-10"
                 />
               </div>
+              {errors.user_id && <p className="text-sm ml-2 text-destructive font-medium ">{errors.user_id}</p>}
 
               {/* Guest Selection */}
               <div className="space-y-2 max-h-64 overflow-y-auto p-2">
@@ -152,11 +134,11 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
                   <div
                     key={guest.id}
                     className={`p-3 rounded-lg border cursor-pointer transition-all hover:border-primary/50 ${
-                      currentSelectedGuest?.id === guest.id
+                      selectedGuest?.id === guest.id
                         ? "border-primary bg-primary/5"
                         : " hover:bg-muted/30"
                     }`}
-                    onClick={() => handleGuestSelect(guest.id)}
+                    onClick={() => onGuestChange(guest.id)}
                   >
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
@@ -179,7 +161,7 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
                         </p>
                       </div>
 
-                      {currentSelectedGuest?.id === guest.id && (
+                      {selectedGuest?.id === guest.id && (
                         <div className="flex items-center gap-1">
                           <div className="h-2 w-2 rounded-full bg-primary" />
                           <span className="text-xs font-medium text-primary">Selected</span>
@@ -208,10 +190,11 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
                   <Input
                     id="guest-name"
                     placeholder="Enter guest full name"
-                    value={currentNewGuestData?.name || ""}
-                    onChange={(e) => handleNewGuestChange("name", e.target.value)}
+                    value={newGuestData?.name || ""}
+                    onChange={(e) => onNewGuestChange("name", e.target.value)}
                     className="transition-all focus:border-primary"
                   />
+                  {errors.name && <p className="text-sm text-destructive font-medium ">{errors.name}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -223,10 +206,11 @@ export default function UserSelection({ selectedGuest, onGuestChange, newGuestDa
                     id="guest-email"
                     type="email"
                     placeholder="Enter guest email"
-                    value={currentNewGuestData?.email || ""}
-                    onChange={(e) => handleNewGuestChange("email", e.target.value)}
+                    value={newGuestData?.email || ""}
+                    onChange={(e) => onNewGuestChange("email", e.target.value)}
                     className="transition-all focus:border-primary"
                   />
+                  {errors.email && <p className="text-sm text-destructive font-medium ">{errors.email}</p>}
                 </div>
               </div>
 
