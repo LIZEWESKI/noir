@@ -18,8 +18,6 @@ const breadcrumbs= [
 ];
 
 export default function Index({users}) {
-
-  console.log(users)
   const {flash} = usePage().props;
   useEffect(() => {
     flash.success && toast.success(flash.success, {
@@ -38,7 +36,7 @@ export default function Index({users}) {
   }
 
   const viewGuest = (user) => {
-    router.visit(`/admin/users-management/${user.id}`)
+    router.visit(`/admin/guests-management/${user.id}`)
   }
 
   const DELETING_ALERT = {

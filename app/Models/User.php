@@ -33,6 +33,9 @@ class User extends Authenticatable
     function reservations():HasMany {
         return $this->hasMany(Reservation::class);
     }
+    function payments():HasMany {
+        return $this->hasMany(Payment::class);
+    }
     protected $appends = ['profile_picture_url'];
     public function getProfilePictureUrlAttribute()
     {

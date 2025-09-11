@@ -48,7 +48,7 @@ export default function Index({
   }
 
   const viewGuest = (user) => {
-    router.visit(`/admin/users-management/edit/${user.id}`)
+    router.visit(`/admin/guests-management/${user.id}`)
   }
 
   const handleDeleteReservation = {
