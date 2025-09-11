@@ -64,7 +64,8 @@ export default function Index({rooms_management}) {
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Room Management"/>
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-          <div className="flex flex-col sm:flex-row justify-end items-end sm:items-end gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4">
+            <p className="text-muted-foreground mt-1">Manage and track all hotel rooms</p>
             <div className="flex items-center gap-2">
               <div className="flex items-center border rounded-lg p-1">
                 <IconToolTip label="Grid">

@@ -29,7 +29,7 @@ const breadcrumbs= [
     },
 ];
 
-const EditReservationForm = ({ rooms: availableRooms , users}) => {
+const CreateReservation = ({ rooms: availableRooms , users}) => {
   const getFormatDate = useFormatDate();
 
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
@@ -57,7 +57,7 @@ const EditReservationForm = ({ rooms: availableRooms , users}) => {
     name: null,
     email: null,
   })
-  console.log(errors)
+  
   const [selectedGuest, setSelectedGuest] = useState(null)
   const [newGuestData, setNewGuestData] = useState({ name: "", email: "" })
   const handleGuestSelect = (guestId) => {  
@@ -303,4 +303,4 @@ const EditReservationForm = ({ rooms: availableRooms , users}) => {
   )
 }
 
-export default EditReservationForm
+export default CreateReservation

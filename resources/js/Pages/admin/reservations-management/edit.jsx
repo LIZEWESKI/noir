@@ -28,7 +28,7 @@ const breadcrumbs= [
     },
 ];
 
-const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRooms }) => {
+const EditReservation = ({reservation, unavailable_dates, rooms: availableRooms }) => {
   const getFormatDate = useFormatDate();
 
   const [unavailableDates, setUnavailableDates] = useState(() => unavailable_dates);
@@ -254,4 +254,4 @@ const EditReservationForm = ({reservation, unavailable_dates, rooms: availableRo
   )
 }
 
-export default EditReservationForm
+export default EditReservation

@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ReservationManagementController;
 use App\Http\Controllers\RoomManagementController;
+use App\Http\Controllers\GuestManagementController;
+use App\Http\Controllers\ReservationManagementController;
 
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
@@ -18,6 +19,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
     // Rooms Management ressource (I could use Resource instead but I don't feel like it)
     Route::get("/rooms-management",[RoomManagementController::class, 'index'])
         ->name('rooms_management.index');
@@ -31,6 +33,12 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('rooms_management.update');
     Route::delete('/rooms-management/{room}',[RoomManagementController::class, 'destroy'])
         ->name('rooms_management.destroy');
+    
+    // Guests Management ressource
+    Route::get("/guests-management",[GuestManagementController::class,'index'])
+        ->name('/guests_management.index');
+    Route::get("/guests-management/{user}",[GuestManagementController::class,'show'])
+        ->name('/guests_management.show');
 
     // Reservations Management ressource
     Route::get("/reservations-management",[ReservationManagementController::class, 'index'])

@@ -23,8 +23,6 @@ import {
   Edit,
   Trash2,
   ChevronUp,
-  Calendar,
-  MapPin,
   User,
 } from "lucide-react"
 import {
@@ -55,8 +53,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
 import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
-import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
-
+import { getStatusColor } from "@/components/guests-management/get-guest-status";
+import { format } from "date-fns"
 
 function DragHandle({ id }) {
   const { attributes, listeners } = useSortable({
@@ -126,19 +124,14 @@ const columns = [
     accessorKey: "user",
     header: ({ column }) => (
       <div className="space-y-2">
-        <div
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center cursor-pointer font-medium"
-        >
-          Guest
-          {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+        <div className="flex items-center cursor-pointer font-medium">
+          Full Name
         </div>
         <ColumnFilter column={column} title="Guest" />
       </div>
     ),
     cell: ({ row,table }) => {
-      const user = row.original.user
+      const user = row.original
       const initials = table.options.meta.getInitials(user.name);
       return (
         <div className="flex items-center gap-3 min-w-48">
@@ -148,7 +141,6 @@ const columns = [
           </Avatar>
           <div>
             <div className="font-medium text-sm">{user.name}</div>
-            <div className="text-xs text-muted-foreground">{user.email}</div>
           </div>
         </div>
       )
@@ -156,122 +148,140 @@ const columns = [
     enableHiding: false,
     filterFn: (row, id, value) => {
       return (
-        row.original.user.name.toLowerCase().includes(value.toLowerCase()) ||
-        row.original.user.email.toLowerCase().includes(value.toLowerCase())
+        row.original.name.toLowerCase().includes(value.toLowerCase()) 
       )
     },
   },
   {
-    accessorKey: "room",
+    accessorKey: "email",
     header: ({ column }) => (
       <div className="space-y-2">
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center cursor-pointer font-medium"
         >
-          Room
-          {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+          Email
+        {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
+        {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
         </div>
-        <ColumnFilter column={column} title="Room" />
+        <ColumnFilter column={column} title="Email" />
       </div>
     ),
     cell: ({ row }) => {
-      const room = row.original.room
       return (
         <div className="space-y-1">
           <Badge variant="outline" className="text-xs px-2 py-1">
-            Room {room.room_number}
+            {row.original.email}
           </Badge>
-          <div className="text-xs text-muted-foreground">{room.name}</div>
         </div>
       )
     },
     filterFn: (row, id, value) => {
       return (
-        row.original.room.room_number.includes(value) || row.original.room.name.toLowerCase().includes(value.toLowerCase())
+        row.original.email.includes(value)
       )
     },
   },
   {
-    accessorKey: "dates",
+    accessorKey: "role",
     header: ({ column }) => (
       <div className="space-y-2">
-        <div
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center cursor-pointer font-medium"
+        <div 
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="flex items-center cursor-pointer font-medium"
         >
-          <Calendar className="mr-2 h-4 w-4" />
-          Dates
-          {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+          Roles
+            {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
         </div>
       </div>
     ),
     cell: ({ row }) => (
       <div className="space-y-1 min-w-32">
-        <div className="text-sm font-medium">{row.original.check_in}</div>
-        <div className="text-xs text-muted-foreground">to {row.original.check_out}</div>
-        <Badge variant="secondary" className="text-xs">
-          {row.original.nights} {row.original.nights > 1 ? " nights" : " night"}
+        <Badge variant="ghost" className="text-xs">
+          {/* {row.original.role.charAt(0).toUpperCase()} */}
+          {row.original.role.charAt(0).toUpperCase() + row.original.role.slice(1)}
         </Badge>
       </div>
     ),
-    sortingFn: (rowA, rowB) => {
-      return new Date(rowA.original.check_in) - new Date(rowB.original.check_in)
-    },
     enableSorting: true,
   },
   {
-    accessorKey: "total_price",
+    accessorKey: "stays",
     header: ({ column }) => (
       <div className="space-y-2">
-        <div
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center cursor-pointer font-medium"
-        >
-          Total
-          {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
-          {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+        <div className="flex items-center font-medium">
+          Total Stays
         </div>
       </div>
     ),
     cell: ({ row }) => (
       <div className="space-y-1">
-        <div className="font-semibold">${Number(row.original.total_price - (Number(row.original.cleaning_fee) + Number(row.original.service_fee))).toFixed(2)}</div>
         <div className="text-xs text-muted-foreground">
-          +${row.original.cleaning_fee} + {row.original.service_fee} fees
+          {row.original.stays}
         </div>
       </div>
     ),
   },
   {
-    accessorKey: "status",
-    header: ({ column, table }) => {
-      const uniqueStatuses = Array.from(
-        table.getPreFilteredRowModel().flatRows.reduce((statuses, row) => {
-          statuses.add(row.original.status)
-          return statuses
-        }, new Set()),
-      )
-
+    accessorKey: "Last Stay",
+    header: ({ column }) => {
       return (
         <div className="space-y-2">
-          <div
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="flex items-center cursor-pointer font-medium"
-          >
-            Status
-            {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
-            {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+          <div className="flex items-center font-medium">
+            Last Stay Date
           </div>
-          <SelectColumnFilter column={column} title="Status" options={uniqueStatuses} />
         </div>
       )
     },
     cell: ({ row }) => (
       <div className="space-y-2">
-        <Badge className={`text-xs px-2 py-1 ${getStatusColor(row.original.status)}`}>{row.original.status}</Badge>
+        <div className="text-xs text-muted-foreground">
+          {row.original.last_stay}
+        </div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "is_active",
+    header: ({ column }) => {
+      return (
+        <div className="space-y-2">
+          <div 
+          className="flex items-center font-medium cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Account Status
+            {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
+            {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => (
+      <div className="space-y-2">
+        <div className="text-xs text-muted-foreground">
+            <Badge className={`text-xs px-2 py-1 ${getStatusColor(row.original.is_active)}`}>{row.original.is_active ? "Active" : "Inactive"}</Badge>
+        </div>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Creation Date",
+    header: ({ column }) => {
+      return (
+        <div className="space-y-2">
+          <div className="flex items-center font-medium">
+            Creation Date
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => (
+      <div className="space-y-2">
+        <div className="text-xs text-muted-foreground">
+          {format(row.original.created_at,"MM-dd-yyyy")}
+        </div>
       </div>
     ),
   },
@@ -287,31 +297,24 @@ const columns = [
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
 
-          <DropdownMenuItem onClick={()=> table.options.meta.viewGuest(row.original.user)}>
+          <DropdownMenuItem onClick={()=> table.options.meta.viewGuest(row.original)}>
             <User className="mr-2 h-4 w-4" />
             View Guest
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={()=> table.options.meta.viewRoom(row.original.room)}>
-            <MapPin className="mr-2 h-4 w-4" />
-            View Room
           </DropdownMenuItem>
           
           <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
             <Edit className="mr-2 h-4 w-4" />
-            Edit Reservation
+            Edit Guest
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
-          {row.original.status !== 'cancelled' &&
             <DropdownMenuItem
               className="text-destructive hover:bg-destructive-foreground"
               onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Cancel
+              Delete
             </DropdownMenuItem>          
-          }
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -342,7 +345,7 @@ function DraggableRow({ row }) {
   )
 }
 
-function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom }) {
+function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest}) {
   const [tableData, setTableData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
@@ -357,7 +360,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
 
   const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
-  const [selectedReservationId, setSelectedReservationId] = React.useState(null)
+  const [selectGuestId, setSelectGuestId] = React.useState(null)
   const getInitials = useInitials()
   const table = useReactTable({
     data: tableData,
@@ -366,15 +369,14 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
       getInitials,
       onEdit,
       onDelete,
-      viewRoom,
       viewGuest,
       onDeleteClick: (id) => {
-        setSelectedReservationId(id)
+        setSelectGuestId(id)
         setIsDeleteOpen(true)
       },
       isDeleteOpen,
       setIsDeleteOpen,
-      selectedReservationId,
+      selectGuestId,
     },
     state: {
       sorting,
@@ -565,10 +567,10 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
         onOpenChange={setIsDeleteOpen}
         title={onDelete.title} 
         description={onDelete.description} 
-        action={() => onDelete.action(selectedReservationId)}
+        action={() => onDelete.action(selectGuestId)}
       />
     </Tabs>
   )
 }
 
-export default ReservationsDataTable
+export default GuestsDataTable

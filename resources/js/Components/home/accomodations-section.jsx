@@ -44,7 +44,6 @@ export default function AccommodationsSection({rooms}) {
         </div>
 
         <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {console.log(rooms)}
           {rooms.map((room, index) => (
             <Card key={index} className="group relative overflow-hidden border-0 bg-background aspect-[4/5] md:aspect-[3/4]">
               <Link href={`rooms/${room.id}`} prefetch>
