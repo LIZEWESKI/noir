@@ -19,6 +19,7 @@ const breadcrumbs= [
 
 export default function Index({users}) {
   const {flash} = usePage().props;
+  
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 

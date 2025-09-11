@@ -8,7 +8,8 @@ import { Head } from "@inertiajs/react"
 import GuestProfile from "@/components/guests-management/guest-profile"
 import ReservationsHistory from "@/components/guests-management/reservations-history"
 import PaymentsHistory from "@/components/guests-management/payments-history"
-
+import DeleteUserDialog from "@/components/ui/delete-user-dialog"
+import { useState } from "react"
 
 const breadcrumbs= [
     {
@@ -24,10 +25,11 @@ const breadcrumbs= [
 
 const Show = ({guest,stats,reservations,payments}) => {
 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-        <Head title="User Details"/>
+        <Head title="Guest Details"/>
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <div className="flex items-center justify-between">
             <p className="text-muted-foreground">Detailed guest information and history</p>
@@ -39,6 +41,7 @@ const Show = ({guest,stats,reservations,payments}) => {
             <Button
                 variant="destructive"
                 size="sm"
+                onClick={() => setIsDeleteOpen(true)}
             >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete Guest
@@ -55,6 +58,11 @@ const Show = ({guest,stats,reservations,payments}) => {
             <PaymentsHistory payments={payments}/>
         </div>
         </div>
+        <DeleteUserDialog 
+          open={isDeleteOpen}
+          onOpenChange={setIsDeleteOpen}
+          guestId={guest.id}
+        />
     </AppLayout>
   )
 }

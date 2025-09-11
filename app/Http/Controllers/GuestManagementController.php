@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 
 class GuestManagementController extends Controller
 {
@@ -75,5 +76,16 @@ class GuestManagementController extends Controller
             ->latest()
             ->get();
         return Inertia::render('admin/guests-management/show',compact("guest","stats","reservations","payments"));
+    }
+
+    public function destroy(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user->delete();
+
+        return redirect()->route('admin.guests_management.index')->with('success', 'User deleted successfully!');
     }
 }

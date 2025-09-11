@@ -20,7 +20,7 @@ const GuestProfile = ({guest, stats}) => {
         <div className="flex items-start gap-6">
             <Avatar className="h-24 w-24">
             <AvatarImage src={guest.profile_picture_url} alt={guest.name} />
-            <AvatarFallback >
+            <AvatarFallback className="text-3xl">
                 {getInitials(guest.name)}
             </AvatarFallback>
             </Avatar>
