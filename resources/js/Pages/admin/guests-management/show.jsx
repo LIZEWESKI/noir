@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
+  Calendar,
+  CreditCard,
   Edit,
   Trash2,
 } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
-import { Head } from "@inertiajs/react"
+import { Head, router } from "@inertiajs/react"
 import GuestProfile from "@/components/guests-management/guest-profile"
 import ReservationsHistory from "@/components/guests-management/reservations-history"
 import PaymentsHistory from "@/components/guests-management/payments-history"
@@ -26,6 +29,9 @@ const breadcrumbs= [
 const Show = ({guest,stats,reservations,payments}) => {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+    const editGuest = (guest) => {
+      router.visit(`/admin/guests-management/edit/${guest.id}`)
+    }
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -34,7 +40,11 @@ const Show = ({guest,stats,reservations,payments}) => {
         <div className="flex items-center justify-between">
             <p className="text-muted-foreground">Detailed guest information and history</p>
             <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => editGuest(guest)}
+            >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Guest
             </Button>
@@ -53,9 +63,31 @@ const Show = ({guest,stats,reservations,payments}) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Reservation History */}
-            <ReservationsHistory reservations={reservations} />
+            {reservations.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-10 text-center">
+                  <div className="rounded-full bg-muted p-3 mb-4">
+                    <Calendar className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium">No reservations history</h3>
+                  <p className="text-sm text-muted-foreground mt-1 mb-4 max-w-md">{guest.name} hasn't made any reservations yet</p>
+                </CardContent>
+              </Card>
+            ) : <ReservationsHistory reservations={reservations} />}
+            
             {/* Payments History */}
-            <PaymentsHistory payments={payments}/>
+            {payments.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-10 text-center">
+                  <div className="rounded-full bg-muted p-3 mb-4">
+                    <CreditCard className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium">No payment history</h3>
+                  <p className="text-sm text-muted-foreground mt-1 mb-4 max-w-md">{guest.name} hasn't made any payments yet.</p>
+                </CardContent>
+              </Card>
+            ) : <PaymentsHistory payments={payments}/>}
+            
         </div>
         </div>
         <DeleteUserDialog 

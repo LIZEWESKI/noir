@@ -31,6 +31,7 @@ class User extends Authenticatable
         'google_id',
         'profile_picture_path',
         'password',
+        'role'
     ];
     function reservations():HasMany {
         return $this->hasMany(Reservation::class);

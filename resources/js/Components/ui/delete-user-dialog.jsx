@@ -13,7 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Form } from '@inertiajs/react';
+import { Form, router } from '@inertiajs/react';
 
 const DeleteUserDialog = ({guestId, open, onOpenChange}) => {
     const passwordInput = useRef(null);
@@ -39,6 +39,8 @@ const DeleteUserDialog = ({guestId, open, onOpenChange}) => {
                     resetOnSuccess
                     onSuccess={() => {
                         onOpenChange(false);
+                        // reset();
+                        // router.reload({ preserveScroll: true }); 
                     }}
                     className="space-y-6"
                 >

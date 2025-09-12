@@ -37,6 +37,14 @@ Route::middleware(['auth', AdminMiddleware::class])
     // Guests Management ressource
     Route::get("/guests-management",[GuestManagementController::class,'index'])
         ->name('guests_management.index');
+    Route::get("/guests-management/create",[GuestManagementController::class,'create'])
+        ->name('guests_management.create');
+    Route::post("/guests-management",[GuestManagementController::class,'store'])
+        ->name('guests_management.store');
+    Route::get("/guests-management/edit/{user}",[GuestManagementController::class,'edit'])
+        ->name('guests_management.edit');
+    Route::post("/guests-management/update/{user}",[GuestManagementController::class,'update'])
+        ->name('guests_management.update');
     Route::get("/guests-management/{user}",[GuestManagementController::class,'show'])
         ->name('/guests_management.show');
     Route::delete('/guests-management/destroy/{user}', [GuestManagementController::class, 'destroy'])

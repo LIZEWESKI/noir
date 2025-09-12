@@ -62,7 +62,7 @@ export default function Index({users,stats,new_users,guests_with_reservations}) 
               <IconToolTip label="Add Guest" className="rounded-full p-1 flex justify-between items-center">
                 <Button 
                   size="sm"
-                  onClick={() => router.visit('/admin/guest-management/create')}
+                  onClick={() => router.visit('/admin/guests-management/create')}
                 >
                   <Plus className="h-6 w-6" />
                 </Button>

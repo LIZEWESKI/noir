@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\Auth\StoreUserRequest;
+use App\Http\Requests\Auth\UpdateUserRequest;
 
 class GuestManagementController extends Controller
 {
@@ -28,6 +30,52 @@ class GuestManagementController extends Controller
         $guests_with_reservations = User::withReservationsInWeek($startOfWeek, $endOfWeek);
 
         return Inertia::render('admin/guests-management/index',compact("users","stats","new_users","guests_with_reservations"));
+    }
+
+    public function create() {
+        
+        return Inertia::render('admin/guests-management/create');
+    }
+    public function store(StoreUserRequest $request) {
+        $attributes = $request->validated();
+        if ($request->hasFile('profile_picture_path')) {
+            $path = $request->file('profile_picture_path')->store('avatars');
+            $attributes['profile_picture_path'] = $path;
+        }
+
+        User::create($attributes);
+
+        return redirect()->route('admin.guests_management.index')->with('success', 'User created successfully!');
+    }
+
+    public function edit(User $user) {
+
+        return Inertia::render('admin/guests-management/edit',compact("user"));
+    }
+
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        $validated = $request->validated();
+        // dd($validated);
+        // Handle optional password
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']); // keep existing password
+        }
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture_path')) {
+            $file = $request->file('profile_picture_path');
+            $path = $file->store('avatars');
+            $validated['profile_picture_path'] = $path;
+        }else {
+            unset($validated['profile_picture_path']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('admin.guests_management.index')->with('success', 'Guest updated successfully.');
     }
     public function show(User $user) {
         $staysCount = $user->reservations()
