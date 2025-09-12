@@ -7,9 +7,11 @@ namespace App\Models;
 use Storage;
 use Illuminate\Support\Str;
 use App\Traits\HasAdminRole;
+use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
@@ -44,6 +46,79 @@ class User extends Authenticatable
         : ($this->profile_picture_path ? asset('storage/' . $this->profile_picture_path) : null);
     }
 
+    public function isActive(int $months = 1): bool
+    {
+        return $this->last_stay && Carbon::parse($this->last_stay)->gte(now()->subMonths($months));
+    }
+
+    public static function getUsersWithStays(int $months = 1)
+    {
+        $users = User::query()
+            ->withCount(['reservations as stays' => function ($query) { 
+                $query->where('status', 'completed'); }]) 
+            ->withMax('reservations as last_stay', 'check_in')
+            ->orderByDesc('stays')
+            ->get();
+        $users->transform(function ($u) { 
+            $u->is_active = $u->isActive(); 
+            return $u; 
+        });
+        return $users;
+    }
+
+    public static function withReservationsInWeek($startOfWeek,$endOfWeek)
+    {
+        $guests_with_reservations = User::whereHas('reservations', 
+        function ($query) use ($startOfWeek, $endOfWeek) { 
+            $query->whereBetween('check_in', [$startOfWeek, $endOfWeek]) 
+            ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]); 
+        })->with(['reservations' => function ($q) use ($startOfWeek, $endOfWeek) {
+            $q->where(function ($query) use ($startOfWeek, $endOfWeek) {
+                $query->whereBetween('check_in', [$startOfWeek, $endOfWeek])
+                    ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]);
+            });
+        }])
+        ->limit(6)
+        ->get();
+        return $guests_with_reservations;
+    }
+    public static function stats(int $months = 1)
+    {
+        $users = self::withCount(['reservations as stays' => function ($q) {
+            $q->where('status', 'completed');
+        }])
+        ->withMax('reservations as last_stay', 'check_in')
+        ->orderByDesc('stays')
+        ->get();
+
+        $total = $users->count();
+        $active = $users->filter(fn($u) => $u->isActive($months))->count();
+        $inactive = $total - $active;
+
+        $activeRate = $total > 0 ? round(($active / $total) * 100) : 0;
+        $inactiveRate = 100 - $activeRate;
+        return [
+            [
+                "key" => "total_guests",
+                "title" => "Total Guests",
+                "value" => $total,
+                "description" => "All registered guests",
+            ],
+            [
+                "key" => "active_guests",
+                "title" => "Active Guests",
+                "value" => $active,
+                "description" => "{$activeRate}% engaged in the last {$months} month" . ($months > 1 ? 's' : ''),
+            ],
+            [
+                "key" => "inactive_guests",
+                "title" => "Inactive Guests",
+                "value" => $inactive,
+                "description" => "{$inactiveRate}% haven’t stayed recently",
+            ],
+        ];
+    }
+    
     /**
      * The attributes that should be hidden for serialization.
      *

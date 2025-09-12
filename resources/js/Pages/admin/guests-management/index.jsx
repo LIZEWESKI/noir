@@ -9,6 +9,9 @@ import {
 } from "lucide-react"
 import IconToolTip from "@/components/ui/icon-tooltip"
 import GuestsDataTable from "@/components/guests-management/guests-data-table"
+import GuestsStats from "@/components/guests-management/guests-stats"
+import RecentUsers from "@/components/guests-management/recent-users"
+import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
 
 const breadcrumbs= [
     {
@@ -17,11 +20,8 @@ const breadcrumbs= [
     },
 ];
 
-export default function Index({users,total_guests,active_guests,inactive_guests,new_users,guests_with_reservations}) {
+export default function Index({users,stats,new_users,guests_with_reservations}) {
   const {flash} = usePage().props;
-  console.log(total_guests)
-  console.log(active_guests)
-  console.log(inactive_guests)
   console.log(new_users)
   console.log(guests_with_reservations)
   useEffect(() => {
@@ -72,6 +72,12 @@ export default function Index({users,total_guests,active_guests,inactive_guests,
             </div>
           </div>
         <div>
+        </div>
+        <GuestsStats stats={stats} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <GuestsRecentRsv users={guests_with_reservations}/>
+          <RecentUsers newUsers={new_users}/>
         </div>
         <GuestsDataTable 
           data={users} 

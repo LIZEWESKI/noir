@@ -23,7 +23,7 @@ export default function RecentReservations({recentReservations}) {
             <div className="flex items-center gap-4">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={reservation.user.profile_picture_url} alt={reservation.user.name} />
-                <AvatarFallback className="">
+                <AvatarFallback >
                   {getInitials(reservation.user.name)}
                 </AvatarFallback>
               </Avatar>

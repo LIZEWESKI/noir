@@ -5,7 +5,7 @@ import {
   Clock,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-const GuestStats = ({stats}) => {
+const GuestStatsBadges = ({stats}) => {
   return (
     <div className="flex flex-wrap gap-3">
         <Badge variant="outline" className="text-muted-foreground px-1.5 py-1">
@@ -27,4 +27,4 @@ const GuestStats = ({stats}) => {
   )
 }
 
-export default GuestStats
+export default GuestStatsBadges

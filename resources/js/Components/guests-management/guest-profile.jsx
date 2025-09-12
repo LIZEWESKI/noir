@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
 import { useCapitalize } from "@/hooks/use-capitalize"
-import GuestStats from "@/components/guests-management/guest-stats"
+import GuestStatsBadges from '@/components/guests-management/guest-stats-badges'
 const GuestProfile = ({guest, stats}) => {
 
     const getInitials = useInitials();
@@ -61,7 +61,7 @@ const GuestProfile = ({guest, stats}) => {
         </div>
         </CardContent>
         <CardFooter>
-            <GuestStats stats={stats} />
+            <GuestStatsBadges stats={stats} />
         </CardFooter>
     </Card>
   )
