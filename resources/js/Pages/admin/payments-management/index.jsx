@@ -13,6 +13,7 @@ import GuestsStats from "@/components/guests-management/guests-stats"
 import RecentUsers from "@/components/guests-management/recent-users"
 import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
 import PaymentsStats from "@/components/payments-management/payments-stats"
+import PaymentsDataTable from "@/components/payments-management/payments-data-table"
 
 const breadcrumbs= [
   {
@@ -53,6 +54,7 @@ export default function Index({payments, summary}) {
           {/* <GuestsRecentRsv users={guests_with_reservations}/>
           <RecentUsers newUsers={new_users}/> */}
         </div>
+        <PaymentsDataTable data={payments} />
         {/* <GuestsDataTable 
           data={users} 
           onEdit={handleEditGuest} 

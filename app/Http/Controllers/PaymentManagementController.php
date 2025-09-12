@@ -11,7 +11,7 @@ class PaymentManagementController extends Controller
     {
         $summary = Payment::quickStats();
 
-        $payments = Payment::with(['user', 'reservations'])
+        $payments = Payment::with(['user', 'reservations.room'])->whereHas('reservations')
             ->latest()
             ->get();
 
