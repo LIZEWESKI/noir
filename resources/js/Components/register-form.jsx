@@ -71,7 +71,7 @@ export function RegisterForm({className,...props}) {
               placeholder={field.placeholder || field.label}
               />
               ))}
-                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] border-success" disabled={processing}>
+                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] bg-primary text-primary-foreground" disabled={processing}>
                   {processing && <LoaderCircle className="animate-spin"/>} Sign up
                 </Button>
               </div>

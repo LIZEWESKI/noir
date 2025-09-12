@@ -34,7 +34,6 @@ const DeleteUserDialog = ({guestId, open, onOpenChange}) => {
                     action={route('admin.guests-management.destroy',guestId)}
                     options={{
                         preserveScroll: true,
-                        preserveState: false,
                     }}
                     onError={() => passwordInput.current?.focus()}
                     resetOnSuccess

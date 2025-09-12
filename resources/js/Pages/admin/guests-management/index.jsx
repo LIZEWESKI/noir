@@ -14,16 +14,14 @@ import RecentUsers from "@/components/guests-management/recent-users"
 import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
 
 const breadcrumbs= [
-    {
-      title: 'Guests Management',
-      href: '/admin/guests-management',
-    },
+  {
+    title: 'Guests Management',
+    href: '/admin/guests-management',
+  },
 ];
 
 export default function Index({users,stats,new_users,guests_with_reservations}) {
   const {flash} = usePage().props;
-  console.log(new_users)
-  console.log(guests_with_reservations)
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 

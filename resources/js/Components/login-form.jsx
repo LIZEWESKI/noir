@@ -84,7 +84,7 @@ export function LoginForm({className,...props}) {
                   required />
                   {errors.password && <p className="text-sm text-destructive font-medium">{errors.password}</p>}
                 </div>
-                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] " disabled={processing}>
+                <Button type="submit" variant="outline" className="w-full px-8 border-[1px] bg-primary text-primary-foreground " disabled={processing}>
                   {processing && <LoaderCircle className="animate-spin"/>} Login
                 </Button>
               </div>

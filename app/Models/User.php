@@ -70,13 +70,18 @@ class User extends Authenticatable
     {
         $guests_with_reservations = User::whereHas('reservations', 
         function ($query) use ($startOfWeek, $endOfWeek) { 
-            $query->whereBetween('check_in', [$startOfWeek, $endOfWeek]) 
-            ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]); 
-        })->with(['reservations' => function ($q) use ($startOfWeek, $endOfWeek) {
-            $q->where(function ($query) use ($startOfWeek, $endOfWeek) {
-                $query->whereBetween('check_in', [$startOfWeek, $endOfWeek])
+            $query->where(function ($q) use ($startOfWeek, $endOfWeek) {
+                $q->whereBetween('check_in', [$startOfWeek, $endOfWeek])
+                ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]);
+            })
+            ->where('status', 'completed');
+        })
+        ->with(['reservations' => function ($query) use ($startOfWeek, $endOfWeek) {
+            $query->where(function ($q) use ($startOfWeek, $endOfWeek) {
+                $q->whereBetween('check_in', [$startOfWeek, $endOfWeek])
                     ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]);
-            });
+                })
+            ->where('status', 'completed');
         }])
         ->limit(6)
         ->get();
