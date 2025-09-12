@@ -88,4 +88,39 @@ class Payment extends Model
         ];
     }
 
+    public static function quickStats(): array {
+        $totalRevenue = Self::where('payment_status', 'completed')->sum('total_amount');
+        $totalPayments = Self::count();
+        $completed = Self::where('payment_status', 'completed')->count();
+        $pending = Self::where('payment_status', 'pending')->count();
+        $cancelled = Self::where('payment_status', 'cancelled')->count();
+
+        return [
+            [
+                'key' => 'total_revenue',
+                'value' => "$ ". $totalRevenue,
+                'description' => 'Total revenue from completed payments',
+            ],
+            [
+                'key' => 'total_payments',
+                'value' => $totalPayments,
+                'description' => 'Total number of payments',
+            ],
+            [
+                'key' => 'completed_payments',
+                'value' => $completed,
+                'description' => 'Number of completed payments',
+            ],
+            [
+                'key' => 'pending_payments',
+                'value' => $pending,
+                'description' => 'Number of pending payments',
+            ],
+            [
+                'key' => 'cancelled_payments',
+                'value' => $cancelled,
+                'description' => 'Number of cancelled payments',
+            ],
+        ];
+    }
 }

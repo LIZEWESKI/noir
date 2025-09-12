@@ -5,6 +5,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoomManagementController;
 use App\Http\Controllers\GuestManagementController;
+use App\Http\Controllers\PaymentManagementController;
 use App\Http\Controllers\ReservationManagementController;
 
 Route::middleware(['auth', AdminMiddleware::class])
@@ -63,4 +64,7 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('reservations_management.update');
     Route::post('/reservations-management/cancel/{reservation}',[ReservationManagementController::class,'cancel'])
         ->name('reservations_management.cancel');
+    // Payments Management ressource
+    Route::get("/payments-management",[PaymentManagementController::class, 'index'])
+        ->name("payments_management.index");
 });
