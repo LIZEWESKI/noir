@@ -12,6 +12,12 @@ use Illuminate\Http\RedirectResponse;
 class GuestManagementController extends Controller
 {
     public function index() {
+
+        $now = now();
+        $oneMonthAgo = $now->copy()->subMonth();
+        $startOfWeek = $now->copy()->startOfWeek();
+        $endOfWeek = $now->copy()->endOfWeek();
+
         $users = User::query()
             ->withCount(['reservations as stays' => function ($query) {
                 $query->where('status', 'completed');
@@ -21,12 +27,42 @@ class GuestManagementController extends Controller
         ->get();
 
         // Mark active/inactive based on last 1 month interaction (mainly the last stay)
-        // I should probably use the last_login_at but you know, what a drag
-        $users->transform(function ($user) {
-            $user->is_active = $user->last_stay && Carbon::parse($user->last_stay)->gte(now()->subMonths(1));
+        $users->transform(function ($user)  {
+            $user->is_active = $user->last_stay && Carbon::parse($user->last_stay)->gte(now()->subMonth());
             return $user;
         });
-        return Inertia::render('admin/guests-management/index',compact("users"));
+
+        // Get users with last stay
+        $usersStats = User::withMax('reservations as last_stay', 'check_in')->get();
+
+        // Total users
+        $total_guests = $usersStats->count();
+        // Total active users
+        $active_guests = $usersStats->filter(function ($user) use ($oneMonthAgo) {
+            return $user->last_stay && Carbon::parse($user->last_stay)->gte($oneMonthAgo);
+        })->count();
+        // Total inactive users 
+        $inactive_guests = $total_guests - $active_guests;
+
+        // new sign-ups this week
+        $new_users = User::whereBetween('created_at', [$startOfWeek, $endOfWeek])->orderByDesc('created_at')->limit(8)->get();
+        // users with reservation this week
+        $guests_with_reservations = User::whereHas('reservations', function ($query) use ($startOfWeek, $endOfWeek) {
+            $query->whereBetween('check_in', [$startOfWeek, $endOfWeek])
+                ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]);
+        })->with(['reservations' => function ($q) use ($startOfWeek, $endOfWeek) {
+            $q->whereBetween('check_in', [$startOfWeek, $endOfWeek])
+            ->orWhereBetween('check_out', [$startOfWeek, $endOfWeek]);
+        }])->get();
+
+        return Inertia::render('admin/guests-management/index',compact(
+            "users",
+            "total_guests",
+            "active_guests",
+            "inactive_guests",
+            "new_users",
+            "guests_with_reservations"
+        ));
     }
     public function show(User $user) {
         $staysCount = $user->reservations()

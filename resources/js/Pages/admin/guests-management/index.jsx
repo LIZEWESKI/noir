@@ -17,9 +17,13 @@ const breadcrumbs= [
     },
 ];
 
-export default function Index({users}) {
+export default function Index({users,total_guests,active_guests,inactive_guests,new_users,guests_with_reservations}) {
   const {flash} = usePage().props;
-  
+  console.log(total_guests)
+  console.log(active_guests)
+  console.log(inactive_guests)
+  console.log(new_users)
+  console.log(guests_with_reservations)
   useEffect(() => {
     flash.success && toast.success(flash.success, {
       descriptionClassName: "text-white/90", 
