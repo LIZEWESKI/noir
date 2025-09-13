@@ -48,19 +48,10 @@ export default function Index({payments, summary}) {
           </div>
         <div>
         </div>
-        {/* <GuestsStats stats={stats} /> */}
-        <PaymentsStats stats={summary} />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* <GuestsRecentRsv users={guests_with_reservations}/>
-          <RecentUsers newUsers={new_users}/> */}
+        <div className="space-y-6">
+          <PaymentsStats stats={summary} />
+          <PaymentsDataTable data={payments} />
         </div>
-        <PaymentsDataTable data={payments} />
-        {/* <GuestsDataTable 
-          data={users} 
-          onEdit={handleEditGuest} 
-          onDelete={DELETING_ALERT} 
-          viewGuest={viewGuest}
-        /> */}
         </div>
         <Toaster/>
     </AppLayout>

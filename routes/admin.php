@@ -67,4 +67,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     // Payments Management ressource
     Route::get("/payments-management",[PaymentManagementController::class, 'index'])
         ->name("payments_management.index");
+    Route::get('/payments/export/csv', [PaymentManagementController::class, 'exportCsv'])
+        ->name('payments.export.csv');
+
 });

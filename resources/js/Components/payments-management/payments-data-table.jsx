@@ -21,6 +21,7 @@ import {
   GripVertical,
   ChevronUp,
   Eye,
+  FileUp,
 } from "lucide-react"
 import {
   flexRender,
@@ -354,6 +355,33 @@ function PaymentsDataTable({ data: initialData }) {
     }
   }
 
+  const handleExportCsv = async () => {
+    try {
+      const response = await fetch("/admin/payments/export/csv", {
+        method: "GET",
+        headers: {
+          Accept: "text/csv",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to export CSV");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "payments.csv");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">
@@ -386,6 +414,14 @@ function PaymentsDataTable({ data: initialData }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleExportCsv}
+            >
+              <FileUp />
+              <span className="hidden lg:inline">Export as CSV</span>
+            </Button>
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
