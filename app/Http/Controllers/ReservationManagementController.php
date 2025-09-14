@@ -116,7 +116,8 @@ class ReservationManagementController extends Controller
             ]);
             $reservation->payments()->attach($newPayment->id);
         };
-        
+
+        $room->updateStatus();
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation created successfully!');
     }
 
@@ -190,6 +191,7 @@ class ReservationManagementController extends Controller
         }
         
         $reservation->update($attributes);
+        $room->updateStatus();
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
     }
 
@@ -197,6 +199,7 @@ class ReservationManagementController extends Controller
         $request->validated();
         $reservation->update(['status' => 'cancelled']);
 
+        $reservation->room->updateStatus();
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
     }
 }

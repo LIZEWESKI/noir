@@ -45,6 +45,32 @@ class Room extends Model
     {
         return $this->belongsToMany(Feature::class);
     }
+
+    public function updateStatus()
+    {
+        $today = now()->toDateString();
+
+        $reservation = $this->reservations()
+            ->where('status', '!=', 'cancelled')
+            ->whereDate('check_in', '<=', $today)
+            ->whereDate('check_out', '>=', $today)
+            ->first();
+
+        if ($reservation) {
+            $this->status = 'Booked';
+        } else {
+            $upcoming = $this->reservations()
+                ->where('status', '!=', 'cancelled')
+                ->whereDate('check_in', '>', $today)
+                ->orderBy('check_in', 'asc')
+                ->first();
+
+            $this->status = $upcoming ? 'Reserved' : 'Available';
+        }
+
+        $this->save();
+    }
+
     
     public static $ghostData = [
         'name' => '[Deleted Room]',
