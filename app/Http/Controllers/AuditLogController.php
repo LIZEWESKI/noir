@@ -15,8 +15,8 @@ class AuditLogController extends Controller
      */
     public function index()
     {
-        $audit_logs = AuditLog::with('user')->latest();
-        $admins = User::where('role', 'admin')->get(['id', 'name', 'email']);
+        $audit_logs = AuditLog::with('user')->latest()->get();
+        $admins = User::where('role', 'admin')->get(['id', 'name', 'email',"profile_picture_path"]);
         return Inertia::render('admin/audit-log',compact("audit_logs","admins"));
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Room;
 use Inertia\Inertia;
 use App\Models\Feature;
+use App\Models\AuditLog;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -44,6 +45,13 @@ class RoomManagementController extends Controller
            }
         }
 
+        AuditLog::log('ROOM_CREATED', [
+            'room_id'    => $room->id,
+            'room_number'=> $room->room_number,
+            'room_type'  => $room->type,
+            'price'      => $room->price,
+        ]);
+
         return redirect()->route('admin.rooms_management.index')->with('success', 'Room created successfully.');
     }
 
@@ -59,6 +67,7 @@ class RoomManagementController extends Controller
 
     public function update(UpdateRoomRequest $request, Room $room)
     {
+        $oldPrice = $room->price;
         $data = $request->validated();
 
         if ($request->hasFile('image_path')) {
@@ -78,6 +87,14 @@ class RoomManagementController extends Controller
             }
         }
 
+        AuditLog::log('ROOM_UPDATED', [
+            'room_id'    => $room->id,
+            'room_number'=> $room->room_number,
+            'changes'    => [
+                'price' => "{$oldPrice} -> {$room->price}",
+            ],
+        ]);
+
         return redirect()->route('admin.rooms_management.index')->with('success', 'Room updated successfully!');
     }
 
@@ -91,6 +108,12 @@ class RoomManagementController extends Controller
         // }
 
         $room->delete();
+
+        AuditLog::log('ROOM_DELETED', [
+            'room_id'    => $room->id,
+            'room_number'=> $room->room_number,
+            'room_type'  => $room->type,
+        ]);
 
         return redirect()->route('admin.rooms_management.index')
             ->with('success', 'Room deleted successfully.');

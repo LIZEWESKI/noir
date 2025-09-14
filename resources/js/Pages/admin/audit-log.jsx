@@ -4,15 +4,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, ChevronDown, ChevronRight, Calendar, User, Globe, Activity, UserCheck } from "lucide-react"
+import { Search, Filter, ChevronDown, ChevronRight, Calendar, User, Globe, Activity, UserCheck, Logs, House } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
 import { Head } from "@inertiajs/react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useInitials } from "@/hooks/use-initials"
 
-const mockAdmins = [
-  { id: 1, name: "Sarah Johnson", email: "sarah@noirhotel.com", avatar: "/diverse-woman-portrait.png" },
-  { id: 2, name: "Michael Chen", email: "michael@noirhotel.com", avatar: "/thoughtful-man.png" },
-  { id: 3, name: "Emma Rodriguez", email: "emma@noirhotel.com", avatar: "/professional-woman-diverse.png" },
-]
+// const admins = [
+//   { id: 1, name: "Sarah Johnson", email: "sarah@noirhotel.com", avatar: "/diverse-woman-portrait.png" },
+//   { id: 2, name: "Michael Chen", email: "michael@noirhotel.com", avatar: "/thoughtful-man.png" },
+//   { id: 3, name: "Emma Rodriguez", email: "emma@noirhotel.com", avatar: "/professional-woman-diverse.png" },
+// ]
 
 const mockAuditLogs = [
   {
@@ -85,14 +87,14 @@ const getActionBadgeVariant = (action) => {
   if (action.includes("CREATED") || action.includes("LOGIN")) return "default"
   if (action.includes("UPDATED")) return "secondary"
   if (action.includes("DELETED")) return "destructive"
-  if (action.includes("PAYMENT")) return "default"
+  if (action.includes("CANCELED")) return "destructive"
   return "outline"
 }
 
 const getActionIcon = (action) => {
   if (action.includes("USER") || action.includes("GUEST")) return <User className="h-4 w-4" />
   if (action.includes("LOGIN")) return <Globe className="h-4 w-4" />
-  if (action.includes("PAYMENT")) return <Activity className="h-4 w-4" />
+  if (action.includes("ROOM")) return <House className="h-4 w-4" />
   return <Calendar className="h-4 w-4" />
 }
 const breadcrumbs= [
@@ -101,12 +103,14 @@ const breadcrumbs= [
     href: '/admin/dashboard',
   },
   {
-    title: 'Log Log',
-    href: '/admin/log-log',
+    title: 'Audit Log',
+    href: '/admin/audit-log',
   },
 ];
 
-export default function AuditLog() {
+export default function AuditLog({audit_logs, admins}) {
+  console.log(audit_logs)
+  console.log(admins)
   const [searchTerm, setSearchTerm] = useState("")
   const [actionFilter, setActionFilter] = useState("all")
   const [expandedRows, setExpandedRows] = useState(new Set())
@@ -122,7 +126,7 @@ export default function AuditLog() {
     setExpandedRows(newExpanded)
   }
 
-  const filteredLogs = mockAuditLogs.filter((log) => {
+  const filteredLogs = audit_logs.filter((log) => {
     const matchesSearch =
       log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
       JSON.stringify(log.details).toLowerCase().includes(searchTerm.toLowerCase())
@@ -132,7 +136,7 @@ export default function AuditLog() {
   })
 
   const getAdminById = (adminId) => {
-    return mockAdmins.find((admin) => admin.id === adminId)
+    return admins.find((admin) => admin.id === adminId)
   }
 
   const formatDate = (dateString) => {
@@ -144,16 +148,15 @@ export default function AuditLog() {
       minute: "2-digit",
     })
   }
-
+  const getInitials = useInitials();
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Log Log" />
+      <Head title="Audit Log" />
       <div className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Audit Log</h1>
               <p className="text-muted-foreground mt-1">Track all administrative actions and system events</p>
             </div>
             <div className="flex items-center gap-2">
@@ -172,19 +175,14 @@ export default function AuditLog() {
                   <span className="font-medium">Admin:</span>
                 </div>
                 <Select value={selectedAdmin} onValueChange={setSelectedAdmin}>
-                  <SelectTrigger className="w-64">
+                  <SelectTrigger className="w-64 h-10" >
                     <SelectValue placeholder="Select admin" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent >
                     <SelectItem value="all">All Admins</SelectItem>
-                    {mockAdmins.map((admin) => (
+                    {admins.map((admin) => (
                       <SelectItem key={admin.id} value={admin.id.toString()}>
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={admin.avatar || "/placeholder.svg"}
-                            alt={admin.name}
-                            className="w-6 h-6 rounded-full object-cover"
-                          />
+                        <div className="flex items-center gap-2 ">
                           <span>{admin.name}</span>
                         </div>
                       </SelectItem>
@@ -239,12 +237,12 @@ export default function AuditLog() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <Activity className="h-5 w-5 text-purple-500" />
+                    <House className="h-5 w-5 text-purple-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Payments</p>
+                    <p className="text-sm text-muted-foreground">Rooms</p>
                     <p className="text-2xl font-bold">
-                      {filteredLogs.filter((log) => log.action.includes("PAYMENT")).length}
+                      {filteredLogs.filter((log) => log.action.includes("ROOM")).length}
                     </p>
                   </div>
                 </div>
@@ -290,7 +288,7 @@ export default function AuditLog() {
                     <SelectItem value="all">All Actions</SelectItem>
                     <SelectItem value="user">User Actions</SelectItem>
                     <SelectItem value="reservation">Reservations</SelectItem>
-                    <SelectItem value="payment">Payments</SelectItem>
+                    <SelectItem value="room">Rooms</SelectItem>
                     <SelectItem value="login">Login Events</SelectItem>
                   </SelectContent>
                 </Select>
@@ -338,11 +336,12 @@ export default function AuditLog() {
                                   {admin && (
                                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                       <span>by</span>
-                                      <img
-                                        src={admin.avatar || "/placeholder.svg"}
-                                        alt={admin.name}
-                                        className="w-4 h-4 rounded-full object-cover"
-                                      />
+                                      <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                                          <AvatarImage src={admin.profile_picture_url} alt={admin.name} />
+                                          <AvatarFallback >
+                                            {getInitials(admin.name)}
+                                          </AvatarFallback>
+                                      </Avatar>
                                       <span>{admin.name}</span>
                                     </div>
                                   )}

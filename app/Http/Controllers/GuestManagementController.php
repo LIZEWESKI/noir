@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Auth\StoreUserRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
+use App\Models\AuditLog;
 
 class GuestManagementController extends Controller
 {
@@ -43,8 +44,11 @@ class GuestManagementController extends Controller
             $attributes['profile_picture_path'] = $path;
         }
 
-        User::create($attributes);
-
+        $user = User::create($attributes);
+        AuditLog::log("USER_CREATED", [
+            'user_id'   => $user->id,
+            'user_name' => $user->name,
+        ]);
         return redirect()->route('admin.guests_management.index')->with('success', 'User created successfully!');
     }
 
@@ -74,6 +78,11 @@ class GuestManagementController extends Controller
         }
 
         $user->update($validated);
+
+        AuditLog::log("USER_UPDATED", [
+            'user_id'   => $user->id,
+            'user_name' => $user->name,
+        ]);
 
         return redirect()->route('admin.guests_management.index')->with('success', 'Guest updated successfully.');
     }
@@ -134,6 +143,11 @@ class GuestManagementController extends Controller
         ]);
 
         $user->delete();
+
+        AuditLog::log("USER_DELETED", [
+            'user_id'   => $user->id,
+            'user_name' => $user->name,
+        ]);
 
         return redirect()->route('admin.guests_management.index')->with('success', 'User deleted successfully!');
     }

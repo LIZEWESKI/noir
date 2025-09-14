@@ -58,7 +58,7 @@ class User extends Authenticatable
             ->withCount(['reservations as stays' => function ($query) { 
                 $query->where('status', 'completed'); }]) 
             ->withMax('reservations as last_stay', 'check_in')
-            ->orderByDesc('stays')
+            ->latest()
             ->get();
         $users->transform(function ($u) { 
             $u->is_active = $u->isActive(); 

@@ -18,9 +18,9 @@ class AuditLogFactory extends Factory
     public function definition(): array
     {
         $actions = [
-            'USER_CREATED', 'USER_DELETED', 'GUEST_PROFILE_UPDATED',
-            'RESERVATION_UPDATED', 'ROOM_CREATED', 'ROOM_DELETED',
-            'PAYMENT_PROCESSED', 'LOGIN_ATTEMPT'
+            'USER_CREATED', 'USER_DELETED', 'USER_UPDATED',
+            'RESERVATION_UPDATED','RESERVATION_CREATED', 'ROOM_CREATED', 'ROOM_DELETED',
+            'ROOM_UPDATED', 'LOGIN_ATTEMPT'
         ];
 
         $action = $this->faker->randomElement($actions);

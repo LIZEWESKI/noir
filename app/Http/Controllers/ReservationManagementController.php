@@ -6,6 +6,7 @@ use App\Models\Room;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Payment;
+use App\Models\AuditLog;
 use App\Models\Reservation;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -118,6 +119,11 @@ class ReservationManagementController extends Controller
         };
 
         $room->updateStatus();
+
+        AuditLog::log("RESERVATION_CREATED", [
+            'reservation_id' => $reservation->id,
+            'room_number'    => $reservation->room->number
+        ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation created successfully!');
     }
 
@@ -148,6 +154,7 @@ class ReservationManagementController extends Controller
     }
 
     public function update(UpdateReservationRequest $request, Reservation $reservation) {
+        $oldStatus = $reservation->status;
         $attributes = $request->validated();
 
         $room = Room::findOrFail($attributes['room_id']);
@@ -192,14 +199,26 @@ class ReservationManagementController extends Controller
         
         $reservation->update($attributes);
         $room->updateStatus();
+        AuditLog::log("RESERVATION_UPDATED", [
+            'reservation_id' => $reservation->id,
+            'room_number'    => $reservation->room->number,
+            'status_changed' => "{$oldStatus} -> {$reservation->status}",
+        ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
     }
 
     public function cancel(CancelReservationRequest $request, Reservation $reservation) {
+        $oldStatus = $reservation->status;
         $request->validated();
         $reservation->update(['status' => 'cancelled']);
 
         $reservation->room->updateStatus();
+
+        AuditLog::log("RESERVATION_CANCELED", [
+            'reservation_id' => $reservation->id,
+            'room_number'    => $reservation->room->number,
+            'status_changed' => "{$oldStatus} -> {$reservation->status}",
+        ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CancelReservationRequest extends FormRequest
@@ -12,7 +13,7 @@ class CancelReservationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isAdmin();
+        return Auth::user()->isAdmin();
     }
 
     /**
