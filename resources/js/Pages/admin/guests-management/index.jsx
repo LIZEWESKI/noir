@@ -15,6 +15,10 @@ import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
 
 const breadcrumbs= [
   {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
     title: 'Guests Management',
     href: '/admin/guests-management',
   },

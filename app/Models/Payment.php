@@ -97,26 +97,31 @@ class Payment extends Model
 
         return [
             [
+                "isCurrency" => true,
                 'key' => 'total_revenue',
-                'value' => "$ ". $totalRevenue,
+                'value' => $totalRevenue,
                 'description' => 'Total revenue from completed payments',
             ],
             [
+                "isCurrency" => false,
                 'key' => 'total_payments',
                 'value' => $totalPayments,
                 'description' => 'Total number of payments',
             ],
             [
+                "isCurrency" => false,
                 'key' => 'completed_payments',
                 'value' => $completed,
                 'description' => 'Number of completed payments',
             ],
             [
+                "isCurrency" => false,
                 'key' => 'pending_payments',
                 'value' => $pending,
                 'description' => 'Number of pending payments',
             ],
             [
+                "isCurrency" => false,
                 'key' => 'cancelled_payments',
                 'value' => $cancelled,
                 'description' => 'Number of cancelled payments',

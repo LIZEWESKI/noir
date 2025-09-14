@@ -1,21 +1,16 @@
 import { useEffect } from "react"
 import AppLayout from "@/layouts/app-layout"
-import { Head, router, usePage } from "@inertiajs/react"
+import { Head, usePage } from "@inertiajs/react"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import {
-  Plus,
-} from "lucide-react"
-import IconToolTip from "@/components/ui/icon-tooltip"
-import GuestsDataTable from "@/components/guests-management/guests-data-table"
-import GuestsStats from "@/components/guests-management/guests-stats"
-import RecentUsers from "@/components/guests-management/recent-users"
-import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
 import PaymentsStats from "@/components/payments-management/payments-stats"
 import PaymentsDataTable from "@/components/payments-management/payments-data-table"
 
 const breadcrumbs= [
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
   {
     title: 'Payments Management',
     href: '/admin/payments-management',

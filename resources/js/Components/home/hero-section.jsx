@@ -27,11 +27,6 @@ const HeroSection = ({ rooms }) => {
               <div className="max-w-2xl">
                 <SearchForm />
               </div>
-              <Link href="/rooms">
-                <Button size="lg" variant="outline" className="px-8 py-6 text-lg rounded-full bourder-[1px] mt-6">
-                  Book Now with Noir
-                </Button>
-              </Link>
             </div>
 
             {/* Right Column - Image Grid */}
@@ -77,8 +72,14 @@ const HeroSection = ({ rooms }) => {
               </div>
             </div>
           </div>
+          {/* <Link href="/rooms" className="flex self-center justify-center">
+            <Button size="lg" variant="outline" className="px-8 py-6 text-lg rounded-full bourder-[1px] mt-6">
+              Book Now with Noir
+            </Button>
+          </Link> */}
         </div>
       </div>
+
     </section>
   )
 }

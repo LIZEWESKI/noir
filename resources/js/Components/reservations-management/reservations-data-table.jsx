@@ -56,6 +56,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
 import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 
 
 function DragHandle({ id }) {
@@ -236,11 +237,12 @@ const columns = [
         </div>
       </div>
     ),
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (
+
       <div className="space-y-1">
-        <div className="font-semibold">${Number(row.original.total_price - (Number(row.original.cleaning_fee) + Number(row.original.service_fee))).toFixed(2)}</div>
+        <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_price)}</div>
         <div className="text-xs text-muted-foreground">
-          +${row.original.cleaning_fee} + {row.original.service_fee} fees
+          +{table.options.meta.formatCurrency(row.original.cleaning_fee)} + {table.options.meta.formatCurrency(row.original.service_fee)} fees
         </div>
       </div>
     ),
@@ -359,11 +361,14 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
   const getInitials = useInitials()
+  const { formatCurrency } = useCurrencyFormatter()
+  
   const table = useReactTable({
     data: tableData,
     columns,
     meta: {
       getInitials,
+      formatCurrency,
       onEdit,
       onDelete,
       viewRoom,

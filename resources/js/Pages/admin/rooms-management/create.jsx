@@ -10,14 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { roomStatuses,bedTypes, roomTypes } from "@/components/rooms-management/rooms-data"
 const breadcrumbs= [
-    {
-      title: 'Rooms Management',
-      href: '/admin/rooms-management',
-    },
-    {
-      title: 'Create Room',
-      href: '/admin/rooms-management/create',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Rooms Management',
+    href: '/admin/rooms-management',
+  },
+  {
+    title: 'Create Room',
+    href: '/admin/rooms-management/create',
+  },
 ];
 
 export default function Create({features}) {

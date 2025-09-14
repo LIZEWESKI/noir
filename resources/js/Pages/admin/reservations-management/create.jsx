@@ -19,14 +19,18 @@ import PricingSummary from "@/components/reservations-management/pricing-summary
 import UserSelection from "@/components/reservations-management/user-selection"
 
 const breadcrumbs= [
-    {
-      title: 'Reservations Management',
-      href: '/admin/reservations-management',
-    },
-    {
-      title: 'Create Reservation',
-      href: '/admin/reservations-management/create',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Reservations Management',
+    href: '/admin/reservations-management',
+  },
+  {
+    title: 'Create Reservation',
+    href: '/admin/reservations-management/create',
+  },
 ];
 
 const CreateReservation = ({ rooms: availableRooms , users}) => {

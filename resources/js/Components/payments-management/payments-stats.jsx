@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 import { DollarSign, CheckCircle, Clock, XCircle } from "lucide-react"
 
 const PaymentsStats = ({ stats }) => {
@@ -34,7 +35,7 @@ const PaymentsStats = ({ stats }) => {
         bgColor: "bg-red-500/10",
     },
   }
-
+  const { formatCurrency } = useCurrencyFormatter();
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {stats.map((stat, index) => {
@@ -51,7 +52,7 @@ const PaymentsStats = ({ stats }) => {
                     {meta.title}
                   </p>
                   <p className="text-2xl font-bold text-foreground">
-                    {stat.value}
+                    {stat.isCurrency ? formatCurrency(stat.value) : stat.value}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {stat.description}

@@ -18,14 +18,18 @@ import ReservationStatusSelect from "@/components/reservations-management/reserv
 import PricingSummary from "@/components/reservations-management/pricing-summary"
 
 const breadcrumbs= [
-    {
-      title: 'Reservations Management',
-      href: '/admin/reservations-management',
-    },
-    {
-      title: 'Edit Reservation',
-      href: '/admin/reservations-management/edit/{:id}',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Reservations Management',
+    href: '/admin/reservations-management',
+  },
+  {
+    title: 'Edit Reservation',
+    href: '/admin/reservations-management/edit/{:id}',
+  },
 ];
 
 const EditReservation = ({reservation, unavailable_dates, rooms: availableRooms }) => {

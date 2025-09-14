@@ -10,6 +10,10 @@ import { Head, router, useForm } from "@inertiajs/react"
 
 const breadcrumbs = [
   {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
     title: 'Guests Management',
     href: '/admin/guests-management',
   },

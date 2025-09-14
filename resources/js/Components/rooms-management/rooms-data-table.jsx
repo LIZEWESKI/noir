@@ -57,6 +57,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import DeleteAlertDialog from "../ui/delete-alert-dialog"
 import { getStatusColor } from "@/components/rooms-management/get-room-status"
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 
 export const schema = z.object({
   id: z.number(),
@@ -239,9 +240,9 @@ const columns = [
       if (max && price > max) return false
       return true
     },
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        ${row.original.price}
+        {table.options.meta.formatCurrency(row.original.price)}
       </Badge>
     ),
   },
@@ -397,7 +398,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
-
+  const { formatCurrency } = useCurrencyFormatter()
   const table = useReactTable({
     data,
     columns,
@@ -411,6 +412,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
       isDeleteOpen,
       setIsDeleteOpen,
       selectedRoomId,
+      formatCurrency
     },
     state: {
       sorting,

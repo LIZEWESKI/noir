@@ -53,6 +53,7 @@ import { useInitials } from "@/hooks/use-initials"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
 import { useCapitalize } from "@/hooks/use-capitalize"
 import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 
 
 function DragHandle({ id }) {
@@ -196,8 +197,8 @@ const columns = [
         </div>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="font-semibold">${Number(row.original.total_amount).toFixed(2)}</div>
+    cell: ({ row, table }) => (
+      <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_amount)}</div>
     ),
   },
   {
@@ -306,6 +307,7 @@ function PaymentsDataTable({ data: initialData }) {
   const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
+  const { formatCurrency } = useCurrencyFormatter()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [selectedPaymentId, setSelectedPaymentId] = React.useState(null)
   const table = useReactTable({
@@ -314,6 +316,7 @@ function PaymentsDataTable({ data: initialData }) {
     meta: {
       getInitials,
       getCapitalize,
+      formatCurrency,
       onModalClick: (id) => {
         setSelectedPaymentId(id)
         setIsModalOpen(true)

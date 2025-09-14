@@ -15,14 +15,18 @@ import DeleteUserDialog from "@/components/ui/delete-user-dialog"
 import { useState } from "react"
 
 const breadcrumbs= [
-    {
-      title: 'Guests Management',
-      href: '/admin/guests-management',
-    },
-    {
-      title: 'Guest Details',
-      href: '/admin/guest-management/{:id}',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Guests Management',
+    href: '/admin/guests-management',
+  },
+  {
+    title: 'Guest Details',
+    href: '/admin/guest-management/{:id}',
+  },
 ];
 
 

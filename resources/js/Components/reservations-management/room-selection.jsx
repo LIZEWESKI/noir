@@ -1,12 +1,14 @@
 import React from 'react'
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useCurrencyFormatter } from '@/hooks/use-currency-formatter'
 const RoomSelection = ({
     availableRooms,
     handleSelectedRoom,
     selectedRoom,
     roomError
 }) => {
+    const {formatCurrency} = useCurrencyFormatter();
   return (
     <div className="space-y-2">
         <Label>Room Assignment</Label>
@@ -24,7 +26,7 @@ const RoomSelection = ({
                 <span>
                     Room {room.room_number} - {room.name}
                 </span>
-                <span className="text-muted-foreground ml-2">${room.price}/night</span>
+                <span className="text-muted-foreground ml-2">{formatCurrency(room.price)}/night</span>
                 </div>
             </SelectItem>
             ))}

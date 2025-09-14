@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChangeLogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\DashboardController;
@@ -69,5 +70,6 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name("payments_management.index");
     Route::get('/payments/export/csv', [PaymentManagementController::class, 'exportCsv'])
         ->name('payments.export.csv');
-
+    Route::get('/change-log', [ChangeLogController::class,'index'])
+        ->name('change_log.index');
 });

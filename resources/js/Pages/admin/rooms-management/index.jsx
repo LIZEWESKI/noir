@@ -11,10 +11,14 @@ import RoomsDataTable from "@/components/rooms-management/rooms-data-table"
 import IconToolTip from "@/components/ui/icon-tooltip"
 
 const breadcrumbs= [
-    {
-      title: 'Rooms Management',
-      href: '/admin/rooms-management',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Rooms Management',
+    href: '/admin/rooms-management',
+  },
 ];
 
 export default function Index({rooms_management}) {

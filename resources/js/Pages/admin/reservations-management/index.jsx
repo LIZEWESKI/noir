@@ -14,10 +14,14 @@ import ReservationTimeline from "@/components/reservations-management/reservatio
 import ReservationStats from "@/components/reservations-management/Reservations-stats"
 
 const breadcrumbs= [
-    {
-      title: 'Reservations Management',
-      href: '/admin/reservations-management',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Reservations Management',
+    href: '/admin/reservations-management',
+  },
 ];
 
 export default function Index({

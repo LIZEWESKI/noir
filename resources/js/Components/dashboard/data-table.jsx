@@ -77,6 +77,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import { getStatusColor } from "@/components/dashboard/get-reservation-status";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 
 
 export const schema = z.object({
@@ -167,9 +168,9 @@ const columns = [
   {
     accessorKey: "price",
     header: "Total Price",
-    cell: ({ row }) => (
+    cell: ({ row, table }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.total_price}$
+        {table.options.meta.formatCurrency(row.original.total_price)}
       </Badge>
     ),
   }
@@ -222,12 +223,13 @@ export function DataTable({
   )
   const getInitials = useInitials();
   const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
-
+  const { formatCurrency } = useCurrencyFormatter()
   const table = useReactTable({
     data,
     columns,
     meta: {
-      getInitials
+      getInitials,
+      formatCurrency
     },
     state: {
       sorting,

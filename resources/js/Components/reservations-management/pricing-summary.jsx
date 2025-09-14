@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { AlertCircle, CheckCircle, LoaderCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useCurrencyFormatter } from '@/hooks/use-currency-formatter'
 
 const PricingSummary = ({
     selectedRoom,
@@ -15,6 +16,7 @@ const PricingSummary = ({
     processing,
     isEdit = false
 }) => {
+    const { formatCurrency } = useCurrencyFormatter()
   return (
     <Card className="lg:row-span-2">
         <CardHeader className="pb-4">
@@ -38,21 +40,21 @@ const PricingSummary = ({
                 <div className="space-y-3">
                 <div className="flex justify-between items-center">
                     <span className="text-sm">Room rate</span>
-                    <span className="font-medium">${Number(pricing.roomPrice).toFixed(2)} / night</span>
+                    <span className="font-medium">{formatCurrency(pricing.roomPrice)} / night</span>
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-sm">
                     {nights} {nights === 1 ? "night" : "nights"}
                     </span>
-                    <span className="font-medium">${pricing.subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(pricing.subtotal)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-sm">Cleaning fee</span>
-                    <span className="font-medium">${pricing.cleaningFee.toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(pricing.cleaningFee)}</span>
                 </div>
                 <div className="flex justify-between items-center">
                     <span className="text-sm">Service fee</span>
-                    <span className="font-medium">${pricing.serviceFee.toFixed(2)}</span>
+                    <span className="font-medium">{formatCurrency(pricing.serviceFee)}</span>
                 </div>
                 </div>
 
@@ -60,7 +62,7 @@ const PricingSummary = ({
 
                 <div className="flex justify-between items-center p-3 bg-primary/5 rounded-lg">
                 <span className="font-bold text-lg">Total Amount</span>
-                <span className="font-bold text-xl text-primary">${pricing.total.toFixed(2)}</span>
+                <span className="font-bold text-xl text-primary">{formatCurrency(pricing.total)}</span>
                 </div>
 
                 {rsvTotalPrice && Number(pricing.total) !== Number(rsvTotalPrice) && (
@@ -77,8 +79,8 @@ const PricingSummary = ({
                     <div className="flex items-center justify-between font-medium">
                         <span>Difference:</span>
                         <span className={pricing.total > rsvTotalPrice ? "text-red-600" : "text-green-600"}>
-                        {pricing.total > rsvTotalPrice ? "+" : ""}$
-                        {(pricing.total - rsvTotalPrice).toFixed(2)}
+                        {pricing.total > rsvTotalPrice ? "+" : ""}
+                        {formatCurrency(pricing.total - rsvTotalPrice)}
                         </span>
                     </div>
                     </div>

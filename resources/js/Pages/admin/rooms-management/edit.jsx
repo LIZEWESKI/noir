@@ -11,14 +11,18 @@ import { Card, CardContent } from "@/components/ui/card"
 import { roomStatuses,bedTypes, roomTypes } from "@/components/rooms-management/rooms-data"
 
 const breadcrumbs= [
-    {
-      title: 'Rooms Management',
-      href: '/admin/rooms-management',
-    },
-    {
-      title: 'Edit Room',
-      href: '/admin/rooms-management/edit/{:id}',
-    },
+  {
+    title: 'Dashboard',
+    href: '/admin/dashboard',
+  },
+  {
+    title: 'Rooms Management',
+    href: '/admin/rooms-management',
+  },
+  {
+    title: 'Edit Room',
+    href: '/admin/rooms-management/edit/{:id}',
+  },
 ];
 
 export default function Edit({features, room}) {
@@ -155,6 +159,7 @@ export default function Edit({features, room}) {
                         onChange={(e) => setData({ ...data, price: Number.parseFloat(e.target.value) })}
                         placeholder="0.00"
                         min="0"
+                        max="999.999.999.99"
                         step="0.01"
                         className={`h-11 ${errors.price ? "border-destructive focus-visible:ring-destructive" : "focus-visible:ring-primary"}`}
                       />
