@@ -15,6 +15,7 @@ class ReservationSeeder extends Seeder
     public function run(): void
     {
         Reservation::factory(400)->create()->each(function ($reservation) {
+            $reservation->room->updateStatus();
             $payment = Payment::factory()
                 ->forReservation($reservation)
                 ->create();

@@ -27,5 +27,7 @@ class UpdateRoomStatuses extends Command
     public function handle()
     {
         Room::all()->each->updateStatus();
+        $this->info('Room statuses updated successfully.');
+        return Command::SUCCESS;
     }
 }

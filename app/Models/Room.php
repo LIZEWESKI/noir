@@ -51,7 +51,7 @@ class Room extends Model
         $today = now()->toDateString();
 
         $reservation = $this->reservations()
-            ->where('status', '!=', 'cancelled')
+            ->where('status', '=', 'completed')
             ->whereDate('check_in', '<=', $today)
             ->whereDate('check_out', '>=', $today)
             ->first();
@@ -59,13 +59,12 @@ class Room extends Model
         if ($reservation) {
             $this->status = 'Booked';
         } else {
-            $upcoming = $this->reservations()
-                ->where('status', '!=', 'cancelled')
-                ->whereDate('check_in', '>', $today)
-                ->orderBy('check_in', 'asc')
-                ->first();
-
-            $this->status = $upcoming ? 'Reserved' : 'Available';
+            // $upcoming = $this->reservations()
+            //     ->where('status', '!=', 'cancelled')
+            //     ->whereDate('check_in', '>', $today)
+            //     ->orderBy('check_in', 'asc')
+            //     ->first();
+            $this->status = 'Available';
         }
 
         $this->save();

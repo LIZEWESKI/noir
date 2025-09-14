@@ -36,8 +36,8 @@ const mainNavItems = [
 
 const footerNavItems = [
     {
-        title: 'Change Log',
-        href: '/admin/change-log',
+        title: 'Audit Log',
+        href: '/admin/audit-log',
         icon: ScrollText,
     },
 ];

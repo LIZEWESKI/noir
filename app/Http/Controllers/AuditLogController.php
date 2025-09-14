@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Inertia\Inertia;
-use App\Models\ChangeLog;
-use App\Http\Requests\StoreChangeLogRequest;
-use App\Http\Requests\UpdateChangeLogRequest;
+use App\Models\AuditLog;
+use App\Http\Requests\StoreAuditLogRequest;
+use App\Http\Requests\UpdateAuditLogRequest;
 
-class ChangeLogController extends Controller
+class AuditLogController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('admin/change-log');
+        $audit_logs = AuditLog::with('user')->latest();
+        $admins = User::where('role', 'admin')->get(['id', 'name', 'email']);
+        return Inertia::render('admin/audit-log',compact("audit_logs","admins"));
     }
 
     /**
@@ -28,7 +31,7 @@ class ChangeLogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreChangeLogRequest $request)
+    public function store(StoreAuditLogRequest $request)
     {
         //
     }
@@ -36,7 +39,7 @@ class ChangeLogController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ChangeLog $changeLog)
+    public function show(AuditLog $auditLog)
     {
         //
     }
@@ -44,7 +47,7 @@ class ChangeLogController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ChangeLog $changeLog)
+    public function edit(AuditLog $auditLog)
     {
         //
     }
@@ -52,7 +55,7 @@ class ChangeLogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateChangeLogRequest $request, ChangeLog $changeLog)
+    public function update(UpdateAuditLogRequest $request, AuditLog $auditLog)
     {
         //
     }
@@ -60,7 +63,7 @@ class ChangeLogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ChangeLog $changeLog)
+    public function destroy(AuditLog $auditLog)
     {
         //
     }

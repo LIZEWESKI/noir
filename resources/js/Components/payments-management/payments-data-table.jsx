@@ -132,7 +132,7 @@ const columns = [
           {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
         </div>
-        <ColumnFilter column={column} title="Guest" />
+        <ColumnFilter column={column} title="by Guest or Transaction Id" />
       </div>
     ),
     cell: ({ row, table }) => {
@@ -155,7 +155,8 @@ const columns = [
     filterFn: (row, id, value) => {
       return (
         row.original.user.name.toLowerCase().includes(value.toLowerCase()) ||
-        row.original.user.email.toLowerCase().includes(value.toLowerCase())
+        row.original.user.email.toLowerCase().includes(value.toLowerCase()) ||
+        row.original.transaction_id.toLowerCase().includes(value.toLowerCase()) 
       );
     },
   },

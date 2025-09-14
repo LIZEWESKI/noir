@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        $fake_users = [
+        $initials_admins = [
             [
                 'name' => 'Rick Sanchez',
                 'email' => 'rick@admin.com',
@@ -26,17 +26,24 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Morty Sanchez',
-                'email' => 'morty@notadmin.com',
+                'email' => 'morty@admin.com',
                 "password" => "12345678",
-                "role" => "user",
+                "role" => "admin",
+            ],
+            [
+                'name' => 'Saryah Aureliues',
+                'email' => 'saryah@admin.com',
+                "password" => "12345678",
+                "role" => "admin",
             ],
         ];
-        foreach ($fake_users as $user) {
+        foreach ($initials_admins as $user) {
             User::factory()->create($user);
         }
         $this->call(RoomSeeder::class);
         $this->call(FeatureSeeder::class);
         $this->call(FeatureRoomSeeder::class);
         $this->call(ReservationSeeder::class);
+        $this->call(AuditLogSeeder::class);
     }
 }
