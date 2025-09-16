@@ -71,6 +71,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name("payments_management.index");
     Route::get('/payments/export/csv', [PaymentManagementController::class, 'exportCsv'])
         ->name('payments.export.csv');
+    
+    // Audit Log (should be invokable but didn't feel like it)
     Route::get('/audit-log', [AuditLogController::class,'index'])
         ->name('audit_log.index');
 });
