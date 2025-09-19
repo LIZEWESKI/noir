@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm , router} from '@inertiajs/react'
 import Layout from '@/layouts/layout'
 import Edit from './edit'
-import InputField from '@/Components/ui/input-field'
+import InputField from '@/components/ui/input-field'
 import { Button } from '@/components/ui/button'
 const UpdatePasswordForm = () => {
     const { data, setData, put, processing, errors, reset} = useForm({
