@@ -26,7 +26,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # PHP dependencies // This stage failed and its related to stage 3 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 
 # Node dependencies & build assets
