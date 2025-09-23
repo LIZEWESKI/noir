@@ -48,7 +48,7 @@ const RoomsResults = ({rooms}) => {
 
               <div className="mt-6">
                 <Button
-                  className="w-full bg-primary text-background/80 disabled:bg-zinc-700 disabled:text-zinc-300"
+                  className="w-full bg-primary disabled:bg-zinc-700 disabled:text-zinc-300"
                   onClick={()=> router.visit(`/rooms/${room.id}`)}
                 >
                   Book Now

@@ -1,7 +1,6 @@
-# Official PHP image with required extensions
-FROM php:8.2-fpm
+# Base PHP image
+FROM php:8.2-fpm AS base
 
-# System dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -12,29 +11,27 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Node.js & npm
+WORKDIR /var/www/html
+
+# Node.js 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Working directory
-WORKDIR /var/www/html
-
-# Project files
 COPY . .
 
-# PHP dependencies // This stage failed and its related to stage 3 
 RUN composer install --optimize-autoloader
 
-
-# Node dependencies & build assets
 RUN npm install
+
+# Production build
+FROM base AS production
 RUN npm run build
+CMD ["php-fpm"]
 
-# Port for Laravel app
-EXPOSE 8000
+# Development
+FROM base AS development
+EXPOSE 8000 5173
 
-# Start Laravel server
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=8000 & npm run dev"]

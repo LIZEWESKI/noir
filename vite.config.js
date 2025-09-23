@@ -9,5 +9,16 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-    ]
+    ],  
+    server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+        watch: {
+            usePolling: true,
+            interval: 100,
+        },
+    },
 });
