@@ -122,7 +122,7 @@ class ReservationManagementController extends Controller
 
         AuditLog::log("RESERVATION_CREATED", [
             'reservation_id' => $reservation->id,
-            'room_number'    => $reservation->room->number
+            'room_number'    => $reservation->room->room_number
         ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation created successfully!');
     }
@@ -201,7 +201,7 @@ class ReservationManagementController extends Controller
         $room->updateStatus();
         AuditLog::log("RESERVATION_UPDATED", [
             'reservation_id' => $reservation->id,
-            'room_number'    => $reservation->room->number,
+            'room_number'    => $reservation->room->room_number,
             'status_changed' => "{$oldStatus} -> {$reservation->status}",
         ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
@@ -216,7 +216,7 @@ class ReservationManagementController extends Controller
 
         AuditLog::log("RESERVATION_CANCELED", [
             'reservation_id' => $reservation->id,
-            'room_number'    => $reservation->room->number,
+            'room_number'    => $reservation->room->room_number,
             'status_changed' => "{$oldStatus} -> {$reservation->status}",
         ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
