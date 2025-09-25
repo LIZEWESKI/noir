@@ -70,7 +70,7 @@ class PayPalController extends Controller
                 ]
             ]
         ], $paypalToken);
-        Log::debug('PayPal createOrder response:', [$response]);
+        // Log::debug('PayPal createOrder response:', [$response]);
         $payment = Payment::create([
             'user_id' => Auth::id(),
             'total_amount' => $totalAmount,
@@ -109,6 +109,7 @@ class PayPalController extends Controller
 
                 $totalAmount = $payment->total_amount;
                 $orderId = $payment->transaction_id;
+                
                 // Redirect to success page with a success message
                 Mail::to(Auth::user())->send(new SuccessPayment($payment));
 
