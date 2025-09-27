@@ -1,14 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Mail\SuccessPayment;
 use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
+use App\Mail\SuccessPayment;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Markdown;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalController extends Controller
@@ -133,5 +136,25 @@ class PayPalController extends Controller
             $payment->update(['payment_status' => 'cancelled']);
         }
         return redirect('/payment')->with('success', 'Payment cancelled!');
+    }
+
+    public function downloadPdf(Payment $payment)
+    {
+        $payment->load(['reservations.room','user']);
+        // Since this pdf package doesn't support markdowns
+        // I had to render the view as markdown first and then load it as html
+        $markdown = new Markdown(view(), config('mail.markdown', []));
+
+        $html = $markdown->render('emails.payment-success', [
+            'payment' => $payment,
+            'reservations' => $payment->reservations,
+            'total_amount' => $payment->total_amount,
+            'order_id' => $payment->transaction_id,
+            'user' => $payment->user,
+        ]);
+
+        $pdf = Pdf::loadHtml($html);
+
+        return $pdf->stream("payment-{$payment->id}.pdf");
     }
 }

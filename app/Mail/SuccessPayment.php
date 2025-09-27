@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Payment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
@@ -39,14 +40,16 @@ class SuccessPayment extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'successPayment',
-            with: [
-                "reservations" => $this->payment->reservationsWithRooms()->get(),
-                "total_amount" => $this->payment->total_amount,
-                "order_id" => $this->payment->transaction_id 
-            ]
-        );
+    return new Content(
+        markdown: 'emails.payment-success',
+        with: [
+            'payment' => $this->payment,
+            'reservations' => $this->payment->reservationsWithRooms()->get(),
+            'total_amount' => $this->payment->total_amount,
+            'order_id' => $this->payment->transaction_id,
+            'user' => Auth::user(),
+        ]
+    );
     }
 
     /**
