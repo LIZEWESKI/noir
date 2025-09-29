@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait hasAdminRole
+trait HasAdminRole
 {
     public function isAdmin()
     {
