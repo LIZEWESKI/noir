@@ -56,7 +56,7 @@ import { useCapitalize } from "@/hooks/use-capitalize"
 import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
-import { useExportXlsx } from "@/hooks/use-export-xslx"
+import { useExportXlsx } from "@/hooks/use-export-xlsx"
 
 
 function DragHandle({ id }) {
@@ -312,7 +312,7 @@ function PaymentsDataTable({ data: initialData }) {
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
   const getExportCsv = useExportCsv()
-  const getExportXslx = useExportXlsx()
+  const getExportXlsx = useExportXlsx()
   const { formatCurrency } = useCurrencyFormatter()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [selectedPaymentId, setSelectedPaymentId] = React.useState(null)
@@ -413,7 +413,7 @@ function PaymentsDataTable({ data: initialData }) {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="uppercase"
-                  onClick={() => getExportXslx("/admin/payments/export/xlsx","payments")}
+                  onClick={() => getExportXlsx("/admin/payments/export/xlsx","payments")}
                 >
                   xslx
                 </DropdownMenuItem>
