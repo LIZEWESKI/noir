@@ -140,6 +140,10 @@ class PayPalController extends Controller
 
     public function downloadPdf(Payment $payment)
     {
+
+        if ($payment->user_id !== Auth::user()->id) {
+            abort(403);
+        }
         $payment->load(['reservations.room','user']);
         // Since this pdf package doesn't support markdowns
         // I had to render the view as markdown first and then load it as html

@@ -11,6 +11,7 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+
 import {
   ChevronDown,
   ChevronLeft,
@@ -54,6 +55,7 @@ import { getStatusColor } from "@/components/reservations-management/get-reserva
 import { useCapitalize } from "@/hooks/use-capitalize"
 import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
+import { useExportCsv } from "@/hooks/use-export-csv"
 
 
 function DragHandle({ id }) {
@@ -308,6 +310,7 @@ function PaymentsDataTable({ data: initialData }) {
   const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
+  const getExportCsv = useExportCsv()
   const { formatCurrency } = useCurrencyFormatter()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [selectedPaymentId, setSelectedPaymentId] = React.useState(null)
@@ -359,33 +362,6 @@ function PaymentsDataTable({ data: initialData }) {
     }
   }
 
-  const handleExportCsv = async () => {
-    try {
-      const response = await fetch("/admin/payments/export/csv", {
-        method: "GET",
-        headers: {
-          Accept: "text/csv",
-        },
-      });
-
-      if (!response.ok) throw new Error("Failed to export CSV");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "payments.csv");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <>
       <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">
@@ -418,14 +394,23 @@ function PaymentsDataTable({ data: initialData }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleExportCsv}
-            >
-              <FileUp />
-              <span className="hidden lg:inline">Export as CSV</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <FileUp />
+                  <span className="hidden lg:inline">Export As</span>
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem
+                  className="uppercase"
+                  onClick={() => getExportCsv("/admin/payments/export/csv","payments")}
+                >
+                  csv
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">

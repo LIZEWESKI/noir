@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreRoomRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateRoomRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RoomManagementController extends Controller
 {
@@ -117,5 +118,55 @@ class RoomManagementController extends Controller
 
         return redirect()->route('admin.rooms_management.index')
             ->with('success', 'Room deleted successfully.');
+    }
+    // I probably should make this method reusable
+    // however lets just make it work for now
+    public function exportCsv(): StreamedResponse
+    {
+        $fileName = 'rooms_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        ];
+
+        $callback = function () {
+            $handle = fopen('php://output', 'w');
+
+            // CSV header row
+            fputcsv($handle, [
+                'Room ID',
+                'Room Name',
+                'Type',
+                'Price',
+                'Capacity', // guests
+                'Features',
+            ]);
+
+            $rooms = Room::with('features')
+                ->latest()
+                ->get();
+
+            foreach ($rooms as $room) {
+                $features = $room->features->map(function ($feature) {
+                    return sprintf(
+                        $feature->name ?? 'Unknown',
+                    );
+                })->implode('; ');
+
+                fputcsv($handle, [
+                    $room->id,
+                    $room->name,
+                    $room->type,
+                    "$".number_format($room->price, 2),
+                    $room->guests,
+                    $features,
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

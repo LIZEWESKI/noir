@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: ..
-      dockerfile: docker/backend/Dockerfile.dev
+      dockerfile: docker/backend/Dockerfile
       target: development
     container_name: noirhotel_app
     ports:

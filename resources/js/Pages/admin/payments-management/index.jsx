@@ -31,8 +31,6 @@ export default function Index({payments, summary}) {
     })
   }, [flash]);
   
-  console.log("summary", summary)
-  console.log("payments", payments)
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

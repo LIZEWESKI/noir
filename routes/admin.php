@@ -36,6 +36,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('rooms_management.update');
     Route::delete('/rooms-management/{room}',[RoomManagementController::class, 'destroy'])
         ->name('rooms_management.destroy');
+    Route::get('/rooms/export/csv', [RoomManagementController::class, 'exportCsv'])
+        ->name('rooms.export.csv');
     
     // Guests Management ressource
     Route::get("/guests-management",[GuestManagementController::class,'index'])
