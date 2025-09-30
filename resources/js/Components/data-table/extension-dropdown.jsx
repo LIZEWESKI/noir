@@ -24,6 +24,7 @@ const ExtensionDropdown = ({extensions}) => {
                 return (
                     <DropdownMenuItem
                         className="uppercase"
+                        key={name}
                         onClick={() => action(url,label)}
                     >
                         {name}

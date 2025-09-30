@@ -55,6 +55,9 @@ import { useInitials } from "@/hooks/use-initials"
 import { getStatusColor } from "@/components/guests-management/get-guest-status";
 import { format } from "date-fns"
 import DeleteUserDialog from "@/components/ui/delete-user-dialog"
+import { useExportCsv } from "@/hooks/use-export-csv"
+import { useExportXlsx } from "@/hooks/use-export-xlsx"
+import ExtensionDropdown from "../data-table/extension-dropdown"
 
 function DragHandle({ id }) {
   const { attributes, listeners } = useSortable({
@@ -375,6 +378,22 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest}) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const exportableExtensions = [
+    {
+      name: 'csv',
+      url: "/admin/guests/export/csv",
+      label : "guests",
+      action: useExportCsv(),
+    },
+    {
+      name: 'xlsx',
+      url: "/admin/guests/export/xlsx",
+      label : "guests",
+      action: useExportXlsx(),
+    },
+  ]
+  console.log(initialData)
+
   function handleDragEnd(event) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
@@ -418,6 +437,7 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest}) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
+            <ExtensionDropdown extensions={exportableExtensions} /> 
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">

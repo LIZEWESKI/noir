@@ -403,8 +403,6 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
   const { formatCurrency } = useCurrencyFormatter()
-  const getExportCsv = useExportCsv()
-  const getExportXlsx = useExportXlsx()
   const table = useReactTable({
     data,
     columns,

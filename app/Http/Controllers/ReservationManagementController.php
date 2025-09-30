@@ -11,9 +11,11 @@ use App\Models\Reservation;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Exports\ReservationExport;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\CancelReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReservationManagementController extends Controller
 {
@@ -220,5 +222,15 @@ class ReservationManagementController extends Controller
             'status_changed' => "{$oldStatus} -> {$reservation->status}",
         ]);
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation updated successfully!');
+    }
+
+    public function exportCsv(): StreamedResponse
+    {
+        return (new ReservationExport())->exportCsv();
+    }
+
+    public function exportXlsx(): StreamedResponse
+    {
+        return (new ReservationExport())->exportXlsx();
     }
 }

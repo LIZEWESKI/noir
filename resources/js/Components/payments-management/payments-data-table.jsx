@@ -312,8 +312,6 @@ function PaymentsDataTable({ data: initialData }) {
   const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
-  const getExportCsv = useExportCsv()
-  const getExportXlsx = useExportXlsx()
   const { formatCurrency } = useCurrencyFormatter()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [selectedPaymentId, setSelectedPaymentId] = React.useState(null)

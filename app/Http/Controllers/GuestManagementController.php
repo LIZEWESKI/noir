@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Http\Requests\Auth\StoreUserRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
-use App\Models\AuditLog;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class GuestManagementController extends Controller
 {
@@ -150,5 +153,91 @@ class GuestManagementController extends Controller
         ]);
 
         return redirect()->route('admin.guests_management.index')->with('success', 'User deleted successfully!');
+    }
+
+    public function exportCsv(): StreamedResponse
+    {
+        $fileName = 'dashboard_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$fileName\"",
+        ];
+
+        $callback = function () {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [
+                'Full Name',
+                'Email',
+                'Role',
+                'Total Stays',
+                'Last Stay Date',
+                'Account Status',
+                'Creation Date',
+            ]);
+        $users = User::getUsersWithStays();
+
+            foreach ($users as $user) {
+
+                fputcsv($handle, [
+                    $user->name ?? 'N/A',
+                    $user->email,
+                    $user->role,
+                    $user->stays,
+                    $user->last_stay,
+                    $user->is_active ? 'Active' : 'Inactive',
+                    $user->created_at,
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportXlsx(): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = [
+            'Full Name',
+            'Email',
+            'Role',
+            'Total Stays',
+            'Last Stay Date',
+            'Account Status',
+            'Creation Date',
+        ];
+        $sheet->fromArray($headers, null, 'A1');
+
+        $users = User::getUsersWithStays();
+
+        $row = 2;
+        foreach ($users as $user) {
+
+            $sheet->fromArray([
+                $user->name ?? 'N/A',
+                $user->email,
+                $user->role,
+                $user->stays,
+                $user->last_stay,
+                $user->is_active ? 'Active' : 'Inactive',
+                $user->created_at,
+            ], null, "A{$row}");
+
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="payments_' . now()->format('Y-m-d_H-i-s') . '.xlsx"',
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 }

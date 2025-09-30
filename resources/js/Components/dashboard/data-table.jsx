@@ -78,6 +78,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import { getStatusColor } from "@/components/dashboard/get-reservation-status";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { useExportCsv } from "@/hooks/use-export-csv";
+import { useExportXlsx } from "@/hooks/use-export-xlsx";
+import ExtensionDropdown from "../data-table/extension-dropdown";
 
 
 export const schema = z.object({
@@ -253,6 +256,21 @@ export function DataTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const exportableExtensions = [
+    {
+      name: 'csv',
+      url: "/admin/dashboard/export/csv",
+      label : "dashboard",
+      action: useExportCsv(),
+    },
+    {
+      name: 'xlsx',
+      url: "/admin/dashboard/export/xlsx",
+      label : "dashboard",
+      action: useExportXlsx(),
+    },
+  ]
+
   function handleDragEnd(event) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
@@ -297,6 +315,7 @@ export function DataTable({
                   );
                 })}
             </DropdownMenuContent>
+            <ExtensionDropdown extensions={exportableExtensions} />
           </DropdownMenu>
         </div>
       </div>

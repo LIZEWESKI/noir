@@ -57,6 +57,9 @@ import { useInitials } from "@/hooks/use-initials"
 import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
+import { useExportCsv } from "@/hooks/use-export-csv"
+import { useExportXlsx } from "@/hooks/use-export-xlsx"
+import ExtensionDropdown from "../data-table/extension-dropdown"
 
 
 function DragHandle({ id }) {
@@ -403,6 +406,21 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const exportableExtensions = [
+    {
+      name: 'csv',
+      url: "/admin/reservations/export/csv",
+      label : "reservations",
+      action: useExportCsv(),
+    },
+    {
+      name: 'xlsx',
+      url: "/admin/reservations/export/xlsx",
+      label : "reservations",
+      action: useExportXlsx(),
+    },
+  ]
+
   function handleDragEnd(event) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
@@ -445,6 +463,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
                     )
                   })}
               </DropdownMenuContent>
+              <ExtensionDropdown extensions={exportableExtensions} />
             </DropdownMenu>
           </div>
         </div>

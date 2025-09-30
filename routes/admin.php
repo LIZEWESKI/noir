@@ -22,6 +22,10 @@ Route::middleware(['auth', AdminMiddleware::class])
     
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+    Route::get('/dashboard/export/csv', [DashboardController::class, 'exportCsv'])
+        ->name('dashboard.export.csv');
+    Route::get('/dashboard/export/xlsx', [DashboardController::class, 'exportXlsx'])
+        ->name('dashboard.export.xlsx');
 
     // Rooms Management ressource (I could use Resource instead but I don't feel like it)
     Route::get("/rooms-management",[RoomManagementController::class, 'index'])
@@ -56,6 +60,10 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('/guests_management.show');
     Route::delete('/guests-management/destroy/{user}', [GuestManagementController::class, 'destroy'])
         ->name('guests-management.destroy');
+    Route::get('/guests/export/csv', [GuestManagementController::class, 'exportCsv'])
+        ->name('guests.export.csv');
+    Route::get('/guests/export/xlsx', [GuestManagementController::class, 'exportXlsx'])
+        ->name('guests.export.xlsx');
 
     // Reservations Management ressource
     Route::get("/reservations-management",[ReservationManagementController::class, 'index'])
@@ -70,6 +78,10 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('reservations_management.update');
     Route::post('/reservations-management/cancel/{reservation}',[ReservationManagementController::class,'cancel'])
         ->name('reservations_management.cancel');
+    Route::get('/reservations/export/csv', [ReservationManagementController::class, 'exportCsv'])
+        ->name('reservations.export.csv');
+    Route::get('/reservations/export/xlsx', [ReservationManagementController::class, 'exportXlsx'])
+        ->name('reservations.export.xlsx');
     // Payments Management ressource
     Route::get("/payments-management",[PaymentManagementController::class, 'index'])
         ->name("payments_management.index");

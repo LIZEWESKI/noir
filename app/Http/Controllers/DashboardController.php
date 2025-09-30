@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DashboardExport;
 use App\Models\Room;
+use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller
 {
@@ -55,4 +59,15 @@ class DashboardController extends Controller
 
         return Inertia::render("admin/dashboard", compact("metrics","reservations","charts_data"));
     }
+
+    public function exportCsv(): StreamedResponse
+    {
+        return (new DashboardExport())->exportCsv();
+    }
+
+    public function exportXlsx(): StreamedResponse
+    {
+        return (new DashboardExport())->exportXlsx();
+    }
+
 }
