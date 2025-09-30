@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { format } from 'date-fns';
 
 // I'm using the exact same custom hook I created for CSV 
-// This need to be reusable somehow but let's try make it work for now
+// This need to be reusable somehow but let's try to make it work for now
 export function useExportXlsx() {
   return useCallback(async (getUrl, label) => {
     const now = new Date();

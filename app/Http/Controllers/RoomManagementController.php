@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreRoomRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateRoomRequest;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RoomManagementController extends Controller
@@ -119,8 +121,8 @@ class RoomManagementController extends Controller
         return redirect()->route('admin.rooms_management.index')
             ->with('success', 'Room deleted successfully.');
     }
-    // I probably should make this method reusable
-    // however lets just make it work for now
+
+    // Ok I copied pasted this method for the second time now I surely need to reconsider making it reusable
     public function exportCsv(): StreamedResponse
     {
         $fileName = 'rooms_' . now()->format('Y-m-d_H-i-s') . '.csv';
@@ -168,5 +170,53 @@ class RoomManagementController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportXlsx(): StreamedResponse
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = [
+            'Room ID',
+            'Room Name',
+            'Type',
+            'Price',
+            'Capacity', // guests
+            'Features',
+        ];
+        $sheet->fromArray($headers, null, 'A1');
+
+        $rooms = Room::with('features')->latest()->get();
+
+        $row = 2;
+        foreach ($rooms as $room) {
+            $features = $room->features->map(function ($feature) {
+                return sprintf(
+                    $feature->name ?? 'Unknown',
+                );
+            })->implode('; ');
+
+            $sheet->fromArray([
+                $room->id,
+                $room->name,
+                $room->type,
+                "$".number_format($room->price, 2),
+                $room->guests,
+                $features,
+            ], null, "A{$row}");
+
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="rooms_' . now()->format('Y-m-d_H-i-s') . '.xlsx"',
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 }

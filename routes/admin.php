@@ -38,6 +38,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('rooms_management.destroy');
     Route::get('/rooms/export/csv', [RoomManagementController::class, 'exportCsv'])
         ->name('rooms.export.csv');
+    Route::get('/rooms/export/xlsx', [RoomManagementController::class, 'exportXlsx'])
+        ->name('rooms.export.xlsx');
     
     // Guests Management ressource
     Route::get("/guests-management",[GuestManagementController::class,'index'])

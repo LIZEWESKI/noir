@@ -60,6 +60,8 @@ import DeleteAlertDialog from "../ui/delete-alert-dialog"
 import { getStatusColor } from "@/components/rooms-management/get-room-status"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
+import { useExportXlsx } from "@/hooks/use-export-xlsx"
+import ExtensionDropdown from "../data-table/extension-dropdown"
 
 export const schema = z.object({
   id: z.number(),
@@ -402,6 +404,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
   const { formatCurrency } = useCurrencyFormatter()
   const getExportCsv = useExportCsv()
+  const getExportXlsx = useExportXlsx()
   const table = useReactTable({
     data,
     columns,
@@ -438,6 +441,21 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
+
+  const exportableExtensions = [
+    {
+      name: 'csv',
+      url: "/admin/rooms/export/csv",
+      label : "rooms",
+      action: useExportCsv(),
+    },
+    {
+      name: 'xlsx',
+      url: "/admin/rooms/export/xlsx",
+      label : "rooms",
+      action: useExportXlsx(),
+    },
+  ]
 
   function handleDragEnd(event) {
     const { active, over } = event
@@ -481,23 +499,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
                     )
                   })}
               </DropdownMenuContent>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <FileUp />
-                    <span className="hidden lg:inline">Export As</span>
-                    <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem
-                    className="uppercase"
-                    onClick={() => getExportCsv("/admin/rooms/export/csv","rooms")}
-                  >
-                    csv
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ExtensionDropdown extensions={exportableExtensions} />
             </DropdownMenu>
           </div>
         </div>

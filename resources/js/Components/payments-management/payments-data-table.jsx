@@ -57,6 +57,7 @@ import PaymentDetailsModal from "@/components/payments-management/payment-detail
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
+import ExtensionDropdown from "../data-table/extension-dropdown"
 
 
 function DragHandle({ id }) {
@@ -353,6 +354,21 @@ function PaymentsDataTable({ data: initialData }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const exportableExtensions = [
+    {
+      name: 'csv',
+      url: "/admin/payments/export/csv",
+      label : "payments",
+      action: useExportCsv(),
+    },
+    {
+      name: 'xlsx',
+      url: "/admin/payments/export/xlsx",
+      label : "payments",
+      action: useExportXlsx(),
+    },
+  ]
+
   function handleDragEnd(event) {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
@@ -396,29 +412,7 @@ function PaymentsDataTable({ data: initialData }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <FileUp />
-                  <span className="hidden lg:inline">Export As</span>
-                  <ChevronDown />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem
-                  className="uppercase"
-                  onClick={() => getExportCsv("/admin/payments/export/csv","payments")}
-                >
-                  csv
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="uppercase"
-                  onClick={() => getExportXlsx("/admin/payments/export/xlsx","payments")}
-                >
-                  xslx
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ExtensionDropdown extensions={exportableExtensions} />
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
