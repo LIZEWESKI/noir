@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RoomExport;
 use App\Models\Room;
 use Inertia\Inertia;
 use App\Models\Feature;
@@ -122,101 +123,14 @@ class RoomManagementController extends Controller
             ->with('success', 'Room deleted successfully.');
     }
 
-    // Ok I copied pasted this method for the second time now I surely need to reconsider making it reusable
+    // Ok it is now resuable :D
     public function exportCsv(): StreamedResponse
     {
-        $fileName = 'rooms_' . now()->format('Y-m-d_H-i-s') . '.csv';
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$fileName\"",
-        ];
-
-        $callback = function () {
-            $handle = fopen('php://output', 'w');
-
-            // CSV header row
-            fputcsv($handle, [
-                'Room ID',
-                'Room Name',
-                'Type',
-                'Price',
-                'Capacity', // guests
-                'Features',
-            ]);
-
-            $rooms = Room::with('features')
-                ->latest()
-                ->get();
-
-            foreach ($rooms as $room) {
-                $features = $room->features->map(function ($feature) {
-                    return sprintf(
-                        $feature->name ?? 'Unknown',
-                    );
-                })->implode('; ');
-
-                fputcsv($handle, [
-                    $room->id,
-                    $room->name,
-                    $room->type,
-                    "$".number_format($room->price, 2),
-                    $room->guests,
-                    $features,
-                ]);
-            }
-
-            fclose($handle);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return (new RoomExport())->exportCsv();
     }
 
     public function exportXlsx(): StreamedResponse
     {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $headers = [
-            'Room ID',
-            'Room Name',
-            'Type',
-            'Price',
-            'Capacity', // guests
-            'Features',
-        ];
-        $sheet->fromArray($headers, null, 'A1');
-
-        $rooms = Room::with('features')->latest()->get();
-
-        $row = 2;
-        foreach ($rooms as $room) {
-            $features = $room->features->map(function ($feature) {
-                return sprintf(
-                    $feature->name ?? 'Unknown',
-                );
-            })->implode('; ');
-
-            $sheet->fromArray([
-                $room->id,
-                $room->name,
-                $room->type,
-                "$".number_format($room->price, 2),
-                $room->guests,
-                $features,
-            ], null, "A{$row}");
-
-            $row++;
-        }
-
-        $writer = new Xlsx($spreadsheet);
-
-        return new StreamedResponse(function () use ($writer) {
-            $writer->save('php://output');
-        }, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="rooms_' . now()->format('Y-m-d_H-i-s') . '.xlsx"',
-            'Cache-Control' => 'max-age=0',
-        ]);
+        return (new RoomExport())->exportXlsx();
     }
 }
