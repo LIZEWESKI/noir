@@ -17,12 +17,10 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            // not logged in → send to login
             return redirect()->route('login');
         }
 
-        if (Auth::user()->role !== 'admin') {
-            // logged in but not admin → send home (or wherever you want)
+        if (!in_array(Auth::user()->role,['admin', 'manager', 'receptionist', 'accountant','housekeeping'])) {
             return redirect()->route('home')->with('error', 'Access denied.');
         }
 

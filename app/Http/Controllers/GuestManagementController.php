@@ -17,7 +17,13 @@ use App\Http\Requests\Auth\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class GuestManagementController extends Controller
+
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
+
     public function index() {
 
         $now = now();

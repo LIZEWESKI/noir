@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RoomManagementController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Room::class, 'room');
+    }
+
     public function index() {
         $rooms_management = Room::latest()->with("features:name,id")->get();
         return Inertia::render('admin/rooms-management/index',compact('rooms_management'));

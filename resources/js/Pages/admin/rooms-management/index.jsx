@@ -125,7 +125,8 @@ export default function Index({rooms_management}) {
                 <RoomCard 
                   key={room.id} 
                   room={room} 
-                  onEdit={() => router.visit(`/admin/rooms-management/edit/${room.id}`)} 
+                  onEdit={() => router.visit(`/admin/rooms-management/edit/${room.id}`)}
+                  onView={() => router.visit(`/rooms/${room.id}`)}
                   onDelete={DELETING_ALERT} 
                 />
                 ))}

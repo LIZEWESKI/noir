@@ -22,19 +22,30 @@ class DatabaseSeeder extends Seeder
                 'email' => 'rick@admin.com',
                 "password" => "12345678",
                 "role" => "admin",
-                "profile_picture_path" => "avatars/rick.jpg"
             ],
             [
-                'name' => 'Morty Sanchez',
-                'email' => 'morty@admin.com',
+                'name' => 'Morty Smith',
+                'email' => 'morty@manager.com',
                 "password" => "12345678",
-                "role" => "admin",
+                "role" => "manager",
             ],
             [
-                'name' => 'Saryah Aureliues',
-                'email' => 'saryah@admin.com',
+                'name' => 'Summer Smith',
+                'email' => 'summer@receptionist.com',
                 "password" => "12345678",
-                "role" => "admin",
+                "role" => "receptionist",
+            ],
+            [
+                'name' => 'Beth Smith',
+                'email' => 'beth@finance.com',
+                "password" => "12345678",
+                "role" => "finance",
+            ],
+            [
+                'name' => 'Jerry Smith',
+                'email' => 'jerry@housekeeping.com',
+                "password" => "12345678",
+                "role" => "housekeeping",
             ],
         ];
         foreach ($initials_admins as $user) {

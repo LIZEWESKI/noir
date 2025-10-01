@@ -2,11 +2,11 @@ import React from 'react'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Edit, Trash2, Users, Bath, Bed, Maximize } from "lucide-react"
+import { Edit, Trash2, Users, Bath, Bed, Maximize, Eye } from "lucide-react"
 import StatusBadge from './status-badge'
 import DeleteAlertDialog from '@/components/ui/delete-alert-dialog'
 import { useCurrencyFormatter } from '@/hooks/use-currency-formatter'
-const RoomCard = ({ room, onEdit, onDelete }) => {
+const RoomCard = ({ room, onEdit, onDelete, onView }) => {
   const { formatCurrency } = useCurrencyFormatter()
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow pt-0 dark:border-primary/20">
@@ -24,6 +24,9 @@ const RoomCard = ({ room, onEdit, onDelete }) => {
             <p className="text-sm text-muted-foreground">Room {room.room_number}</p>
           </div>
           <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" onClick={() => onView(room)}>
+              <Eye className="h-4 w-4" />
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
               <Edit className="h-4 w-4 text-primary" />
             </Button>

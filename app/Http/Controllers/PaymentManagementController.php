@@ -11,6 +11,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaymentManagementController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Payment::class, 'payment');
+    }
+
     public function index(Request $request)
     {
         $summary = Payment::quickStats();
