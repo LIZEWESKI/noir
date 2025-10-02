@@ -1,17 +1,5 @@
 import * as React from "react"
 import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -19,7 +7,6 @@ import {
   ChevronsRight,
   Columns2,
   EllipsisVertical,
-  GripVertical,
   Edit,
   Trash2,
   ChevronUp,
@@ -55,31 +42,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
 import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
-import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
+import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
-
-
-function DragHandle({ id }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  })
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size=""
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <GripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  )
-}
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -121,12 +88,6 @@ function SelectColumnFilter({ column, title, options }) {
 
 const columns = [
   {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-    enableSorting: false,
-  },
-  {
     accessorKey: "user",
     header: ({ column }) => (
       <div className="space-y-2">
@@ -141,14 +102,14 @@ const columns = [
         <ColumnFilter column={column} title="Guest" />
       </div>
     ),
-    cell: ({ row,table }) => {
+    cell: ({ row, table }) => {
       const user = row.original.user
-      const initials = table.options.meta.getInitials(user.name);
+      const initials = table.options.meta.getInitials(user.name)
       return (
         <div className="flex items-center gap-3 min-w-48">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.profile_picture_url} alt={user.name} />
-            <AvatarFallback >{initials}</AvatarFallback>
+            <AvatarImage src={user.profile_picture_url || "/placeholder.svg"} alt={user.name} />
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div>
             <div className="font-medium text-sm">{user.name}</div>
@@ -193,7 +154,8 @@ const columns = [
     },
     filterFn: (row, id, value) => {
       return (
-        row.original.room.room_number.includes(value) || row.original.room.name.toLowerCase().includes(value.toLowerCase())
+        row.original.room.room_number.includes(value) ||
+        row.original.room.name.toLowerCase().includes(value.toLowerCase())
       )
     },
   },
@@ -241,11 +203,11 @@ const columns = [
       </div>
     ),
     cell: ({ row, table }) => (
-
       <div className="space-y-1">
         <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_price)}</div>
         <div className="text-xs text-muted-foreground">
-          +{table.options.meta.formatCurrency(row.original.cleaning_fee)} + {table.options.meta.formatCurrency(row.original.service_fee)} fees
+          +{table.options.meta.formatCurrency(row.original.cleaning_fee)} +{" "}
+          {table.options.meta.formatCurrency(row.original.service_fee)} fees
         </div>
       </div>
     ),
@@ -291,32 +253,31 @@ const columns = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
-
-          <DropdownMenuItem onClick={()=> table.options.meta.viewGuest(row.original.user)}>
+          <DropdownMenuItem onClick={() => table.options.meta.viewGuest(row.original.user)}>
             <User className="mr-2 h-4 w-4" />
             View Guest
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={()=> table.options.meta.viewRoom(row.original.room)}>
+          <DropdownMenuItem onClick={() => table.options.meta.viewRoom(row.original.room)}>
             <MapPin className="mr-2 h-4 w-4" />
             View Room
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
             <Edit className="mr-2 h-4 w-4" />
             Edit Reservation
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
-          {row.original.status !== 'cancelled' &&
+          {row.original.status !== "cancelled" && (
             <DropdownMenuItem
               className="text-destructive hover:bg-destructive-foreground"
               onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Cancel
-            </DropdownMenuItem>          
-          }
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -324,32 +285,8 @@ const columns = [
   },
 ]
 
-function DraggableRow({ row }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
-
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-      ))}
-    </TableRow>
-  )
-}
-
 function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom }) {
   const [tableData, setTableData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
@@ -357,15 +294,12 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     pageIndex: 0,
     pageSize: 10,
   })
-  const sortableId = React.useId()
-  const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}))
 
-  const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
   const getInitials = useInitials()
   const { formatCurrency } = useCurrencyFormatter()
-  
+
   const table = useReactTable({
     data: tableData,
     columns,
@@ -387,13 +321,10 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     state: {
       sorting,
       columnVisibility,
-      rowSelection,
       columnFilters,
       pagination,
     },
     getRowId: (row) => row.id.toString(),
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -408,29 +339,18 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
 
   const exportableExtensions = [
     {
-      name: 'csv',
+      name: "csv",
       url: "/admin/reservations/export/csv",
-      label : "reservations",
+      label: "reservations",
       action: useExportCsv(),
     },
     {
-      name: 'xlsx',
+      name: "xlsx",
       url: "/admin/reservations/export/xlsx",
-      label : "reservations",
+      label: "reservations",
       action: useExportXlsx(),
     },
   ]
-
-  function handleDragEnd(event) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setTableData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
-  }
 
   return (
     <>
@@ -469,51 +389,44 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
           <div className="overflow-hidden rounded-lg border">
-            <DndContext
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
-              id={sortableId}
-            >
-              <Table>
-                <TableHeader className="bg-muted sticky top-0 z-10">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id} colSpan={header.colSpan}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableHead>
-                        )
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                  {table.getRowModel().rows?.length ? (
-                    <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
-                      {table.getRowModel().rows.map((row) => (
-                        <DraggableRow key={row.id} row={row} />
+            <Table>
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
-                    </SortableContext>
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center">
-                        No reservations found.
-                      </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No reservations found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
           <div className="flex items-center justify-between px-4">
             <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-              {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-              selected.
+              {table.getFilteredRowModel().rows.length} total row(s)
             </div>
             <div className="flex w-full items-center gap-8 lg:w-fit">
               <div className="hidden items-center gap-2 lg:flex">
@@ -590,8 +503,8 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
       <DeleteAlertDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title={onDelete.title} 
-        description={onDelete.description} 
+        title={onDelete.title}
+        description={onDelete.description}
         action={() => onDelete.action(selectedReservationId)}
       />
     </>

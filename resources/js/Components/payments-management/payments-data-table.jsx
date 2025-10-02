@@ -1,28 +1,13 @@
 import * as React from "react"
 import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-
-import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
   Columns2,
-  GripVertical,
   ChevronUp,
   Eye,
-  FileUp,
 } from "lucide-react"
 import {
   flexRender,
@@ -42,8 +27,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
@@ -51,33 +34,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
-import { getStatusColor } from "@/components/reservations-management/get-reservation-status";
+import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
 import { useCapitalize } from "@/hooks/use-capitalize"
 import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
-
-
-function DragHandle({ id }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  })
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size=""
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <GripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  )
-}
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -119,12 +82,6 @@ function SelectColumnFilter({ column, title, options }) {
 
 const columns = [
   {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-    enableSorting: false,
-  },
-  {
     accessorKey: "user",
     header: ({ column }) => (
       <div className="space-y-2">
@@ -140,12 +97,12 @@ const columns = [
       </div>
     ),
     cell: ({ row, table }) => {
-      const user = row.original.user;
-      const initials = table.options.meta.getInitials(user.name);
+      const user = row.original.user
+      const initials = table.options.meta.getInitials(user.name)
       return (
         <div className="flex items-center gap-3 min-w-48">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.profile_picture_url} alt={user.name} />
+            <AvatarImage src={user.profile_picture_url || "/placeholder.svg"} alt={user.name} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div>
@@ -153,15 +110,15 @@ const columns = [
             <div className="text-xs text-muted-foreground">{user.email}</div>
           </div>
         </div>
-      );
+      )
     },
     enableHiding: false,
     filterFn: (row, id, value) => {
       return (
         row.original.user.name.toLowerCase().includes(value.toLowerCase()) ||
         row.original.user.email.toLowerCase().includes(value.toLowerCase()) ||
-        row.original.transaction_id.toLowerCase().includes(value.toLowerCase()) 
-      );
+        row.original.transaction_id.toLowerCase().includes(value.toLowerCase())
+      )
     },
   },
   {
@@ -218,20 +175,24 @@ const columns = [
           {column.getIsSorted() === "asc" && <ChevronUp className="ml-2 h-4 w-4" />}
           {column.getIsSorted() === "desc" && <ChevronDown className="ml-2 h-4 w-4" />}
         </div>
-        <SelectColumnFilter column={column} title="Method" options={["PayPal", "Credit Card","Cash"]} />
+        <SelectColumnFilter column={column} title="Method" options={["PayPal", "Credit Card", "Cash"]} />
       </div>
     ),
-    cell: ({ row , table}) => <div className="text-xs text-muted-foreground">{table.options.meta.getCapitalize(row.original.payment_method)}</div>,
+    cell: ({ row, table }) => (
+      <div className="text-xs text-muted-foreground">
+        {table.options.meta.getCapitalize(row.original.payment_method)}
+      </div>
+    ),
   },
   {
     accessorKey: "payment_status",
     header: ({ column, table }) => {
       const uniqueStatuses = Array.from(
         table.getPreFilteredRowModel().flatRows.reduce((statuses, row) => {
-          statuses.add(row.original.payment_status);
-          return statuses;
+          statuses.add(row.original.payment_status)
+          return statuses
         }, new Set()),
-      );
+      )
 
       return (
         <div className="space-y-2">
@@ -245,7 +206,7 @@ const columns = [
           </div>
           <SelectColumnFilter column={column} title="Status" options={uniqueStatuses} />
         </div>
-      );
+      )
     },
     cell: ({ row }) => (
       <div>
@@ -258,47 +219,18 @@ const columns = [
   {
     id: "actions",
     cell: ({ row, table }) => (
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => table.options.meta.onModalClick(row.original.id)}
-      >
+      <Button variant="ghost" size="sm" onClick={() => table.options.meta.onModalClick(row.original.id)}>
         <Eye className="w-4 h-4" />
         <span className="sr-only">Open Payment Details</span>
       </Button>
     ),
     enableSorting: false,
     header: () => null,
-  }
-];
-
-
-function DraggableRow({ row }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
-
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-      ))}
-    </TableRow>
-  )
-}
+  },
+]
 
 function PaymentsDataTable({ data: initialData }) {
   const [tableData, setTableData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
@@ -306,10 +238,7 @@ function PaymentsDataTable({ data: initialData }) {
     pageIndex: 0,
     pageSize: 10,
   })
-  const sortableId = React.useId()
-  const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}))
 
-  const dataIds = React.useMemo(() => tableData?.map(({ id }) => id) || [], [tableData])
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
   const { formatCurrency } = useCurrencyFormatter()
@@ -333,13 +262,10 @@ function PaymentsDataTable({ data: initialData }) {
     state: {
       sorting,
       columnVisibility,
-      rowSelection,
       columnFilters,
       pagination,
     },
     getRowId: (row) => row.id.toString(),
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -354,29 +280,18 @@ function PaymentsDataTable({ data: initialData }) {
 
   const exportableExtensions = [
     {
-      name: 'csv',
+      name: "csv",
       url: "/admin/payments/export/csv",
-      label : "payments",
+      label: "payments",
       action: useExportCsv(),
     },
     {
-      name: 'xlsx',
+      name: "xlsx",
       url: "/admin/payments/export/xlsx",
-      label : "payments",
+      label: "payments",
       action: useExportXlsx(),
     },
   ]
-
-  function handleDragEnd(event) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setTableData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
-  }
 
   return (
     <>
@@ -415,53 +330,43 @@ function PaymentsDataTable({ data: initialData }) {
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
           <div className="overflow-hidden rounded-lg border">
-            <DndContext
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
-              id={sortableId}
-            >
-              <Table>
-                <TableHeader className="bg-muted sticky top-0 z-10">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id} colSpan={header.colSpan}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableHead>
-                        )
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                  {table.getRowModel().rows?.length ? (
-                    <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
-                      {table.getRowModel().rows.map((row) => (
-                        <DraggableRow key={row.id} row={row} />
+            <Table>
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
-                    </SortableContext>
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center">
-                        No reservations found.
-                      </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No reservations found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
           <div className="flex items-center justify-between px-4">
-            <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-              {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-              selected.
-            </div>
-            <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="flex w-full items-center gap-8 lg:w-fit lg:ml-auto">
               <div className="hidden items-center gap-2 lg:flex">
                 <Label htmlFor="rows-per-page" className="text-sm font-medium">
                   Rows per page
@@ -536,7 +441,7 @@ function PaymentsDataTable({ data: initialData }) {
       <PaymentDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        payment={tableData.find(p => p.id === selectedPaymentId)}
+        payment={tableData.find((p) => p.id === selectedPaymentId)}
       />
     </>
   )

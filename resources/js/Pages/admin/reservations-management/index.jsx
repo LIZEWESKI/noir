@@ -12,6 +12,7 @@ import RecentReservations from "@/components/reservations-management/recent-rese
 import ReservationsDataTable from "@/components/reservations-management/reservations-data-table"
 import ReservationTimeline from "@/components/reservations-management/reservations-timeline"
 import ReservationStats from "@/components/reservations-management/Reservations-stats"
+import Can from "@/components/can"
 
 const breadcrumbs= [
   {
@@ -71,14 +72,16 @@ export default function Index({
           <div className="p-6 space-y-6">
             <div className="flex items-center justify-between gap-4">
               <p className="text-muted-foreground mt-1">Manage and track all hotel reservations</p>
-              <IconToolTip label="Add Reservation" className="rounded-full p-1 flex justify-between items-center">
-                <Button 
-                  size="sm"
-                  onClick={() => router.visit('/admin/reservations-management/create')}
-                >
-                  <Plus className="h-6 w-6" />
-                </Button>
-              </IconToolTip>
+              <Can permission="createReservations">
+                <IconToolTip label="Add Reservation" className="rounded-full p-1 flex justify-between items-center">
+                  <Button 
+                    size="sm"
+                    onClick={() => router.visit('/admin/reservations-management/create')}
+                  >
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </IconToolTip>
+              </Can>
             </div>
             <ReservationStats stats={stats}/>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

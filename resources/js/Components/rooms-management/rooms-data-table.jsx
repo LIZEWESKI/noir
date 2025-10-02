@@ -1,17 +1,5 @@
 import * as React from "react"
 import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -19,11 +7,9 @@ import {
   ChevronsRight,
   Columns2,
   EllipsisVertical,
-  GripVertical,
   Edit,
   Trash2,
   ChevronUp,
-  FileUp,
 } from "lucide-react"
 import {
   flexRender,
@@ -47,11 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -81,26 +63,6 @@ export const schema = z.object({
     }),
   ),
 })
-
-// Create a separate component for the drag handle
-function DragHandle({ id }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  })
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size=""
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <GripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  )
-}
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -141,12 +103,6 @@ function SelectColumnFilter({ column, title, options }) {
 }
 
 const columns = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-    enableSorting: false,
-  },
   {
     accessorKey: "room_number",
     header: ({ column }) => (
@@ -318,16 +274,16 @@ const columns = [
           </span>
         ))}
         {row.original.features.length > 2 && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex items-center rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground cursor-default">
-                +{row.original.features.length - 2}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {row.original.features[row.original.features.length - 1].name}
-            </TooltipContent>
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex items-center rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground cursor-default">
+                  +{row.original.features.length - 2}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{row.original.features[row.original.features.length - 1].name}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
     ),
@@ -349,11 +305,11 @@ const columns = [
             Edit
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             className="text-destructive hover:bg-destructive-foreground"
             onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
           >
-            <Trash2 className="mr-2 h-4 w-4"/>
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -363,32 +319,8 @@ const columns = [
   },
 ]
 
-function DraggableRow({ row }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
-
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-      ))}
-    </TableRow>
-  )
-}
-
 function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
   const [data, setData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
@@ -396,13 +328,11 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     pageIndex: 0,
     pageSize: 10,
   })
-  const sortableId = React.useId()
-  const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}))
 
-  const dataIds = React.useMemo(() => data?.map(({ id }) => id) || [], [data])
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
   const { formatCurrency } = useCurrencyFormatter()
+
   const table = useReactTable({
     data,
     columns,
@@ -416,18 +346,15 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
       isDeleteOpen,
       setIsDeleteOpen,
       selectedRoomId,
-      formatCurrency
+      formatCurrency,
     },
     state: {
       sorting,
       columnVisibility,
-      rowSelection,
       columnFilters,
       pagination,
     },
     getRowId: (row) => row.id.toString(),
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -442,29 +369,18 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
 
   const exportableExtensions = [
     {
-      name: 'csv',
+      name: "csv",
       url: "/admin/rooms/export/csv",
-      label : "rooms",
+      label: "rooms",
       action: useExportCsv(),
     },
     {
-      name: 'xlsx',
+      name: "xlsx",
       url: "/admin/rooms/export/xlsx",
-      label : "rooms",
+      label: "rooms",
       action: useExportXlsx(),
     },
   ]
-
-  function handleDragEnd(event) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
-  }
 
   return (
     <>
@@ -503,52 +419,42 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
           <div className="overflow-hidden rounded-lg border">
-            <DndContext
-              collisionDetection={closestCenter}
-              modifiers={[restrictToVerticalAxis]}
-              onDragEnd={handleDragEnd}
-              sensors={sensors}
-              id={sortableId}
-            >
-              <Table>
-                <TableHeader className="bg-muted sticky top-0 z-10">
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => {
-                        return (
-                          <TableHead key={header.id} colSpan={header.colSpan}>
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableHead>
-                        )
-                      })}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                  {table.getRowModel().rows?.length ? (
-                    <SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
-                      {table.getRowModel().rows.map((row) => (
-                        <DraggableRow key={row.id} row={row} />
+            <Table>
+              <TableHeader className="bg-muted sticky top-0 z-10">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                       ))}
-                    </SortableContext>
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center">
-                        No results.
-                      </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </DndContext>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
           <div className="flex items-center justify-between px-4">
-            <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-              {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-              selected.
-            </div>
             <div className="flex w-full items-center gap-8 lg:w-fit">
               <div className="hidden items-center gap-2 lg:flex">
                 <Label htmlFor="rows-per-page" className="text-sm font-medium">
@@ -620,12 +526,12 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
           </div>
         </TabsContent>
       </Tabs>
-      
+
       <DeleteAlertDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title={onDelete.title} 
-        description={onDelete.description} 
+        title={onDelete.title}
+        description={onDelete.description}
         action={() => onDelete.action(selectedRoomId)}
       />
     </>

@@ -6,6 +6,7 @@ import { Edit, Trash2, Users, Bath, Bed, Maximize, Eye } from "lucide-react"
 import StatusBadge from './status-badge'
 import DeleteAlertDialog from '@/components/ui/delete-alert-dialog'
 import { useCurrencyFormatter } from '@/hooks/use-currency-formatter'
+import Can from '@/components/can'
 const RoomCard = ({ room, onEdit, onDelete, onView }) => {
   const { formatCurrency } = useCurrencyFormatter()
   return (
@@ -24,21 +25,27 @@ const RoomCard = ({ room, onEdit, onDelete, onView }) => {
             <p className="text-sm text-muted-foreground">Room {room.room_number}</p>
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={() => onView(room)}>
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
-              <Edit className="h-4 w-4 text-primary" />
-            </Button>
-            <DeleteAlertDialog 
-              title={onDelete.title}
-              description={onDelete.description}
-              action={() => onDelete.action(room.id)}
-            >
-              <Button variant="ghost" size="sm" className="hover:bg-destructive-foreground">
-                <Trash2 className="h-5 w-5 text-destructive"  />
+            <Can permission="viewRooms">
+              <Button variant="ghost" size="sm" onClick={() => onView(room)}>
+                <Eye className="h-4 w-4" />
               </Button>
-            </DeleteAlertDialog>
+            </Can>
+            <Can permission="updateRooms">
+              <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
+                <Edit className="h-4 w-4 text-primary" />
+              </Button>
+            </Can>
+            <Can permission="deleteRooms">
+              <DeleteAlertDialog 
+                title={onDelete.title}
+                description={onDelete.description}
+                action={() => onDelete.action(room.id)}
+              >
+                <Button variant="ghost" size="sm" className="hover:bg-destructive-foreground">
+                  <Trash2 className="h-5 w-5 text-destructive"  />
+                </Button>
+              </DeleteAlertDialog>
+            </Can>
           </div>
         </div>
 

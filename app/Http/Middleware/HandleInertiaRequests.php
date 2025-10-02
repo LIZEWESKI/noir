@@ -45,22 +45,23 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'isAdmin' => $request->user()?->isAdmin() || null,
                 'can'  => [
-                    'viewRooms'   => $request->user()?->can('viewAny', Room::class),
+                    'viewAnyRooms'   => $request->user()?->can('viewAny', Room::class),
                     'createRooms' => $request->user()?->can('create', Room::class),
                     'updateRooms' => $request->user()?->can('update', new Room),
                     'deleteRooms' => $request->user()?->can('delete', new Room),
 
-                    'viewGuests'   => $request->user()?->can('viewAny', User::class),
+                    'viewAnyGuests'   => $request->user()?->can('viewAny', User::class),
                     'createGuests' => $request->user()?->can('create', User::class),
+                    'viewGuests'   => $request->user()?->can('view', new User),
                     'updateGuests' => $request->user()?->can('update', new User),
                     'deleteGuests' => $request->user()?->can('delete', new User),
 
-                    'viewReservations'   => $request->user()?->can('viewAny', Reservation::class),
+                    'viewAnyReservations'   => $request->user()?->can('viewAny', Reservation::class),
                     'createReservations' => $request->user()?->can('create', Reservation::class),
                     'updateReservations' => $request->user()?->can('update', new Reservation),
                     'deleteReservations' => $request->user()?->can('delete', new Reservation),
 
-                    'viewPayments'   => $request->user()?->can('viewAny', Payment::class),
+                    'viewAnyPayments'   => $request->user()?->can('viewAny', Payment::class),
                 ]
             ],
             'ziggy' => fn (): array => [

@@ -12,6 +12,7 @@ import GuestsDataTable from "@/components/guests-management/guests-data-table"
 import GuestsStats from "@/components/guests-management/guests-stats"
 import RecentUsers from "@/components/guests-management/recent-users"
 import GuestsRecentRsv from "@/components/guests-management/guests-recent-rsv"
+import Can from "@/components/can"
 
 const breadcrumbs= [
   {
@@ -63,14 +64,16 @@ export default function Index({users,stats,new_users,guests_with_reservations}) 
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4">
             <p className="text-muted-foreground mt-1">Manage and track all hotel guests</p>
             <div className="flex items-center gap-2">
-              <IconToolTip label="Add Guest" className="rounded-full p-1 flex justify-between items-center">
-                <Button 
-                  size="sm"
-                  onClick={() => router.visit('/admin/guests-management/create')}
-                >
-                  <Plus className="h-6 w-6" />
-                </Button>
-              </IconToolTip>
+              <Can permission="createGuests">
+                <IconToolTip label="Add Guest" className="rounded-full p-1 flex justify-between items-center">
+                  <Button 
+                    size="sm"
+                    onClick={() => router.visit('/admin/guests-management/create')}
+                  >
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </IconToolTip>
+              </Can>
             </div>
           </div>
         <div>

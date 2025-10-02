@@ -13,6 +13,7 @@ import ReservationsHistory from "@/components/guests-management/reservations-his
 import PaymentsHistory from "@/components/guests-management/payments-history"
 import DeleteUserDialog from "@/components/ui/delete-user-dialog"
 import { useState } from "react"
+import Can from "@/components/can"
 
 const breadcrumbs= [
   {
@@ -44,22 +45,26 @@ const Show = ({guest,stats,reservations,payments}) => {
         <div className="flex items-center justify-between">
             <p className="text-muted-foreground">Detailed guest information and history</p>
             <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => editGuest(guest)}
-            >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Guest
-            </Button>
-            <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setIsDeleteOpen(true)}
-            >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Guest
-            </Button>
+              <Can permission="updateGuests">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => editGuest(guest)}
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Guest
+                </Button>
+              </Can>
+              <Can permission="deleteGuests">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Guest
+                </Button>
+              </Can>
             </div>
         </div>
 
