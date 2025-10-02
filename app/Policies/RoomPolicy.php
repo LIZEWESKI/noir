@@ -37,7 +37,7 @@ class RoomPolicy
      */
     public function update(User $user, Room $room): bool
     {
-        return in_array($user->role, ['admin', 'manager','housekeeping']);
+        return in_array($user->role, ['admin', 'manager','housekeeping','receptionist']);
     }
 
     /**
