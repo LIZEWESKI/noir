@@ -37,9 +37,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Beth Smith',
-                'email' => 'beth@finance.com',
+                'email' => 'beth@accountant.com',
                 "password" => "12345678",
-                "role" => "finance",
+                "role" => "accountant",
             ],
             [
                 'name' => 'Jerry Smith',

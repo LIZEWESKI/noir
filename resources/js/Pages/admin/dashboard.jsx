@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { SectionCards } from '@/components/dashboard/section-card';
 import { DataTable } from '@/components/dashboard/data-table';
 import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
@@ -11,6 +11,8 @@ const breadcrumbs= [
 ];
 
 export default function Dashboard({metrics,reservations,charts_data}) {
+    const {auth} = usePage().props;
+    console.log(auth)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
