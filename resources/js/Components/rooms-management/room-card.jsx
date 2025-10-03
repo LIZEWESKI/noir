@@ -25,11 +25,9 @@ const RoomCard = ({ room, onEdit, onDelete, onView }) => {
             <p className="text-sm text-muted-foreground">Room {room.room_number}</p>
           </div>
           <div className="flex items-center gap-1">
-            <Can permission="viewRooms">
-              <Button variant="ghost" size="sm" onClick={() => onView(room)}>
-                <Eye className="h-4 w-4" />
-              </Button>
-            </Can>
+            <Button variant="ghost" size="sm" onClick={() => onView(room)}>
+              <Eye className="h-4 w-4" />
+            </Button>
             <Can permission="updateRooms">
               <Button variant="ghost" size="sm" onClick={() => onEdit(room)}>
                 <Edit className="h-4 w-4 text-primary" />

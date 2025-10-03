@@ -47,6 +47,7 @@ import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
+import { usePage } from "@inertiajs/react"
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -244,45 +245,68 @@ const columns = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="data-[state=open]:bg-muted text-muted-foreground flex size-8" size="">
-            <EllipsisVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuItem onClick={() => table.options.meta.viewGuest(row.original.user)}>
-            <User className="mr-2 h-4 w-4" />
-            View Guest
-          </DropdownMenuItem>
+    cell: ({ row, table }) => {
+      const canUpdate = table.options.meta?.canUpdate;
+      const canDelete = table.options.meta?.canDelete;
+      const canViewGuests = table.options.meta?.canViewGuests;
 
-          <DropdownMenuItem onClick={() => table.options.meta.viewRoom(row.original.room)}>
-            <MapPin className="mr-2 h-4 w-4" />
-            View Room
-          </DropdownMenuItem>
+      const hasActions =
+        canUpdate || canViewGuests ||
+        (canDelete && row.original.status !== "cancelled") ||
+        true;
 
-          <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Reservation
-          </DropdownMenuItem>
+      if (!hasActions) return null;
 
-          <DropdownMenuSeparator />
-          {row.original.status !== "cancelled" && (
-            <DropdownMenuItem
-              className="text-destructive hover:bg-destructive-foreground"
-              onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Cancel
+              <EllipsisVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            {canViewGuests && (
+              <DropdownMenuItem onClick={() => table.options.meta.viewGuest(row.original.user)}>
+                <User className="mr-2 h-4 w-4" />
+                View Guest
+              </DropdownMenuItem>
+            )}
+
+            <DropdownMenuItem onClick={() => table.options.meta.viewRoom(row.original.room)}>
+              <MapPin className="mr-2 h-4 w-4" />
+              View Room
             </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+
+            {canUpdate && (
+              <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Reservation
+              </DropdownMenuItem>
+            )}
+
+            {canDelete && row.original.status !== "cancelled" && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-destructive hover:bg-destructive-foreground"
+                  onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Cancel
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     enableSorting: false,
-  },
+  }
 ]
 
 function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom }) {
@@ -294,16 +318,18 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     pageIndex: 0,
     pageSize: 10,
   })
-
+  const { permissions } = usePage().props.auth;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
   const getInitials = useInitials()
   const { formatCurrency } = useCurrencyFormatter()
-
   const table = useReactTable({
     data: tableData,
     columns,
     meta: {
+      canUpdate: permissions.updateReservations,
+      canDelete: permissions.deleteReservations,
+      canViewGuests: permissions.viewGuests,
       getInitials,
       formatCurrency,
       onEdit,

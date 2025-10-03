@@ -45,6 +45,7 @@ import DeleteUserDialog from "@/components/ui/delete-user-dialog"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
+import { usePage } from "@inertiajs/react"
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -210,38 +211,59 @@ const columns = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="data-[state=open]:bg-muted text-muted-foreground flex size-8" size="">
-            <EllipsisVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
-          <DropdownMenuItem onClick={() => table.options.meta.viewGuest(row.original)}>
-            <User className="mr-2 h-4 w-4" />
-            View Guest
-          </DropdownMenuItem>
+    cell: ({ row, table }) => {
+      const canView = table.options.meta?.canView;
+      const canUpdate = table.options.meta?.canUpdate;
+      const canDelete = table.options.meta?.canDelete;
 
-          <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Guest
-          </DropdownMenuItem>
+      const hasActions = canView || canUpdate || canDelete;
+      if (!hasActions) return null;
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive hover:bg-destructive-foreground"
-            onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            >
+              <EllipsisVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-40">
+            {canView && (
+              <DropdownMenuItem onClick={() => table.options.meta.viewGuest(row.original)}>
+                <User className="mr-2 h-4 w-4" />
+                View Guest
+              </DropdownMenuItem>
+            )}
+
+            {canUpdate && (
+              <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Guest
+              </DropdownMenuItem>
+            )}
+
+            {canDelete && (
+              <>
+                {(canView || canUpdate) && <DropdownMenuSeparator />}
+                <DropdownMenuItem
+                  className="text-destructive hover:bg-destructive-foreground"
+                  onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     enableSorting: false,
-  },
+  }
 ]
 
 function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
@@ -253,7 +275,7 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
     pageIndex: 0,
     pageSize: 10,
   })
-
+  const { permissions } = usePage().props.auth;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectGuestId, setSelectGuestId] = React.useState(null)
   const getInitials = useInitials()
@@ -261,6 +283,9 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
     data: tableData,
     columns,
     meta: {
+      canUpdate: permissions.updateGuests,
+      canDelete: permissions.deleteGuests,
+      canView: permissions.viewGuests,
       getInitials,
       onEdit,
       onDelete,

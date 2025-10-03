@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'isAdmin' => $request->user()?->isAdmin() || null,
-                'can'  => [
+                'permissions'  => [
                     'viewAnyRooms'   => $request->user()?->can('viewAny', Room::class),
                     'createRooms' => $request->user()?->can('create', Room::class),
                     'updateRooms' => $request->user()?->can('update', new Room),

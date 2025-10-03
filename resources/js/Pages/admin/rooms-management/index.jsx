@@ -9,6 +9,7 @@ import { Plus, Table, Grid } from "lucide-react"
 import FilterSection from "@/components/rooms-management/filter-section"
 import RoomsDataTable from "@/components/rooms-management/rooms-data-table"
 import IconToolTip from "@/components/ui/icon-tooltip"
+import Can from "@/components/can"
 
 const breadcrumbs= [
   {
@@ -93,15 +94,17 @@ export default function Index({rooms_management}) {
                   </Button>
                 </IconToolTip>
               </div>
-              <IconToolTip label="Add Room" className="rounded-full p-1 flex justify-between items-center">
-                <Button 
-                  size="sm"
-                  onClick={() => router.visit('/admin/rooms-management/create')}
-                  className=" "
-                >
-                  <Plus className="h-6 w-6" />
-                </Button>
-              </IconToolTip>
+              <Can permission="createRooms">
+                <IconToolTip label="Add Room" className="rounded-full p-1 flex justify-between items-center">
+                  <Button 
+                    size="sm"
+                    onClick={() => router.visit('/admin/rooms-management/create')}
+                    className=" "
+                  >
+                    <Plus className="h-6 w-6" />
+                  </Button>
+                </IconToolTip>
+              </Can>
             </div>
           </div>
         <div>

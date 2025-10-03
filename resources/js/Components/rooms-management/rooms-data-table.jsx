@@ -44,6 +44,7 @@ import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
+import { usePage } from "@inertiajs/react"
 
 export const schema = z.object({
   id: z.number(),
@@ -291,32 +292,51 @@ const columns = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="data-[state=open]:bg-muted text-muted-foreground flex size-8" size="">
-            <EllipsisVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive hover:bg-destructive-foreground"
-            onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row, table }) => {
+      const canUpdate = table.options.meta?.canUpdate;
+      const canDelete = table.options.meta?.canDelete;
+      const hasActions = canUpdate || canDelete;
+
+      if (!hasActions) return null;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            >
+              <EllipsisVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-32">
+            {canUpdate && (
+              <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+            )}
+
+            {canDelete && (
+              <>
+                {canUpdate && <DropdownMenuSeparator />}
+                <DropdownMenuItem
+                  className="text-destructive hover:bg-destructive-foreground"
+                  onClick={() => table.options.meta?.onDeleteClick(row.original.id)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     enableSorting: false,
-  },
+  }
 ]
 
 function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
@@ -328,7 +348,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     pageIndex: 0,
     pageSize: 10,
   })
-
+  const { permissions } = usePage().props.auth;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
   const { formatCurrency } = useCurrencyFormatter()
@@ -337,6 +357,8 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     data,
     columns,
     meta: {
+      canUpdate: permissions.updateRooms,
+      canDelete: permissions.deleteRooms,
       onEdit,
       onDelete,
       onDeleteClick: (id) => {
