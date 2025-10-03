@@ -39,6 +39,16 @@ class User extends Authenticatable
     function payments():HasMany {
         return $this->hasMany(Payment::class);
     }
+
+    function coupon(array $attributes) {
+        $coupon = Coupon::firstOrCreate($attributes);
+        return $this->coupons()->attach($coupon);
+    }
+    
+    public function coupons()
+    {
+        return $this->belongsToMany(Coupon::class);
+    }
     protected $appends = ['profile_picture_url'];
     public function getProfilePictureUrlAttribute()
     {
