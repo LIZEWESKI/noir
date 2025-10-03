@@ -2,7 +2,7 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { ScrollText, LayoutGrid, House, Calendar, Users, BadgeDollarSign } from 'lucide-react';
 import IconAppLogo from '@/components/icon-app-logo';
 
@@ -16,21 +16,25 @@ const mainNavItems = [
         title: "Rooms",
         href: "/admin/rooms-management",
         icon: House,
+        permissionKey: "viewAnyRooms",
     },
     {
         title: "Guests",
         href: "/admin/guests-management",
         icon: Users,
+        permissionKey: "viewAnyGuests",
     },
     {
         title: "Reservations",
         href: "/admin/reservations-management",
         icon: Calendar,
+        permissionKey: "viewAnyReservations",
     },
     {
         title: "Payments",
         href: "/admin/payments-management",
         icon: BadgeDollarSign,
+        permissionKey: "viewAnyPayments",
     },
 ];
 
@@ -43,6 +47,12 @@ const footerNavItems = [
 ];
 
 export function AppSidebar() {
+    const { permissions } = usePage().props.auth;
+    const filteredNavItems = mainNavItems.filter(item => {
+        if (!item.permissionKey) return true;
+        return permissions[item.permissionKey] === true;
+    });
+    
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -56,7 +66,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={filteredNavItems} />
             </SidebarContent>
 
             <SidebarFooter>
