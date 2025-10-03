@@ -47,6 +47,14 @@ class User extends Authenticatable
         : ($this->profile_picture_path ? asset('storage/' . $this->profile_picture_path) : null);
     }
 
+    public function hasPermission(string $permission): bool
+    {
+        $role = $this->role;
+        $permissions = config("permissions.{$role}", []);
+        return in_array($permission, $permissions);
+    }
+
+
     public function isActive(int $months = 1): bool
     {
         return $this->last_stay && Carbon::parse($this->last_stay)->gte(now()->subMonths($months));

@@ -46,7 +46,6 @@ const { data, setData, post, processing, errors } = useForm({
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Creating guest:", data)
     post('/admin/guests-management')
   }
 

@@ -45,8 +45,6 @@ export default function EditGuest({ user }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(data)
-    console.log(errors)
     // put(`/admin/guests-management/update/${user.id}`)
     post(route('admin.guests_management.update',user.id),data)
   }

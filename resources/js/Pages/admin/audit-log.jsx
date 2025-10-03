@@ -109,8 +109,6 @@ const breadcrumbs= [
 ];
 
 export default function AuditLog({audit_logs, admins}) {
-  console.log(audit_logs)
-  console.log(admins)
   const [searchTerm, setSearchTerm] = useState("")
   const [actionFilter, setActionFilter] = useState("all")
   const [expandedRows, setExpandedRows] = useState(new Set())

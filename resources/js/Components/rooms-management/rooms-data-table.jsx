@@ -348,7 +348,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     pageIndex: 0,
     pageSize: 10,
   })
-  const { permissions } = usePage().props.auth;
+  const { auth:{permissions} } = usePage().props;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedRoomId, setSelectedRoomId] = React.useState(null)
   const { formatCurrency } = useCurrencyFormatter()
@@ -389,7 +389,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
+  const exportConfig = [
     {
       name: "csv",
       url: "/admin/rooms/export/csv",
@@ -435,7 +435,7 @@ function RoomsDataTable({ data: initialData, onEdit, onDelete }) {
                     )
                   })}
               </DropdownMenuContent>
-              <ExtensionDropdown extensions={exportableExtensions} />
+              {permissions.exportRooms && <ExtensionDropdown extensions={exportConfig} />}
             </DropdownMenu>
           </div>
         </div>

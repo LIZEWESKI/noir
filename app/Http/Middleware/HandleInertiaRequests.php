@@ -45,23 +45,29 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'isAdmin' => $request->user()?->isAdmin() || null,
                 'permissions'  => [
+                    'exportAnalytics' => $request->user()?->hasPermission('export_analytics') ?? false,
+
                     'viewAnyRooms'   => $request->user()?->can('viewAny', Room::class),
                     'createRooms' => $request->user()?->can('create', Room::class),
                     'updateRooms' => $request->user()?->can('update', new Room),
                     'deleteRooms' => $request->user()?->can('delete', new Room),
+                    'exportRooms' => $request->user()?->hasPermission('export_rooms') ?? false,
 
                     'viewAnyGuests'   => $request->user()?->can('viewAny', User::class),
                     'createGuests' => $request->user()?->can('create', User::class),
                     'viewGuests'   => $request->user()?->can('view', new User),
                     'updateGuests' => $request->user()?->can('update', new User),
                     'deleteGuests' => $request->user()?->can('delete', new User),
+                    'exportGuests' => $request->user()?->hasPermission('export_guests') ?? false,
 
                     'viewAnyReservations'   => $request->user()?->can('viewAny', Reservation::class),
                     'createReservations' => $request->user()?->can('create', Reservation::class),
                     'updateReservations' => $request->user()?->can('update', new Reservation),
                     'deleteReservations' => $request->user()?->can('delete', new Reservation),
-
+                    'exportReservations' => $request->user()?->hasPermission('export_reservations') ?? false,
+                    
                     'viewAnyPayments'   => $request->user()?->can('viewAny', Payment::class),
+                    'exportPayments' => $request->user()?->hasPermission('export_payments') ?? false,
                 ]
             ],
             'ziggy' => fn (): array => [

@@ -161,11 +161,13 @@ class GuestManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
+        $this->authorize('export', 'guests');
         return (new GuestExport())->exportCsv();
     }
-
+    
     public function exportXlsx(): StreamedResponse
     {
+        $this->authorize('export', 'guests');
         return (new GuestExport())->exportXlsx();
     }
 }

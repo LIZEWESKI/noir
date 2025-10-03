@@ -233,11 +233,13 @@ class ReservationManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
+        $this->authorize('export', 'reservations');
         return (new ReservationExport())->exportCsv();
     }
 
     public function exportXlsx(): StreamedResponse
     {
+        $this->authorize('export', 'reservations');
         return (new ReservationExport())->exportXlsx();
     }
 }

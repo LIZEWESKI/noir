@@ -41,6 +41,7 @@ import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
+import { usePage } from "@inertiajs/react"
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -238,7 +239,7 @@ function PaymentsDataTable({ data: initialData }) {
     pageIndex: 0,
     pageSize: 10,
   })
-
+  const {auth: {permissions}} = usePage().props;
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
   const { formatCurrency } = useCurrencyFormatter()
@@ -278,7 +279,7 @@ function PaymentsDataTable({ data: initialData }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
+  const exportConfig = [
     {
       name: "csv",
       url: "/admin/payments/export/csv",
@@ -325,7 +326,7 @@ function PaymentsDataTable({ data: initialData }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <ExtensionDropdown extensions={exportableExtensions} />
+            {permissions.exportPayments && <ExtensionDropdown extensions={exportConfig} />}
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">

@@ -318,7 +318,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     pageIndex: 0,
     pageSize: 10,
   })
-  const { permissions } = usePage().props.auth;
+  const { auth: {permissions } } = usePage().props;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
   const getInitials = useInitials()
@@ -363,7 +363,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
+  const exportConfig = [
     {
       name: "csv",
       url: "/admin/reservations/export/csv",
@@ -409,7 +409,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
                     )
                   })}
               </DropdownMenuContent>
-              <ExtensionDropdown extensions={exportableExtensions} />
+             {permissions.exportReservations && <ExtensionDropdown extensions={exportConfig} />}
             </DropdownMenu>
           </div>
         </div>

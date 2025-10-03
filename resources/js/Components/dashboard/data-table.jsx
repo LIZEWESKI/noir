@@ -109,6 +109,7 @@ export function DataTable({ data: initialData }) {
     pageIndex: 0,
     pageSize: 10,
   })
+  const {auth: {permissions}} = usePage().props;
   const getInitials = useInitials()
   const { formatCurrency } = useCurrencyFormatter()
   const table = useReactTable({
@@ -137,7 +138,7 @@ export function DataTable({ data: initialData }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
+  const exportConfig = [
     {
       name: "csv",
       url: "/admin/dashboard/export/csv",
@@ -182,7 +183,7 @@ export function DataTable({ data: initialData }) {
                   )
                 })}
             </DropdownMenuContent>
-            <ExtensionDropdown extensions={exportableExtensions} />
+            {permissions.exportAnalytics && <ExtensionDropdown extensions={exportConfig} />}
           </DropdownMenu>
         </div>
       </div>

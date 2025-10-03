@@ -275,7 +275,7 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
     pageIndex: 0,
     pageSize: 10,
   })
-  const { permissions } = usePage().props.auth;
+  const { auth: {permissions} } = usePage().props;
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectGuestId, setSelectGuestId] = React.useState(null)
   const getInitials = useInitials()
@@ -317,7 +317,7 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
+  const exportConfig = [
     {
       name: "csv",
       url: "/admin/guests/export/csv",
@@ -364,7 +364,7 @@ function GuestsDataTable({ data: initialData, onEdit, onDelete, viewGuest }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <ExtensionDropdown extensions={exportableExtensions} />
+            {permissions.exportGuests && <ExtensionDropdown extensions={exportConfig} />}
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">

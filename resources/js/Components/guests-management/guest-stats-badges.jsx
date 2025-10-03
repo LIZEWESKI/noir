@@ -6,7 +6,6 @@ import {
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 const GuestStatsBadges = ({stats}) => {
-  console.log(stats.last_stay)
   return (
     <div className="flex flex-wrap gap-3">
         <Badge variant="outline" className="text-muted-foreground px-1.5 py-1">

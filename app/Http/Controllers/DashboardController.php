@@ -62,11 +62,13 @@ class DashboardController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
+        $this->authorize('export', 'analytics');
         return (new DashboardExport())->exportCsv();
     }
-
+    
     public function exportXlsx(): StreamedResponse
     {
+        $this->authorize('export', 'analytics');
         return (new DashboardExport())->exportXlsx();
     }
 

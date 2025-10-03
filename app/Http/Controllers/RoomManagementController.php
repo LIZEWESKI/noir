@@ -129,11 +129,13 @@ class RoomManagementController extends Controller
     // Ok it is now resuable :D
     public function exportCsv(): StreamedResponse
     {
+        $this->authorize('export', 'rooms');
         return (new RoomExport())->exportCsv();
     }
 
     public function exportXlsx(): StreamedResponse
     {
+        $this->authorize('export', 'rooms');
         return (new RoomExport())->exportXlsx();
     }
 }

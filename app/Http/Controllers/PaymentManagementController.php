@@ -28,12 +28,14 @@ class PaymentManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
+        $this->authorize('export', 'payments');
         $payment_export = new PaymentExport();
         return $payment_export->exportCsv();
     }
-
+    
     public function exportXlsx(): StreamedResponse
     {
+        $this->authorize('export', 'payments');
         $payment_export = new PaymentExport();
         return $payment_export->exportXlsx();
     }
