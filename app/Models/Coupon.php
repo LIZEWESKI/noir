@@ -58,11 +58,11 @@ class Coupon extends Model
         // if the coupon code start date hasn't been reached yet
         if ($start_date->isFuture()) return false;
 
-        // we do have something like the usage_limit
+        // we do have something like the user_limit
         $coupons = $user->coupons;
         $user_coupon = $coupons->firstWhere('code', $coupon->code);
 
-        if($user_coupon?->limit_usage === 0 ) return false;
+        if($user_coupon?->user_limit === 0 ) return false;
         return true;
     }
 
