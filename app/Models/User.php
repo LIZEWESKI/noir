@@ -150,7 +150,7 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $coupons = Coupon::getActive();
+            $coupons = Coupon::active()->get();
             $couponIds = $coupons->pluck('id');
             $user->coupons()->syncWithoutDetaching($couponIds);
         });
