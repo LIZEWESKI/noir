@@ -28,7 +28,12 @@ class Coupon extends Model
     {
         return $this->belongsToMany(User::class, 'coupon_user','coupon_id','user_id');
     }
-
+    public function getActive() {
+        return Coupon::where('start_date', '<=', today())
+            ->where('end_date', '>=', today())
+            ->where('global_limit', '>', 0)
+            ->get();
+    }
     public function couponCodeExists(string $code):bool {
         // this is basically for validation if it doesn't exist then throw an exception
         // if it does return true

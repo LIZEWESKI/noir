@@ -144,6 +144,21 @@ class User extends Authenticatable
             ],
         ];
     }
+
+    // First time using this booted method :o 
+    // Hats off laravel
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $coupons = Coupon::getActive();
+            $couponIds = $coupons->pluck('id');
+            $user->coupons()->syncWithoutDetaching($couponIds);
+        });
+
+        static::deleting(function ($user) {
+            $user->coupons()->detach();
+        });
+    }
     
     /**
      * The attributes that should be hidden for serialization.
