@@ -42,13 +42,15 @@ class User extends Authenticatable
 
     function coupon(array $attributes) {
         $coupon = Coupon::firstOrCreate($attributes);
-        return $this->coupons()->attach($coupon);
+        
+        return $this->coupons()->syncWithoutDetaching([$coupon->id]);
     }
     
     public function coupons()
     {
         return $this->belongsToMany(Coupon::class);
     }
+
     protected $appends = ['profile_picture_url'];
     public function getProfilePictureUrlAttribute()
     {

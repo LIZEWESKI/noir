@@ -30,6 +30,7 @@ import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
+import { usePage } from "@inertiajs/react"
 
 export const schema = z.object({
   id: z.number(),
