@@ -11,6 +11,8 @@ class Payment extends Model
     
     protected $fillable = [
         'user_id',
+        'coupon_id',
+        "discount_amount",
         "total_amount",
         "payment_status",
         "payment_method",
@@ -29,6 +31,10 @@ class Payment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function coupon() {
+        return $this->belongsTo(Coupon::class,'coupon_id');
     }
 
     public static function statsForPeriod($start, $end): object

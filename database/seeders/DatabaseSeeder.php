@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         // User::factory(10)->create();
+        $this->call(CouponSeeder::class);
         $initials_admins = [
             [
                 'name' => 'Rick Sanchez',
@@ -56,6 +58,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FeatureRoomSeeder::class);
         $this->call(ReservationSeeder::class);
         $this->call(AuditLogSeeder::class);
-        $this->call(CouponSeeder::class);
+
     }
 }

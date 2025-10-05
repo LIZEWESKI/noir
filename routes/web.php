@@ -9,6 +9,7 @@ use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ApplyCouponController;
 use App\Http\Controllers\ReservationController;
 
 Route::get('/', function () {
@@ -33,11 +34,11 @@ Route::get("/contact", [LegalController::class,'contact'])->name("contact");
 Route::get("/legal", [LegalController::class,'legal'])->name("legal");
 Route::get("/privacy-policy", [LegalController::class,'privacyPolicy'])->name("privacy_policy");
 Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name("terms_of_service");
+
 // Page Not Found
 Route::fallback(function() {
     return Inertia::render('not-found')->toResponse(request())->setStatusCode(404);
 });
-
 
 // Middleware Auth Resource
 Route::middleware('auth')->group(function () {
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/coupons/apply', ApplyCouponController::class)->name('coupons.apply');
     Route::get('/payment', [PayPalController::class, 'paymentGateway'])->name('payment');
     Route::post('/process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
     Route::get('/success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');

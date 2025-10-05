@@ -28,40 +28,37 @@ class Coupon extends Model
     {
         return $this->belongsToMany(User::class, 'coupon_user','coupon_id','user_id');
     }
-    public function active() {
+
+    public function payments() {
+        return $this->hasMany(Payment::class);
+    }
+
+    public static function active() {
         return Coupon::where('start_date', '<=', today())
             ->where('end_date', '>=', today())
             ->where('global_limit', '>', 0);
     }
-    public function couponCodeExists(string $code):bool {
-        // this is basically for validation if it doesn't exist then throw an exception
-        // if it does return true
-        $coupon = Coupon::where('code' === $code)->exists();
-        if(!$coupon) {
-            throw ValidationException::withMessages([
-                'code' => 'This coupon code is invalid please try a new one',
-            ]);
-        }
-        return true;
+    public static function codeExists(string $code):bool {
+        return Coupon::where('code',$code)->exists();
     }
-
-    public function couponCodeValid(Coupon $coupon, User $user):bool {
+    public static function codeLimitReached(Coupon $coupon, User $user) {
         // assuming that the coupon code exists
         // we first need to check if it does hit the limit
-        if ($coupon->global_limit <= 0) return false;
-        
+        if ($coupon->global_limit <= 0) return true;
+
+        // we do have something like the user_limit
+        $coupons = $user->coupons;
+        $user_coupon = $coupons->firstWhere('code', $coupon->code);
+        if($user_coupon?->user_limit === 0 ) return true;
+    }
+    
+    public static function codeValid(Coupon $coupon):bool {
         $end_date = Carbon::parse($coupon->end_date);
         $start_date = Carbon::parse($coupon->start_date);
         // and if the coupon end date is expired
         if ($end_date->isPast()) return false;
         // if the coupon code start date hasn't been reached yet
         if ($start_date->isFuture()) return false;
-
-        // we do have something like the user_limit
-        $coupons = $user->coupons;
-        $user_coupon = $coupons->firstWhere('code', $coupon->code);
-
-        if($user_coupon?->user_limit === 0 ) return false;
         return true;
     }
 

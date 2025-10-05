@@ -76,6 +76,8 @@ class PayPalController extends Controller
         // Log::debug('PayPal createOrder response:', [$response]);
         $payment = Payment::create([
             'user_id' => Auth::id(),
+            'coupon_id' => null,
+            'discount_amount' => null,
             'total_amount' => $totalAmount,
             'payment_status' => 'pending',
             'payment_method' => 'paypal',

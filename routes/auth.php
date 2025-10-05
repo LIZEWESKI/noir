@@ -20,6 +20,7 @@ Route::middleware('guest')->group(function () {
         return Socialite::driver('google')->redirect();
     });
     
+    // This was copied from medium blog
     Route::get('/auth/google/callback', function () {
         // Check if Google returned an error or if 'code' is missing
         if (request()->has('error')) {

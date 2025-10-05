@@ -14,11 +14,6 @@ class CouponSeeder extends Seeder
      */
     public function run(): void
     {
-        $coupons = Coupon::factory()->count(20)->create();
-        $users = User::all();
-
-        foreach ($users as $user) {
-            $user->coupons()->syncWithoutDetaching($coupons->pluck('id')->toArray());
-        }
+        Coupon::factory()->count(20)->create();
     }
 }
