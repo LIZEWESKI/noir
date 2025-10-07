@@ -20,7 +20,7 @@ const PriceSummary = ({ reservations, coupon }) => {
     if(coupon) setCouponData(coupon);
   },[coupon])
 
-  const subtotal = reservations.reduce((sum, item) => {
+  let subtotal = reservations.reduce((sum, item) => {
     const roomTotal = Number.parseFloat(item.room.price) * Number(item.nights)
     return sum + roomTotal
   }, 0)
@@ -28,15 +28,15 @@ const PriceSummary = ({ reservations, coupon }) => {
   const cleaningFees = reservations.reduce((sum, item) => sum + Number(item.cleaning_fee), 0)
   const serviceFees = reservations.reduce((sum, item) => sum + Number(item.service_fee), 0)
 
+  subtotal = subtotal + cleaningFees + serviceFees;
   const discountAmount = couponData.type === "percentage" ? (subtotal * couponData.value) / 100 : couponData.value
-  const finalTotal = subtotal + cleaningFees + serviceFees - discountAmount
+  const finalTotal = subtotal - discountAmount
 
   const applyCoupon = (e) => {
     setCouponData(couponDefault)
     e.preventDefault()
     post('/coupons/apply')
   }
-
 
   return (
     <div className="bg-background rounded-lg border shadow-sm p-6">
@@ -117,10 +117,10 @@ const PriceSummary = ({ reservations, coupon }) => {
         <div className="pt-4 border-t">
           <div className="flex justify-between font-bold text-lg">
             <span>Total</span>
-            <span>${finalTotal.toFixed(2)}</span>
+            <span>${Math.ceil(finalTotal).toFixed(2)}</span>
           </div>
         </div>
-        <PaypalButton />
+        <PaypalButton coupon={coupon} reservations={reservations}/>
       </div>
     </div>
   )

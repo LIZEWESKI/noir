@@ -39,8 +39,11 @@ class ApplyCouponRequest extends FormRequest
                 $validator->errors()->add('coupon', "This coupon code doesn't exist, please try a new one");
                 return;
             }
-            if (Coupon::codeLimitReached($coupon,$user)) {
+            if (Coupon::globalLimitReached($coupon,$user)) {
                 $validator->errors()->add('coupon', 'This coupon has reached the limit usage');
+            }
+            if (Coupon::userLimitReached($coupon,$user)) {
+                $validator->errors()->add('coupon', 'You have reached the usage limit for this coupon!');
             }
             if (!Coupon::codeValid($coupon)) {
                 $validator->errors()->add('coupon', 'This coupon cannot be applied at this time');

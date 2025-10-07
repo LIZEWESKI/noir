@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Coupon;
 use App\Models\Payment;
 use App\Models\Reservation;
 use App\Mail\SuccessPayment;
@@ -52,11 +53,30 @@ class PayPalController extends Controller
         $credentials = config("paypal");
         $provider->setApiCredentials($credentials);
         $paypalToken = $provider->getAccessToken();
-        $reservations = Reservation::where('user_id', Auth::id())
-            ->where('status', 'pending')
-            ->get();
 
+        $reservationsIds = $request->input('reservationsIds');
+        $couponId = $request->input('couponId');
+
+        $reservations = Reservation::where('user_id',Auth::id())
+            ->where('status', 'pending')
+            ->whereIn('id',$reservationsIds)
+            ->get();
         $totalAmount = $reservations->sum('total_price');
+
+        if(isset($couponId))  {
+            $coupon = Coupon::firstWhere("id",$couponId);
+            $discount_amount = $coupon->getDiscountAmount($coupon,$totalAmount);
+
+            $totalAmount = $coupon->calculateDiscountedAmount($coupon, $totalAmount);
+        }
+
+        // Log::debug('CouponId :', [$couponId]);
+        // Log::debug('Coupon Data :', [$coupon]);
+        // Log::debug('Coupon Value :', [$coupon->value]);
+        // Log::debug('Coupon id :', [$coupon->id]);
+        // Log::debug('Discount Amount :', [$discount_amount]);
+        // Log::debug('Reservations total amount :', [$totalAmount]);
+
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -73,17 +93,17 @@ class PayPalController extends Controller
                 ]
             ]
         ], $paypalToken);
-        // Log::debug('PayPal createOrder response:', [$response]);
         $payment = Payment::create([
             'user_id' => Auth::id(),
-            'coupon_id' => null,
-            'discount_amount' => null,
+            'coupon_id' => $coupon?->id ?? null,
+            'discount_amount' => $discount_amount ?? null,
             'total_amount' => $totalAmount,
             'payment_status' => 'pending',
             'payment_method' => 'paypal',
             'transaction_id' => $response['id']
         ]);
         $payment->reservations()->attach($reservations->pluck('id'));
+
         return response()->json(['orderID' => $response['id']]);
     }
 
@@ -105,12 +125,29 @@ class PayPalController extends Controller
             $payment = Payment::where('transaction_id', $request->token)->first();
             if ($payment) {
                 $payment->update(['payment_status' => 'completed']);
-                
                 // Update reservation status
                 foreach ($payment->reservations as $reservation) {
                     $reservation->update(['status' => 'completed']);
                 }
                 $reservations = $payment->reservationsWithRooms()->get();
+
+                // decremnting coupon's usage limit globally and per user
+                $couponId = $payment->coupon_id ?? null;
+                $user = Auth::user();
+                if(isset($couponId)) {
+                    $coupon = Coupon::firstWhere("id",$couponId);
+                    $user_coupon = $user->coupons()->Firstwhere('coupon_id', $coupon->id);
+
+                    if($coupon->global_limit > 0) {
+                        $coupon->update(['global_limit' => $coupon->decrement('global_limit')]); 
+                    }
+
+                    if ($user_coupon && $user_coupon->pivot->user_limit > 0) {
+                        $user->coupons()->updateExistingPivot($coupon->id, [
+                            'user_limit' => $user_coupon->pivot->user_limit - 1
+                        ]);
+                    }
+                }
 
                 $totalAmount = $payment->total_amount;
                 $orderId = $payment->transaction_id;

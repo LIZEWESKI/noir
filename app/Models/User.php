@@ -42,13 +42,14 @@ class User extends Authenticatable
 
     function coupon(array $attributes) {
         $coupon = Coupon::firstOrCreate($attributes);
-        
+
         return $this->coupons()->syncWithoutDetaching([$coupon->id]);
     }
     
     public function coupons()
     {
-        return $this->belongsToMany(Coupon::class);
+        // just learnt this withPivot method exists xD
+        return $this->belongsToMany(Coupon::class)->withPivot('user_limit');
     }
 
     protected $appends = ['profile_picture_url'];

@@ -26,7 +26,9 @@ class Coupon extends Model
     // I was thinking if I can limit coupon usage per user (a user can only use a coupon code once)
     public function users()
     {
-        return $this->belongsToMany(User::class, 'coupon_user','coupon_id','user_id');
+        return $this->belongsToMany(User::class, 'coupon_user','coupon_id','user_id')
+            ->withPivot('user_limit')
+            ->withTimestamps();
     }
 
     public function payments() {
@@ -41,15 +43,19 @@ class Coupon extends Model
     public static function codeExists(string $code):bool {
         return Coupon::where('code',$code)->exists();
     }
-    public static function codeLimitReached(Coupon $coupon, User $user) {
+    public static function globalLimitReached(Coupon $coupon) {
         // assuming that the coupon code exists
-        // we first need to check if it does hit the limit
+        // we need to check if it does hit the limit
         if ($coupon->global_limit <= 0) return true;
-
+        return false;
+    }
+    public static function userLimitReached($coupon, User $user) {
         // we do have something like the user_limit
-        $coupons = $user->coupons;
-        $user_coupon = $coupons->firstWhere('code', $coupon->code);
-        if($user_coupon?->user_limit === 0 ) return true;
+        // using that we can check if the user has reached the usage limit
+        $user_coupon = $user->coupons()->Firstwhere('code', $coupon->code);
+
+        if($user_coupon->pivot->user_limit <= 0 ) return true;
+        return false;
     }
     
     public static function codeValid(Coupon $coupon):bool {
@@ -62,7 +68,8 @@ class Coupon extends Model
         return true;
     }
 
-    public function calculateDiscountedAmount(Coupon $coupon, int $originalAmount): int
+
+    public function getDiscountAmount(Coupon $coupon, int $originalAmount): int 
     {
         $discountAmount = 0;
 
@@ -71,6 +78,12 @@ class Coupon extends Model
         } elseif ($coupon->type === 'percentage') {
             $discountAmount = $this->calculatePercentageDiscount((int) $coupon->value, $originalAmount);
         }
+        return $discountAmount;
+    }
+
+    public function calculateDiscountedAmount(Coupon $coupon, int $originalAmount): int
+    {
+        $discountAmount = $coupon->getDiscountAmount($coupon,$originalAmount);
 
         return $originalAmount - $discountAmount;
     }
