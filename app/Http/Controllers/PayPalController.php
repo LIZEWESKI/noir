@@ -63,19 +63,15 @@ class PayPalController extends Controller
             ->get();
         $totalAmount = $reservations->sum('total_price');
 
-        if(isset($couponId))  {
-            $coupon = Coupon::firstWhere("id",$couponId);
-            $discount_amount = $coupon->getDiscountAmount($coupon,$totalAmount);
-
-            $totalAmount = $coupon->calculateDiscountedAmount($coupon, $totalAmount);
+        if($couponId)  {
+            $coupon = Coupon::find($couponId);
+            if($coupon){
+                $discount_amount = $coupon->getDiscountAmount($totalAmount);
+                $totalAmount = $coupon->calculateDiscountedAmount($totalAmount);
+            }
         }
 
-        // Log::debug('CouponId :', [$couponId]);
-        // Log::debug('Coupon Data :', [$coupon]);
-        // Log::debug('Coupon Value :', [$coupon->value]);
-        // Log::debug('Coupon id :', [$coupon->id]);
-        // Log::debug('Discount Amount :', [$discount_amount]);
-        // Log::debug('Reservations total amount :', [$totalAmount]);
+        $totalAmount = round($totalAmount, 2);
 
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
@@ -93,40 +89,7 @@ class PayPalController extends Controller
                 ]
             ]
         ], $paypalToken);
-        // we want to prevent recreating payment record if it's already exist :
 
-        // this doesn't work since response['id'] always regenerate when processing transaction
-        // $payment_exist = Payment::where('transaction_id',$response['id'])->exists();
-        // if($payment_exist) {
-        //     return response()->json(['orderID' => $response['id']]);
-        // }
-
-        // we need a way to retrieve the actual payment record to prevent recreating a new one for the same reservation(s)
-        // luckily we do have pivot table reservation_payment and we also do have reservationIds
-        // the issue here is if a single payment is attached to two reservations
-        // and we only want to pay for 1 reservation the payment status will be set to complete
-        // 
-        // which is not what we want
-        // I guess I'm gonna go with easy approach here which is allowing only 1 reservation per payment
-
-        // Actually no we attach reservations with payment only if the transaction is successful
-        // if we do have two reservations and only 1 is paid, the payment will only be attached to the one we paid for 
-
-        // so we do have reservationIds
-        // we do have relationship between reservation and payment
-        // we can do something like 
-        // $paymentId = $reservation->payment->id 
-        // with this id we can then check if the payment exists or not
-
-        // however if a reservation does have a payment attached to it (and not paid yet meaning payment_status is set to pending)
-        // and then the user decides to add a new reservation (total of 2)
-        // this will leave the payment only attached to the first reservation
-        // causing the second reservation to be an orphan or marked as paid
-
-        // gonna leave this here for the next session
-        $reservations->each(function($r) {
-            Log::debug('payment id ',[$r->payments]);
-        });
         $payment = Payment::create([
             'user_id' => Auth::id(),
             'coupon_id' => $coupon?->id ?? null,
@@ -173,7 +136,7 @@ class PayPalController extends Controller
                     $user_coupon = $user->coupons()->Firstwhere('coupon_id', $coupon->id);
 
                     if($coupon->global_limit > 0) {
-                        $coupon->update(['global_limit' => $coupon->decrement('global_limit')]); 
+                       $coupon->decrement('global_limit'); 
                     }
 
                     if ($user_coupon && $user_coupon->pivot->user_limit > 0) {

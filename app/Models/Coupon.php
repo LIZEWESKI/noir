@@ -69,27 +69,27 @@ class Coupon extends Model
     }
 
 
-    public function getDiscountAmount(Coupon $coupon, int $originalAmount): int 
+    public function getDiscountAmount(float $originalAmount): float 
     {
         $discountAmount = 0;
 
-        if ($coupon->type === 'fixed') {
-            $discountAmount = (int) $coupon->value;
-        } elseif ($coupon->type === 'percentage') {
-            $discountAmount = $this->calculatePercentageDiscount((int) $coupon->value, $originalAmount);
+        if ($this->type === 'fixed') {
+            $discountAmount = (float) $this->value;
+        } elseif ($this->type === 'percentage') {
+            $discountAmount = $this->calculatePercentageDiscount((float) $this->value, $originalAmount);
         }
         return $discountAmount;
     }
 
-    public function calculateDiscountedAmount(Coupon $coupon, int $originalAmount): int
+    public function calculateDiscountedAmount(float $originalAmount): float
     {
-        $discountAmount = $coupon->getDiscountAmount($coupon,$originalAmount);
+        $discountAmount = $this->getDiscountAmount($originalAmount);
 
         return $originalAmount - $discountAmount;
     }
 
-    private function calculatePercentageDiscount(int $percentage, int $originalAmount): int
+    private function calculatePercentageDiscount(float $percentage, float $originalAmount): float
     {
-        return (int) ($percentage / 100 * $originalAmount);
+        return (float) ($percentage / 100 * $originalAmount);
     }
 }
