@@ -93,6 +93,40 @@ class PayPalController extends Controller
                 ]
             ]
         ], $paypalToken);
+        // we want to prevent recreating payment record if it's already exist :
+
+        // this doesn't work since response['id'] always regenerate when processing transaction
+        // $payment_exist = Payment::where('transaction_id',$response['id'])->exists();
+        // if($payment_exist) {
+        //     return response()->json(['orderID' => $response['id']]);
+        // }
+
+        // we need a way to retrieve the actual payment record to prevent recreating a new one for the same reservation(s)
+        // luckily we do have pivot table reservation_payment and we also do have reservationIds
+        // the issue here is if a single payment is attached to two reservations
+        // and we only want to pay for 1 reservation the payment status will be set to complete
+        // 
+        // which is not what we want
+        // I guess I'm gonna go with easy approach here which is allowing only 1 reservation per payment
+
+        // Actually no we attach reservations with payment only if the transaction is successful
+        // if we do have two reservations and only 1 is paid, the payment will only be attached to the one we paid for 
+
+        // so we do have reservationIds
+        // we do have relationship between reservation and payment
+        // we can do something like 
+        // $paymentId = $reservation->payment->id 
+        // with this id we can then check if the payment exists or not
+
+        // however if a reservation does have a payment attached to it (and not paid yet meaning payment_status is set to pending)
+        // and then the user decides to add a new reservation (total of 2)
+        // this will leave the payment only attached to the first reservation
+        // causing the second reservation to be an orphan or marked as paid
+
+        // gonna leave this here for the next session
+        $reservations->each(function($r) {
+            Log::debug('payment id ',[$r->payments]);
+        });
         $payment = Payment::create([
             'user_id' => Auth::id(),
             'coupon_id' => $coupon?->id ?? null,
