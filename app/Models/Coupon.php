@@ -92,4 +92,19 @@ class Coupon extends Model
     {
         return (float) ($percentage / 100 * $originalAmount);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($coupon) {
+            $users = User::all();
+            foreach ($users as $user) {
+                $user->coupons()->syncWithoutDetaching([$coupon->id]);
+            }
+        });
+
+        static::deleting(function ($coupon) {
+            $coupon->users()->detach();
+        });
+    }
+
 }
