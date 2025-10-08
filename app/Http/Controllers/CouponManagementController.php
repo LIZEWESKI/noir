@@ -19,7 +19,9 @@ class CouponManagementController extends Controller
      */
     public function index()
     {
-        return Inertia::render('admin/coupons-management/index');
+        $coupons = Coupon::latest()->get();
+
+        return Inertia::render('admin/coupons-management/index',compact("coupons"));
     }
 
     /**
@@ -41,15 +43,14 @@ class CouponManagementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Coupon $coupon)
     {
-        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Coupon $coupon)
     {
         //
     }
@@ -57,7 +58,7 @@ class CouponManagementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Coupon $coupon)
     {
         //
     }
@@ -65,7 +66,7 @@ class CouponManagementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Coupon $coupon)
     {
         //
     }
