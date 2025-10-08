@@ -333,21 +333,6 @@ function CouponsDataTable({ data: initialData, onEdit, onDelete }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  const exportableExtensions = [
-    {
-      name: "csv",
-      url: "/admin/coupons/export/csv",
-      label: "coupons",
-      action: useExportCsv(),
-    },
-    {
-      name: "xlsx",
-      url: "/admin/coupons/export/xlsx",
-      label: "coupons",
-      action: useExportXlsx(),
-    },
-  ]
-
   return (
     <>
       <Tabs defaultValue="outline" className="w-full flex-col justify-start gap-6">
@@ -380,7 +365,6 @@ function CouponsDataTable({ data: initialData, onEdit, onDelete }) {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <ExtensionDropdown extensions={exportableExtensions} />
           </div>
         </div>
         <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
