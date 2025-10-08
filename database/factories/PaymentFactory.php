@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Coupon;
 use App\Models\Reservation;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
@@ -20,8 +21,22 @@ class PaymentFactory extends Factory
      */
     public function definition(): array
     {
+        $totalAmount = fake()->randomFloat(2, 100, 1000);
+        $hasCoupon = fake()->boolean(40);
+        $couponId = null;
+        $discountAmount = null;
+
+        if ($hasCoupon) {
+            $coupon = Coupon::inRandomOrder()->first() ?? Coupon::factory()->create();
+            $discountAmount = round($totalAmount * fake()->randomFloat(2, 0.05, 0.3), 2);
+            $totalAmount = max($totalAmount - $discountAmount, 0);
+            $couponId = $coupon->id;
+        }
+
         return [
             'user_id' => User::factory(),
+            'coupon_id' => $couponId,
+            'discount_amount' => $discountAmount,
             'total_amount' => fake()->randomFloat(2, 100, 1000),
             'payment_status' => fake()->randomElement(['cancelled', 'completed', 'pending']),
             'payment_method' => fake()->randomElement(['paypal', 'debit card', 'credit card']),
@@ -31,7 +46,7 @@ class PaymentFactory extends Factory
         ];
     }
 
-        public function forReservation(Reservation $reservation): self
+    public function forReservation(Reservation $reservation): self
     {
         $paymentDate = Carbon::parse($reservation->check_in)
             ->subDays(rand(0, 2))

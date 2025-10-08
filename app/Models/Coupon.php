@@ -107,4 +107,72 @@ class Coupon extends Model
         });
     }
 
+    public static function quickStats(): array
+    {
+        $totalCoupons = self::count();
+        $activeCoupons = self::where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->count();
+
+        $totalRedemptions = Payment::whereNotNull('coupon_id')
+            ->where('payment_status', 'completed')
+            ->count();
+
+        $totalSavings = Payment::whereNotNull('coupon_id')
+            ->where('payment_status', 'completed')
+            ->sum('discount_amount');
+
+        $averageDiscount = $totalRedemptions > 0
+            ? round($totalSavings / $totalRedemptions, 2)
+            : 0;
+
+        return [
+            [
+                'key' => 'coupons',
+                'title' => 'Total Coupons',
+                'value' => $totalCoupons,
+                'description' => "{$activeCoupons} currently active",
+            ],
+            [
+                'key' => 'redemptions',
+                'title' => 'Total Redemptions',
+                'value' => $totalRedemptions,
+                'description' => 'Across all coupons',
+            ],
+            [
+                'key' => 'savings',
+                'title' => 'Total Savings',
+                'value' => '$' . number_format($totalSavings, 2),
+                'description' => 'Given to customers',
+            ],
+            [
+                'key' => 'average',
+                'title' => 'Avg. Discount',
+                'value' => '$' . number_format($averageDiscount, 2),
+                'description' => 'Per redemption',
+            ],
+        ];
+    }
+
+    public static function recentRedemptions(int $limit = 5): array
+    {
+        return Payment::with(['coupon', 'user'])
+            ->whereNotNull('coupon_id')
+            ->where('payment_status', 'completed')
+            ->latest()
+            ->take($limit)
+            ->get()
+            ->map(function ($payment) {
+                return [
+                    'id' => $payment->id,
+                    'code' => $payment->coupon?->code ?? 'N/A',
+                    'user' => $payment->user?->name ?? 'Unknown',
+                    'amount' => (float) $payment->discount_amount,
+                    'date' => $payment->created_at->toDateString(),
+                ];
+            })->toArray();
+    }
+
+
+
 }

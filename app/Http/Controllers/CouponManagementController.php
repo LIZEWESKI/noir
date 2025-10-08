@@ -20,8 +20,9 @@ class CouponManagementController extends Controller
     public function index()
     {
         $coupons = Coupon::latest()->get();
-
-        return Inertia::render('admin/coupons-management/index',compact("coupons"));
+        $stats = Coupon::quickStats();
+        $recent_redemptions = Coupon::recentRedemptions();
+        return Inertia::render('admin/coupons-management/index',compact("coupons","stats","recent_redemptions"));
     }
 
     /**

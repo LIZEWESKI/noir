@@ -95,11 +95,11 @@ function getCouponStatus(startDate, endDate) {
 function getStatusBadgeColor(status) {
   switch (status) {
     case "active":
-      return "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
+      return "bg-emerald-500/10 text-emerald-500"
     case "expired":
-      return "bg-red-500/10 text-red-500 hover:bg-red-500/20"
+      return "bg-red-500/10 text-red-500"
     case "upcoming":
-      return "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
+      return "bg-blue-500/10 text-blue-500"
     default:
       return "bg-muted text-muted-foreground"
   }
@@ -123,7 +123,6 @@ const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2 min-w-32">
-        <Ticket className="h-4 w-4 text-muted-foreground" />
         <span className="font-mono font-semibold">{row.original.code}</span>
       </div>
     ),

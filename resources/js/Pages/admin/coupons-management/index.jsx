@@ -3,8 +3,10 @@ import CouponsDataTable from '@/components/coupons-management/coupons-data-table
 import { Button } from '@/components/ui/button';
 import IconToolTip from '@/components/ui/icon-tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { Head, router, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { Head, router } from '@inertiajs/react';
+import { Plus} from "lucide-react"
+import CouponsStats from '@/components/coupons-management/coupons-stats';
+import RecentRedemptions from '@/components/coupons-management/recent-redemptions';
 
 const breadcrumbs= [
     {
@@ -31,8 +33,8 @@ const DELETING_ALERT = {
     }
 }
 
-export default function index({coupons}) {
-    const {auth} = usePage().props;
+export default function index({coupons, stats, recent_redemptions: recentRedemptions}) {
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Coupons Management" />
@@ -50,6 +52,8 @@ export default function index({coupons}) {
                         </IconToolTip>
                     </Can>
                 </div>
+                <CouponsStats stats={stats} />
+                <RecentRedemptions recentRedemptions={recentRedemptions} />
                 <CouponsDataTable 
                     data={coupons} 
                     onEdit={handleEditCoupon} 
