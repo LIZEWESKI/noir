@@ -71,8 +71,6 @@ class PayPalController extends Controller
             }
         }
 
-        $totalAmount = round($totalAmount, 2);
-
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -89,6 +87,17 @@ class PayPalController extends Controller
                 ]
             ]
         ], $paypalToken);
+
+        // if a reservation already have a payment record attached to it we can 
+        // set the orphaned payment record status to cancelled and detached it
+        $reservations->each(function($r) {
+            $payment = $r->payments->first();
+            if($payment) {
+                $payment->payment_status = 'cancelled';
+                $payment->save();
+                $r->payments()->detach();
+            }
+        });
 
         $payment = Payment::create([
             'user_id' => Auth::id(),
