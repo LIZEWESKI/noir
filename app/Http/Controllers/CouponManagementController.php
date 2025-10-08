@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class CouponManagementController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Coupon::class, 'coupon');
+    }
+
     /**
      * Display a listing of the resource.
      */
