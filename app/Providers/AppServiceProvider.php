@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Coupon;
 use App\Models\Payment;
 use App\Models\Reservation;
-use App\Policies\ExportPolicy;
 use App\Policies\RoomPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\CouponPolicy;
+use App\Policies\ExportPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\ReservationPolicy;
 use Illuminate\Support\Facades\Vite;
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Reservation::class => ReservationPolicy::class,
         Payment::class => PaymentPolicy::class,
+        Coupon::class => CouponPolicy::class,
         'export' => ExportPolicy::class,
     ];
 

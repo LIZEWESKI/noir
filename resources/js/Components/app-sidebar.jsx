@@ -3,7 +3,7 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/react';
-import { ScrollText, LayoutGrid, House, Calendar, Users, BadgeDollarSign } from 'lucide-react';
+import { ScrollText, LayoutGrid, House, Calendar, Users, BadgeDollarSign, Ticket  } from 'lucide-react';
 import IconAppLogo from '@/components/icon-app-logo';
 
 const mainNavItems = [
@@ -35,6 +35,12 @@ const mainNavItems = [
         href: "/admin/payments-management",
         icon: BadgeDollarSign,
         permissionKey: "viewAnyPayments",
+    },
+    {
+        title: "Coupons",
+        href: "/admin/coupons-management",
+        icon: Ticket ,
+        permissionKey: "viewAnyCoupons",
     },
 ];
 

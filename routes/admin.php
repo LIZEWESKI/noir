@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ChangeLogController;
+use App\Http\Controllers\CouponManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\DashboardController;
@@ -27,7 +28,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     Route::get('/dashboard/export/xlsx', [DashboardController::class, 'exportXlsx'])
         ->name('dashboard.export.xlsx');
 
-    // Rooms Management ressource (I could use Resource instead but I don't feel like it)
+    // Rooms Management resource (I could use Resource instead but I don't feel like it)
     Route::get("/rooms-management",[RoomManagementController::class, 'index'])
         ->name('rooms_management.index');
     Route::get("/rooms-management/create",[RoomManagementController::class, 'create'])
@@ -45,7 +46,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     Route::get('/rooms/export/xlsx', [RoomManagementController::class, 'exportXlsx'])
         ->name('rooms.export.xlsx');
     
-    // Guests Management ressource
+    // Guests Management resource
     Route::get("/guests-management",[GuestManagementController::class,'index'])
         ->name('guests_management.index');
     Route::get("/guests-management/create",[GuestManagementController::class,'create'])
@@ -65,7 +66,7 @@ Route::middleware(['auth', AdminMiddleware::class])
     Route::get('/guests/export/xlsx', [GuestManagementController::class, 'exportXlsx'])
         ->name('guests.export.xlsx');
 
-    // Reservations Management ressource
+    // Reservations Management resource
     Route::get("/reservations-management",[ReservationManagementController::class, 'index'])
         ->name('reservations_management.index');
     Route::get("/reservations-management/create",[ReservationManagementController::class, 'create'])
@@ -82,7 +83,7 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('reservations.export.csv');
     Route::get('/reservations/export/xlsx', [ReservationManagementController::class, 'exportXlsx'])
         ->name('reservations.export.xlsx');
-    // Payments Management ressource
+    // Payments Management resource
     Route::get("/payments-management",[PaymentManagementController::class, 'index'])
         ->name("payments_management.index");
     Route::get('/payments/export/csv', [PaymentManagementController::class, 'exportCsv'])
@@ -93,4 +94,9 @@ Route::middleware(['auth', AdminMiddleware::class])
     // Audit Log (should be invokable but didn't feel like it)
     Route::get('/audit-log', [AuditLogController::class,'index'])
         ->name('audit_log.index');
+
+    // Coupons Management resource
+    Route::get('/coupons-management',[CouponManagementController::class,'index'])
+        ->name('coupons_management.index');
+        
 });

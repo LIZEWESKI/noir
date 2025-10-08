@@ -13,7 +13,7 @@ class CouponPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'manager', 'receptionist', 'accountant']);
     }
 
     /**
@@ -21,7 +21,7 @@ class CouponPolicy
      */
     public function view(User $user, Coupon $coupon): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'manager', 'receptionist', 'accountant']);
     }
 
     /**
@@ -29,7 +29,7 @@ class CouponPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'manager']);
     }
 
     /**
@@ -37,7 +37,7 @@ class CouponPolicy
      */
     public function update(User $user, Coupon $coupon): bool
     {
-        return false;
+        return in_array($user->role, ['admin', 'manager']);
     }
 
     /**
@@ -45,7 +45,7 @@ class CouponPolicy
      */
     public function delete(User $user, Coupon $coupon): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -53,7 +53,7 @@ class CouponPolicy
      */
     public function restore(User $user, Coupon $coupon): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 
     /**
@@ -61,6 +61,6 @@ class CouponPolicy
      */
     public function forceDelete(User $user, Coupon $coupon): bool
     {
-        return false;
+        return $user->role === 'admin';
     }
 }

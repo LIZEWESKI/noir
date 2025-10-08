@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Coupon;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Payment;
@@ -59,7 +60,7 @@ class HandleInertiaRequests extends Middleware
                     'updateGuests' => $request->user()?->can('update', new User),
                     'deleteGuests' => $request->user()?->can('delete', new User),
                     'exportGuests' => $request->user()?->hasPermission('export_guests') ?? false,
-
+                    
                     'viewAnyReservations'   => $request->user()?->can('viewAny', Reservation::class),
                     'createReservations' => $request->user()?->can('create', Reservation::class),
                     'updateReservations' => $request->user()?->can('update', new Reservation),
@@ -68,6 +69,12 @@ class HandleInertiaRequests extends Middleware
                     
                     'viewAnyPayments'   => $request->user()?->can('viewAny', Payment::class),
                     'exportPayments' => $request->user()?->hasPermission('export_payments') ?? false,
+
+                    'viewAnyCoupons'   => $request->user()?->can('viewAny', Coupon::class),
+                    'createCoupons' => $request->user()?->can('create', Coupon::class),
+                    'viewCoupons'   => $request->user()?->can('view', new Coupon),
+                    'updateCoupons' => $request->user()?->can('update', new Coupon),
+                    'deleteCoupons' => $request->user()?->can('delete', new Coupon),
                 ]
             ],
             'ziggy' => fn (): array => [
