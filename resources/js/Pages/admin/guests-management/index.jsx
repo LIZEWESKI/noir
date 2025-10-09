@@ -51,7 +51,7 @@ export default function Index({users,stats,new_users,guests_with_reservations}) 
     title: "Delete User",
     description: "Are you sure you want to delete this user? This action cannot be undone.",
     action: (userId) => {
-      router.post(`/admin/users-management/destroy/${userId}`,{id: userId},{
+      router.delete(`/admin/users-management/destroy/${userId}`,{
         preserveState: false,
       })
     }

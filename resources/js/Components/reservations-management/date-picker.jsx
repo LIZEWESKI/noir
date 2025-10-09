@@ -66,7 +66,7 @@ const DatePicker = ({
             />
             </PopoverContent>
         </Popover>
-        {error ? <p className="text-sm text-destructive font-medium ">{error}</p> : 
+        {error ? <p className="text-xs text-destructive">{error}</p> : 
         description && <p className="text-xs text-muted-foreground">{description}</p>}
     </div>
   )

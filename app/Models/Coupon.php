@@ -35,9 +35,9 @@ class Coupon extends Model
         return $this->hasMany(Payment::class);
     }
 
+    // I figure that the upcoming coupon do consider as active as well
     public static function active() {
         return Coupon::where('start_date', '<=', today())
-            ->where('end_date', '>=', today())
             ->where('global_limit', '>', 0);
     }
     public static function codeExists(string $code):bool {
@@ -92,20 +92,6 @@ class Coupon extends Model
     private function calculatePercentageDiscount(float $percentage, float $originalAmount): float
     {
         return (float) ($percentage / 100 * $originalAmount);
-    }
-
-    protected static function booted()
-    {
-        static::created(function ($coupon) {
-            $users = User::all();
-            foreach ($users as $user) {
-                $user->coupons()->syncWithoutDetaching([$coupon->id]);
-            }
-        });
-
-        static::deleting(function ($coupon) {
-            $coupon->users()->detach();
-        });
     }
 
     public static function quickStats(): array
@@ -166,7 +152,7 @@ class Coupon extends Model
             ->map(function ($payment) {
                 return [
                     'id' => $payment->id,
-                    'code' => $payment->coupon?->code ?? 'N/A',
+                    'code' => $payment->coupon?->code ?? '[deleted coupon]',
                     'user' => $payment->user?->name ?? 'Unknown',
                     'amount' => (float) $payment->discount_amount,
                     'date' => $payment->created_at->toDateString(),

@@ -71,6 +71,7 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log(data);
         post('/admin/coupons-management')
     }
 
@@ -103,7 +104,6 @@ export default function Create() {
                                 value={data.code}
                                 onChange={(e) => setData("code", e.target.value.toUpperCase())}
                                 className={errors.code ? "border-destructive" : ""}
-                                required
                             />
                             {errors.code ? (
                                 <p className="text-xs text-destructive">{errors.code}</p>
@@ -135,9 +135,13 @@ export default function Create() {
                                 </SelectItem>
                                 </SelectContent>
                             </Select>
+                            {errors.type ? (
+                                <p className="text-xs text-destructive">{errors.type}</p>
+                            ) : (
                             <p className="text-xs text-muted-foreground">
                                 Choose between percentage discount or fixed dollar amount
                             </p>
+                            )}
                             </div>
 
                             <div className="space-y-2">
@@ -149,16 +153,16 @@ export default function Create() {
                                 value={data.value}
                                 onChange={(e) => setData("value", Number.parseFloat(e.target.value))}
                                 className={errors.value ? "border-destructive" : ""}
-                                min="0"
+                                min="10"
+                                max={data.type === "percentage" ? "40" : "20"}
                                 step={data.type === "percentage" ? "1" : "0.01"}
-                                max={data.type === "percentage" ? "100" : undefined}
-                                required
+                                
                             />
                             {errors.value ? (
                                 <p className="text-xs text-destructive">{errors.value}</p>
                             ) : (
                                 <p className="text-xs text-muted-foreground">
-                                {data.type === "percentage" ? "Enter percentage off (0-100)" : "Enter dollar amount off"}
+                                {data.type === "percentage" ? "Enter percentage off (10-40)" : "Enter dollar amount off"}
                                 </p>
                             )}
                             </div>
@@ -178,8 +182,8 @@ export default function Create() {
                                 value={data.global_limit}
                                 onChange={(e) => setData("global_limit", Number.parseInt(e.target.value))}
                                 className={errors.global_limit ? "border-destructive" : ""}
-                                min="1"
-                                required
+                                min="10"
+                                max="100"
                             />
                             {errors.global_limit ? (
                                 <p className="text-xs text-destructive">{errors.global_limit}</p>
@@ -257,7 +261,7 @@ export default function Create() {
                         type="submit" 
                         className="px-8 bg-primary hover:bg-primary/90"
                     >
-                    Create Guest
+                    Create Coupon
                     </Button>
                 </div>
             </form>

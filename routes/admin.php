@@ -102,4 +102,6 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('coupons_management.create');
     Route::post('/coupons-management',[CouponManagementController::class,'store'])
         ->name('coupons_management.store');
+    Route::delete('/coupons-management/destroy/{coupon}',[CouponManagementController::class,'destroy'])
+        ->name('coupons_management.destroy');
 });

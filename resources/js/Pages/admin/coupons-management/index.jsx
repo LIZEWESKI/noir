@@ -3,10 +3,13 @@ import CouponsDataTable from '@/components/coupons-management/coupons-data-table
 import { Button } from '@/components/ui/button';
 import IconToolTip from '@/components/ui/icon-tooltip';
 import AppLayout from '@/layouts/app-layout';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
 import { Plus} from "lucide-react"
 import CouponsStats from '@/components/coupons-management/coupons-stats';
 import RecentRedemptions from '@/components/coupons-management/recent-redemptions';
+import { useEffect } from 'react';
 
 const breadcrumbs= [
     {
@@ -27,13 +30,27 @@ const DELETING_ALERT = {
     title: "Delete Coupon",
     description: "Are you sure you want to delete this coupon? This action cannot be undone.",
     action: (couponId) => {
-        router.post(`/admin/coupons-management/destroy/${couponId}`,{id: couponId},{
+        router.delete(`/admin/coupons-management/destroy/${couponId}`, {
             preserveState: false,
-        })
+        });
     }
 }
 
 export default function Index({coupons, stats, recent_redemptions: recentRedemptions}) {
+
+    const {flash} = usePage().props;
+    useEffect(() => {
+    flash.success && toast.success(flash.success, {
+        descriptionClassName: "text-white/90", 
+        duration: 3000,
+        position: "top-center",
+        style: {
+        backgroundColor: "hsl(var(--primary))",
+        color: "#fff",
+        }
+    })
+    }, [flash]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Coupons Management" />
@@ -59,6 +76,7 @@ export default function Index({coupons, stats, recent_redemptions: recentRedempt
                     onDelete={DELETING_ALERT}
                 />
             </div>
+            <Toaster/>
         </AppLayout>
     );
 }

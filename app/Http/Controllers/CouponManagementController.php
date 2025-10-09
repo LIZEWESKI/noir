@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Coupon;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreCouponRequest;
 
 class CouponManagementController extends Controller
 {
@@ -31,20 +33,29 @@ class CouponManagementController extends Controller
      */
     public function create()
     {
-    
+        
         return Inertia::render('admin/coupons-management/create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCouponRequest $request)
     {
         $attributes = $request->validated();
         $coupon = Coupon::create($attributes);
+
         User::all()->each(function ($user) use ($coupon) {
             $user->coupons()->attach($coupon->id);
         });
+
+        AuditLog::log("COUPON_CREATED", [
+            'coupon_id' => $coupon->id,
+            'coupon_code' => $coupon->code,
+            'coupon_value' => $coupon->value,
+        ]);
+
+        return redirect()->route('admin.coupons_management.index')->with('success', 'Coupon created successfully!');
     }
 
     /**
@@ -75,6 +86,16 @@ class CouponManagementController extends Controller
      */
     public function destroy(Coupon $coupon)
     {
-        //
+
+        $coupon->users()->detach();
+        $coupon->delete();
+
+        AuditLog::log("COUPON_DELETED", [
+            'coupon_id'   => $coupon->id,
+            'coupon_code' => $coupon->code,
+            'coupon_value' => $coupon->value,
+        ]);
+
+        return redirect()->route('admin.coupons_management.index')->with('success', 'Coupon deleted successfully!');
     }
 }
