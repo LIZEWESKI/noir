@@ -6,6 +6,10 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Ticket, Calendar, Percent, DollarSign } from "lucide-react"
+import DatePicker from '@/components/reservations-management/date-picker';
+import { useFormatDate } from '@/hooks/use-format-date';
+import { differenceInDays, addDays } from "date-fns"
+import { useState } from 'react';
 
 const breadcrumbs= [
     {
@@ -24,15 +28,46 @@ const breadcrumbs= [
 
 
 export default function Create() {
+    const getFormatDate = useFormatDate();
+    const [startDate, setStartDate] = useState(null)
+    const [endDate, setEndDate] = useState(null)
 
     const { data, setData, post, processing, errors } = useForm({
         code: "",
         type: "",
         value: "",
         global_limit: "",
-        start_date: "",
-        end_date:"",
+        start_date:  null,
+        end_date: null,
     })
+
+    const isEndDateInvalid = (date) => {
+        if (!startDate) return false
+
+        let currentDate = startDate
+        while (differenceInDays(date, currentDate) >= 0) {
+            currentDate = addDays(currentDate, 1)
+        }
+        return false
+    }
+    
+    const handleStartDate = (date) => {
+    setStartDate(date)
+    setEndDate(null)
+    setData((prev) => ({
+        ...prev,
+        start_date: date ? getFormatDate(date) : null,
+        end_date: "",
+    }))
+    }
+
+    const handleEndDate = (date) => {
+    setEndDate(date)
+    setData((prev) => ({
+        ...prev,
+        end_date: date ? getFormatDate(date) : null,
+    }))
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -53,115 +88,115 @@ export default function Create() {
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <Card>
-                    <CardContent className="p-6">
-                        <h2 className="text-xl font-medium mb-6 text-foreground flex items-center gap-2">
-                        <Ticket className="w-5 h-5" />
-                        Basic Information
-                        </h2>
+                        <CardContent className="p-6">
+                            <h2 className="text-xl font-medium mb-6 text-foreground flex items-center gap-2">
+                            <Ticket className="w-5 h-5" />
+                            Basic Information
+                            </h2>
 
-                        <div className="space-y-2 mb-6">
-                        <Label htmlFor="code">Coupon Code <span className="text-destructive">*</span></Label>
-                        <Input
-                            id="code"
-                            type="text"
-                            placeholder="e.g., SUMMER2024"
-                            value={data.code}
-                            onChange={(e) => setData("code", e.target.value.toUpperCase())}
-                            className={errors.code ? "border-destructive" : ""}
-                            required
-                        />
-                        {errors.code ? (
-                            <p className="text-xs text-destructive">{errors.code}</p>
-                        ) : (
+                            <div className="space-y-2 mb-6">
+                            <Label htmlFor="code">Coupon Code <span className="text-destructive">*</span></Label>
+                            <Input
+                                id="code"
+                                type="text"
+                                placeholder="e.g., SUMMER2024"
+                                value={data.code}
+                                onChange={(e) => setData("code", e.target.value.toUpperCase())}
+                                className={errors.code ? "border-destructive" : ""}
+                                required
+                            />
+                            {errors.code ? (
+                                <p className="text-xs text-destructive">{errors.code}</p>
+                            ) : (
+                                <p className="text-xs text-muted-foreground">
+                                Enter a unique code that customers will use at checkout
+                                </p>
+                            )}
+                            </div>
+
+                            <div className="space-y-2 mb-6">
+                            <Label htmlFor="type">Discount Type <span className="text-destructive">*</span></Label>
+                            <Select value={data.type} onValueChange={(value) => setData("type", value)}>
+                                <SelectTrigger>
+                                <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                <SelectItem value="percentage">
+                                    <div className="flex items-center gap-2">
+                                    <Percent className="w-4 h-4" />
+                                    Percentage
+                                    </div>
+                                </SelectItem>
+                                <SelectItem value="fixed">
+                                    <div className="flex items-center gap-2">
+                                    <DollarSign className="w-4 h-4" />
+                                    Fixed Amount
+                                    </div>
+                                </SelectItem>
+                                </SelectContent>
+                            </Select>
                             <p className="text-xs text-muted-foreground">
-                            Enter a unique code that customers will use at checkout
+                                Choose between percentage discount or fixed dollar amount
                             </p>
-                        )}
-                        </div>
+                            </div>
 
-                        <div className="space-y-2 mb-6">
-                        <Label htmlFor="type">Discount Type <span className="text-destructive">*</span></Label>
-                        <Select value={data.type} onValueChange={(value) => setData("type", value)}>
-                            <SelectTrigger>
-                            <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                            <SelectItem value="percentage">
-                                <div className="flex items-center gap-2">
-                                <Percent className="w-4 h-4" />
-                                Percentage
-                                </div>
-                            </SelectItem>
-                            <SelectItem value="fixed">
-                                <div className="flex items-center gap-2">
-                                <DollarSign className="w-4 h-4" />
-                                Fixed Amount
-                                </div>
-                            </SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <p className="text-xs text-muted-foreground">
-                            Choose between percentage discount or fixed dollar amount
-                        </p>
-                        </div>
-
-                        <div className="space-y-2">
-                        <Label htmlFor="value">Discount Value <span className="text-destructive">*</span> {data.type === "percentage" ? "(%)" : "($)"}</Label>
-                        <Input
-                            id="value"
-                            type="number"
-                            placeholder={data.type === "percentage" ? "e.g., 20" : "e.g., 50"}
-                            value={data.value}
-                            onChange={(e) => setData("value", Number.parseFloat(e.target.value))}
-                            className={errors.value ? "border-destructive" : ""}
-                            min="0"
-                            step={data.type === "percentage" ? "1" : "0.01"}
-                            max={data.type === "percentage" ? "100" : undefined}
-                            required
-                        />
-                        {errors.value ? (
-                            <p className="text-xs text-destructive">{errors.value}</p>
-                        ) : (
-                            <p className="text-xs text-muted-foreground">
-                            {data.type === "percentage" ? "Enter percentage off (0-100)" : "Enter dollar amount off"}
-                            </p>
-                        )}
-                        </div>
-                    </CardContent>
+                            <div className="space-y-2">
+                            <Label htmlFor="value">Discount Value <span className="text-destructive">*</span> {data.type === "percentage" ? "(%)" : "($)"}</Label>
+                            <Input
+                                id="value"
+                                type="number"
+                                placeholder={data.type === "percentage" ? "e.g., 20" : "e.g., 50"}
+                                value={data.value}
+                                onChange={(e) => setData("value", Number.parseFloat(e.target.value))}
+                                className={errors.value ? "border-destructive" : ""}
+                                min="0"
+                                step={data.type === "percentage" ? "1" : "0.01"}
+                                max={data.type === "percentage" ? "100" : undefined}
+                                required
+                            />
+                            {errors.value ? (
+                                <p className="text-xs text-destructive">{errors.value}</p>
+                            ) : (
+                                <p className="text-xs text-muted-foreground">
+                                {data.type === "percentage" ? "Enter percentage off (0-100)" : "Enter dollar amount off"}
+                                </p>
+                            )}
+                            </div>
+                        </CardContent>
                     </Card>
 
                     <Card>
-                    <CardContent className="p-6">
-                        <h2 className="text-xl font-medium mb-6 text-foreground">Usage Limits</h2>
+                        <CardContent className="p-6">
+                            <h2 className="text-xl font-medium mb-6 text-foreground">Usage Limits</h2>
 
-                        <div className="space-y-2">
-                        <Label htmlFor="global_limit">Total Usage Limit <span className="text-destructive">*</span></Label>
-                        <Input
-                            id="global_limit"
-                            type="number"
-                            placeholder="e.g., 100"
-                            value={data.global_limit}
-                            onChange={(e) => setData("global_limit", Number.parseInt(e.target.value))}
-                            className={errors.global_limit ? "border-destructive" : ""}
-                            min="1"
-                            required
-                        />
-                        {errors.global_limit ? (
-                            <p className="text-xs text-destructive">{errors.global_limit}</p>
-                        ) : (
-                            <p className="text-xs text-muted-foreground">
-                            Maximum number of times this coupon can be used across all customers
+                            <div className="space-y-2">
+                            <Label htmlFor="global_limit">Total Usage Limit <span className="text-destructive">*</span></Label>
+                            <Input
+                                id="global_limit"
+                                type="number"
+                                placeholder="e.g., 100"
+                                value={data.global_limit}
+                                onChange={(e) => setData("global_limit", Number.parseInt(e.target.value))}
+                                className={errors.global_limit ? "border-destructive" : ""}
+                                min="1"
+                                required
+                            />
+                            {errors.global_limit ? (
+                                <p className="text-xs text-destructive">{errors.global_limit}</p>
+                            ) : (
+                                <p className="text-xs text-muted-foreground">
+                                Maximum number of times this coupon can be used across all customers
+                                </p>
+                            )}
+                            </div>
+
+                            <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
+                            <p className="text-sm text-muted-foreground">
+                                <strong className="text-foreground">Note:</strong> Each customer can use this coupon up to 3 times
+                                by default. The total usage across all customers cannot exceed the limit set above.
                             </p>
-                        )}
-                        </div>
-
-                        <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
-                        <p className="text-sm text-muted-foreground">
-                            <strong className="text-foreground">Note:</strong> Each customer can use this coupon up to 3 times
-                            by default. The total usage across all customers cannot exceed the limit set above.
-                        </p>
-                        </div>
-                    </CardContent>
+                            </div>
+                        </CardContent>
                     </Card>
 
                     <Card>
@@ -170,40 +205,29 @@ export default function Create() {
                         <Calendar className="w-5 h-5" />
                         Validity Period
                         </h2>
-
                         <div className="space-y-2 mb-6">
-                        <Label htmlFor="start_date">Start Date <span className="text-destructive">*</span></Label>
-                        <Input
-                            id="start_date"
-                            type="date"
-                            value={data.start_date}
-                            onChange={(e) => setData("start_date", e.target.value)}
-                            className={errors.start_date ? "border-destructive" : ""}
-                            required
-                        />
-                        {errors.start_date ? (
-                            <p className="text-xs text-destructive">{errors.start_date}</p>
-                        ) : (
-                            <p className="text-xs text-muted-foreground">When the coupon becomes active and usable</p>
-                        )}
+                        {/* I stole DatePicker from reservation's components I should make this one reusable but it is kinda reusable x)*/}
+                            <DatePicker 
+                                label="Start Date"
+                                selectedDate={startDate}
+                                setSelectedDate={handleStartDate}
+                                otherDate={endDate}
+                                compareType="max"
+                                error={errors.start_date}
+                                description="When the coupon becomes active and usable"
+                            />
                         </div>
 
                         <div className="space-y-2">
-                        <Label htmlFor="end_date">End Date <span className="text-destructive">*</span></Label>
-                        <Input
-                            id="end_date"
-                            type="date"
-                            value={data.end_date}
-                            onChange={(e) => setData("end_date", e.target.value)}
-                            className={errors.end_date ? "border-destructive" : ""}
-                            min={data.start_date}
-                            required
-                        />
-                        {errors.end_date ? (
-                            <p className="text-xs text-destructive">{errors.end_date}</p>
-                        ) : (
-                            <p className="text-xs text-muted-foreground">When the coupon expires and can no longer be used</p>
-                        )}
+                            <DatePicker 
+                                label="End Date"
+                                selectedDate={endDate}
+                                setSelectedDate={handleEndDate}
+                                otherDate={startDate}
+                                isDateInvalid={isEndDateInvalid}
+                                error={errors.end_date}
+                                description="When the coupon expires and can no longer be used"
+                            />
                         </div>
 
                         {data.code && data.value && (

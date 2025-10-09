@@ -14,7 +14,8 @@ const DatePicker = ({
     otherDate,
     compareType, // for Check In comparison operator
     isDateInvalid = () => false, // for Check out validation date
-    error
+    error,
+    description,
 }) => {
   return (
     <div className="space-y-3">
@@ -23,9 +24,9 @@ const DatePicker = ({
             <PopoverTrigger asChild>
             <Button
                 variant="outline"
-                className="w-full justify-start h-12 bg-transparent border-primary/20 hover:border-primary/40"
+                className={`w-full justify-start h-12 bg-background hover:bg-background ${error && "border-destructive"}`}
             >
-                <Calendar className="mr-3 h-4 w-4 text-primary" />
+                <Calendar className="mr-3 h-4 w-4" />
                 <div className="text-left">
                 <div className="font-medium">
                     {selectedDate ? format(selectedDate, "MMM dd, yyyy") : "Select date"}
@@ -53,10 +54,10 @@ const DatePicker = ({
                         compareInvalidOne ||
                         (otherDate && compareInvalidTwo) ||
                         isDateInvalid?.(date) ||
-                        isDateUnavailable(date)
+                        isDateUnavailable?.(date)
                     )
                 }}
-                modifiers={{ unavailable: (date) => isDateUnavailable(date) }}
+                modifiers={isDateUnavailable && { unavailable: (date) => isDateUnavailable(date) }}
                 modifiersClassNames={{
                 unavailable:
                     "bg-[rgba(239,68,68,0.2)] text-red-800 line-through cursor-not-allowed hover:bg-[rgba(239,68,68,0.3)]",
@@ -65,7 +66,8 @@ const DatePicker = ({
             />
             </PopoverContent>
         </Popover>
-        {error && <p className="text-sm text-destructive font-medium ">{error}</p>}
+        {error ? <p className="text-sm text-destructive font-medium ">{error}</p> : 
+        description && <p className="text-xs text-muted-foreground">{description}</p>}
     </div>
   )
 }
