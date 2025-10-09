@@ -33,8 +33,7 @@ const DELETING_ALERT = {
     }
 }
 
-export default function index({coupons, stats, recent_redemptions: recentRedemptions}) {
-
+export default function Index({coupons, stats, recent_redemptions: recentRedemptions}) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Coupons Management" />

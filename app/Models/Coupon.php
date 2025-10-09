@@ -53,8 +53,9 @@ class Coupon extends Model
         // we do have something like the user_limit
         // using that we can check if the user has reached the usage limit
         $user_coupon = $user->coupons()->Firstwhere('code', $coupon->code);
-
-        if($user_coupon->pivot->user_limit <= 0 ) return true;
+        if ($user_coupon->pivot ?? false) {
+            if($user_coupon->pivot->user_limit <= 0 ) return true;
+        }
         return false;
     }
     
@@ -172,7 +173,5 @@ class Coupon extends Model
                 ];
             })->toArray();
     }
-
-
-
+    
 }

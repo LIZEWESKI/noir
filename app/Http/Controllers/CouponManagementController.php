@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coupon;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 
 class CouponManagementController extends Controller
@@ -30,7 +31,8 @@ class CouponManagementController extends Controller
      */
     public function create()
     {
-        //
+    
+        return Inertia::render('admin/coupons-management/create');
     }
 
     /**
@@ -38,7 +40,11 @@ class CouponManagementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validated();
+        $coupon = Coupon::create($attributes);
+        User::all()->each(function ($user) use ($coupon) {
+            $user->coupons()->attach($coupon->id);
+        });
     }
 
     /**

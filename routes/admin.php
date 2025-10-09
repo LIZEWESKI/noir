@@ -98,5 +98,8 @@ Route::middleware(['auth', AdminMiddleware::class])
     // Coupons Management resource
     Route::get('/coupons-management',[CouponManagementController::class,'index'])
         ->name('coupons_management.index');
-        
+    Route::get('/coupons-management/create',[CouponManagementController::class,'create'])
+        ->name('coupons_management.create');
+    Route::post('/coupons-management',[CouponManagementController::class,'store'])
+        ->name('coupons_management.store');
 });

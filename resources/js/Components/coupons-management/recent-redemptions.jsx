@@ -1,8 +1,10 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Ticket } from 'lucide-react'
+import { useCurrencyFormatter } from '@/hooks/use-currency-formatter'
 
 const RecentRedemptions = ({recentRedemptions}) => {
+    const { formatCurrency } = useCurrencyFormatter();
   return (
     <Card>
         <CardHeader>
@@ -22,7 +24,7 @@ const RecentRedemptions = ({recentRedemptions}) => {
                 </div>
                 </div>
                 <div className="text-right">
-                <p className="font-medium text-emerald-500">-${redemption.amount}</p>
+                <p className="font-medium text-success">-{formatCurrency(redemption.amount)}</p>
                 <p className="text-sm text-muted-foreground">{redemption.date}</p>
                 </div>
             </div>
