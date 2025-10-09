@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCouponRequest;
+use App\Http\Requests\UpdateCouponRequest;
 
 class CouponManagementController extends Controller
 {
@@ -70,15 +71,25 @@ class CouponManagementController extends Controller
      */
     public function edit(Coupon $coupon)
     {
-        //
+        return Inertia::render('admin/coupons-management/edit',compact("coupon"));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Coupon $coupon)
+    public function update(UpdateCouponRequest $request, Coupon $coupon)
     {
-        //
+        $attributes = $request->validated();
+
+        $coupon->update($attributes);
+
+        AuditLog::log("COUPON_UPDATED", [
+            'coupon_id' => $coupon->id,
+            'coupon_code' => $coupon->code,
+            'coupon_value' => $coupon->value,
+        ]);
+
+        return redirect()->route('admin.coupons_management.index')->with('success', 'Coupon updated successfully.');
     }
 
     /**

@@ -11,6 +11,7 @@ const DatePicker = ({
     selectedDate,
     setSelectedDate,
     isDateUnavailable,
+    allowPastDates = false,
     otherDate,
     compareType, // for Check In comparison operator
     isDateInvalid = () => false, // for Check out validation date
@@ -46,7 +47,9 @@ const DatePicker = ({
                     let compareInvalidOne = false;
                     let compareInvalidTwo = false;
                     // needs to be <= for check_out and < for check_in 
-                    compareInvalidOne = compareType === "max" ? date < new Date() : date <= new Date()
+                    if (!allowPastDates) {
+                        compareInvalidOne = compareType === "max" ? date < new Date() : date <= new Date();
+                    }
                     // needs to be <= for check_out and >= for check_in 
                     if (otherDate) compareInvalidTwo = compareType === "max" ? date >= otherDate : date <= otherDate
                     return (

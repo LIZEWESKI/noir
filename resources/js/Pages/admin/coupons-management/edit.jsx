@@ -21,24 +21,25 @@ const breadcrumbs= [
         href: '/admin/coupons-management',
     },
     {
-        title: 'Create Coupon',
-        href: '/admin/coupons-management/create',
+        title: 'Edit Coupon',
+        href: '/admin/coupons-management/edit/{coupon}',
     }
 ];
 
 
-export default function Create() {
+export default function Edit({coupon}) {
     const getFormatDate = useFormatDate();
-    const [startDate, setStartDate] = useState(null)
-    const [endDate, setEndDate] = useState(null)
+    
+    const [startDate, setStartDate] = useState(coupon.start_date ? new Date(coupon.start_date) : null)
+    const [endDate, setEndDate] = useState(coupon.end_date ? new Date(coupon.end_date) : null)
 
     const { data, setData, post, processing, errors } = useForm({
-        code: "",
-        type: "",
-        value: "",
-        global_limit: "",
-        start_date:  null,
-        end_date: null,
+        code: coupon.code || "",
+        type: coupon.type || "",
+        value: coupon.value || "",
+        global_limit: coupon.global_limit || "",
+        start_date:  coupon.start_date || null,
+        end_date: coupon.end_date || null,
     })
 
     const isEndDateInvalid = (date) => {
@@ -71,8 +72,7 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(data);
-        post('/admin/coupons-management')
+        post(route('admin.coupons_management.update',coupon.id),data)
     }
 
     const handleCancel = () => {
@@ -81,7 +81,7 @@ export default function Create() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create Coupon" />
+            <Head title="Edit Coupon" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
                 <div className="flex items-center justify-between">
                     <p className="text-muted-foreground">Add a new discount coupon to the system</p>
@@ -263,7 +263,7 @@ export default function Create() {
                         type="submit" 
                         className="px-8 bg-primary hover:bg-primary/90"
                     >
-                    Create Coupon
+                    Update Coupon
                     </Button>
                 </div>
             </form>

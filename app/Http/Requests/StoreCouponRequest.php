@@ -31,7 +31,7 @@ class StoreCouponRequest extends FormRequest
                 Rule::when($this->type === "fixed",["max:20"])
             ],
             "global_limit" => ["required","integer","min:10","max:100"],
-            'start_date'  => ['required', 'date', 'after:today'],
+            'start_date'  => ['required', 'date', 'before:end_date'],
             'end_date' => ['required', 'date', 'after:start_date'],
         ];
     }
