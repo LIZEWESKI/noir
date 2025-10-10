@@ -176,8 +176,8 @@ export default function AuditLog({audit_logs, admins}) {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Ticket className="h-5 w-5 text-blue-500" />
+                  <div className="p-2 bg-yellow-500/10 rounded-lg">
+                    <Ticket className="h-5 w-5 text-yellow-500" />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Coupons</p>
