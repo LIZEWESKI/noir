@@ -41,11 +41,13 @@ class Reservation extends Model
     protected $appends = ['amount_due'];
     public function getAmountDueAttribute()
     {
-
         // We need to grab the payment attached to this reservation
         $payment = $this->payments()->first();
         // if there is no payment attached return null
         if(!$payment) return null;
+        // edge case detected, we only return the amount_due 
+        // if both payment and reservation statuses are completed
+        if ($payment->payment_status !== 'completed' || $this->status !== 'completed') return null;
         // else get the coupon id
         $coupon_id = $payment->coupon_id;
         // find the coupon by id
@@ -72,12 +74,12 @@ class Reservation extends Model
         // we need to check if this payment has two reservations (if we get this far it is up to 2 reservations)
         // (we know we only accept up to 2 reservations per payment however we can make it dynamic by getting the count value using something like $payment->reservations()->count())
         // using that count value we can then define the amount due with this formula below:
-        // (code value / count) - reservation total price
+        // reservation total price - (code value / count) 
         $discount_amount = $coupon_value / $count;
         return  $this->total_price - $discount_amount;
-        // ( 11 / 2 ) - 190.00 = 195.5
-        // ( 11 / 2 ) - 160.00 = 165.5
-        // sum should be $339.00
+        // 190.00 - ( 11 / 2 )  = 195.5
+        // 160.00 - ( 11 / 2 )  = 165.5
+        // sum should be 339.00
     }
 
     public static function checkOverLap($roomId, $checkIn, $checkOut, $ignoreId = null): bool{

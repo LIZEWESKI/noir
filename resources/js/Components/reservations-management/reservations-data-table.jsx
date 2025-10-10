@@ -205,11 +205,17 @@ const columns = [
     ),
     cell: ({ row, table }) => (
       <div className="space-y-1">
-        <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_price)}</div>
-        <div className="text-xs text-muted-foreground">
-          +{table.options.meta.formatCurrency(row.original.cleaning_fee)} +{" "}
-          {table.options.meta.formatCurrency(row.original.service_fee)} fees
-        </div>
+        {row.original.amount_due ? (
+          <>
+            <div className="font-semibold">{table.options.meta.formatCurrency(row.original.amount_due)}</div>
+            <div className="text-xs text-destructive line-through">
+              {table.options.meta.formatCurrency(row.original.total_price)}</div>
+          </>
+        ) : (
+          <>
+            <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_price)}</div>
+          </>
+        )}
       </div>
     ),
   },
