@@ -65,7 +65,7 @@ export default function Index({
       })
     }
   }
-
+  console.log(reservations_management);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Reservation Management"/>

@@ -89,7 +89,7 @@ class Coupon extends Model
         return $originalAmount - $discountAmount;
     }
 
-    private function calculatePercentageDiscount(float $percentage, float $originalAmount): float
+    public function calculatePercentageDiscount(float $percentage, float $originalAmount): float
     {
         return (float) ($percentage / 100 * $originalAmount);
     }

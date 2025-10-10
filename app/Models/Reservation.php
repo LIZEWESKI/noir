@@ -38,29 +38,46 @@ class Reservation extends Model
         return $this->belongsToMany(Payment::class, 'payment_reservation');
     }
 
-    protected $appends = ['amount_due:'];
+    protected $appends = ['amount_due'];
     public function getAmountDueAttribute()
     {
+
         // We need to grab the payment attached to this reservation
+        $payment = $this->payments()->first();
         // if there is no payment attached return null
+        if(!$payment) return null;
         // else get the coupon id
+        $coupon_id = $payment->coupon_id;
         // find the coupon by id
-        // if there is no coupon return null 
+        $coupon = Coupon::find($coupon_id);
+        // if there is no coupon return null
+        if (!$coupon) return null; 
         // else get the type/value
+        $coupon_type = $coupon->type;
+        $coupon_value = $coupon->value;
+        // if we do have only 1 reservation we simply return the payment total amount
+        $count = $payment->reservations()->count();
+        if($count === 1) return $payment->total_amount;
         // if coupon type is percentage 
-        // then calculate the amount due based on this reservation's total price and the coupon value
-        // to calculate the amount due we need to follow the formula bellow:
-        // discount amount = (reservation total price * percentage (e.g 20% = 0.20))
-        // reservation total price - discount amount = amount due
+        $discount_amount = null;
+        if($coupon_type === "percentage") {
+            // then calculate the amount due based on this reservation's total price and the coupon value
+            // to calculate the amount due we need to follow the formula bellow:
+            // discount amount = (reservation total price * percentage (e.g 20% = 0.20))
+            // reservation total price - discount amount = amount due
+            $discount_amount = $coupon->calculatePercentageDiscount($coupon_value,$this->total_price);
+            return $this->total_price - $discount_amount;
+        }
         // else if coupon type is fixed
-        // we need to check if this payment has two reservations 
+        // we need to check if this payment has two reservations (if we get this far it is up to 2 reservations)
         // (we know we only accept up to 2 reservations per payment however we can make it dynamic by getting the count value using something like $payment->reservations()->count())
         // using that count value we can then define the amount due with this formula below:
         // (code value / count) - reservation total price
+        $discount_amount = $coupon_value / $count;
+        return  $this->total_price - $discount_amount;
         // ( 11 / 2 ) - 190.00 = 195.5
         // ( 11 / 2 ) - 160.00 = 165.5
         // sum should be $339.00
-        return;
     }
 
     public static function checkOverLap($roomId, $checkIn, $checkOut, $ignoreId = null): bool{
