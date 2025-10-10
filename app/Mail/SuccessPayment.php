@@ -12,17 +12,17 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SuccessPayment extends Mailable
+class SuccessPayment extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(protected Payment $payment)
-    {
-        //
-    }
+    public function __construct(
+        protected Payment $payment,
+        protected $user
+    ){}
 
     /**
      * Get the message envelope.
@@ -47,7 +47,7 @@ class SuccessPayment extends Mailable
             'reservations' => $this->payment->reservationsWithRooms()->get(),
             'total_amount' => $this->payment->total_amount,
             'order_id' => $this->payment->transaction_id,
-            'user' => Auth::user(),
+            'user' => $this->user,
         ]
     );
     }

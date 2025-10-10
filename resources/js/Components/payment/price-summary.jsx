@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PaypalButton from "@/components/payment/paypal-button"
 import { Input } from "@/components/ui/input"
-import { Check, Loader2, X } from "lucide-react"
+import { Check, Loader } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useForm } from '@inertiajs/react'
 
@@ -78,13 +78,10 @@ const PriceSummary = ({ reservations, coupon }) => {
                 }`}
               />
               {processing && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                <Loader className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-pulse text-muted-foreground" />
               )}
               {couponData.status === "valid" && (
                 <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-success" />
-              )}
-              {errors.coupon === "invalid" && (
-                <X className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
               )}
             </div>
             <Button

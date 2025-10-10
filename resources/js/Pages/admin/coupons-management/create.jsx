@@ -196,7 +196,7 @@ export default function Create() {
 
                             <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
                             <p className="text-sm text-muted-foreground">
-                                <strong className="text-foreground">Note:</strong> Each customer can use this coupon up to 3 times
+                                <strong className="text-foreground">Note:</strong> Each customer can use this coupon 1 time
                                 by default. The total usage across all customers cannot exceed the limit set above.
                             </p>
                             </div>

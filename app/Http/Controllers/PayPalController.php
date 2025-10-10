@@ -157,9 +157,8 @@ class PayPalController extends Controller
 
                 $totalAmount = $payment->total_amount;
                 $orderId = $payment->transaction_id;
-                
-                // Redirect to success page with a success message
-                Mail::to(Auth::user())->send(new SuccessPayment($payment));
+                $user = Auth::user();
+                Mail::to($user->email)->queue(new SuccessPayment($payment,$user));
 
                 return Inertia::render('payment/success',compact('reservations',"orderId","totalAmount"));
             }

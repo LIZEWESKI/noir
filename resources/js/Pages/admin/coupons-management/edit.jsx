@@ -84,7 +84,7 @@ export default function Edit({coupon}) {
             <Head title="Edit Coupon" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto ">
                 <div className="flex items-center justify-between">
-                    <p className="text-muted-foreground">Add a new discount coupon to the system</p>
+                    <p className="text-muted-foreground">Update a discount coupon</p>
                 </div>
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -196,7 +196,7 @@ export default function Edit({coupon}) {
 
                             <div className="mt-6 p-4 bg-muted/50 rounded-lg border border-border">
                             <p className="text-sm text-muted-foreground">
-                                <strong className="text-foreground">Note:</strong> Each customer can use this coupon up to 3 times
+                                <strong className="text-foreground">Note:</strong> Each customer can use this coupon 1 time
                                 by default. The total usage across all customers cannot exceed the limit set above.
                             </p>
                             </div>
