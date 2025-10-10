@@ -4,84 +4,11 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, ChevronDown, ChevronRight, Calendar, User, Globe, Activity, UserCheck, Logs, House } from "lucide-react"
+import { Search, Filter, ChevronDown, ChevronRight, Calendar, User, Globe, Activity, UserCheck, Logs, House, Ticket } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
 import { Head } from "@inertiajs/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useInitials } from "@/hooks/use-initials"
-
-// const admins = [
-//   { id: 1, name: "Sarah Johnson", email: "sarah@noirhotel.com", avatar: "/diverse-woman-portrait.png" },
-//   { id: 2, name: "Michael Chen", email: "michael@noirhotel.com", avatar: "/thoughtful-man.png" },
-//   { id: 3, name: "Emma Rodriguez", email: "emma@noirhotel.com", avatar: "/professional-woman-diverse.png" },
-// ]
-
-const mockAuditLogs = [
-  {
-    id: 1,
-    user_id: 1,
-    action: "USER_CREATED",
-    details: { user_name: "John Doe", user_email: "john@example.com", role: "guest" },
-    ip_address: "192.168.1.100",
-    created_at: "2024-01-15T10:30:00Z",
-  },
-  {
-    id: 2,
-    user_id: 1,
-    action: "RESERVATION_UPDATED",
-    details: { reservation_id: "RES-001", room_number: "101", status_changed: "pending -> confirmed" },
-    ip_address: "192.168.1.100",
-    created_at: "2024-01-15T09:15:00Z",
-  },
-  {
-    id: 3,
-    user_id: 2,
-    action: "ROOM_DELETED",
-    details: { room_id: 25, room_number: "205", room_type: "Deluxe Suite" },
-    ip_address: "192.168.1.102",
-    created_at: "2024-01-15T08:45:00Z",
-  },
-  {
-    id: 4,
-    user_id: 2,
-    action: "LOGIN_ATTEMPT",
-    details: { success: true, user_agent: "Mozilla/5.0 Chrome/120.0.0.0" },
-    ip_address: "192.168.1.102",
-    created_at: "2024-01-15T08:00:00Z",
-  },
-  {
-    id: 5,
-    user_id: 3,
-    action: "PAYMENT_PROCESSED",
-    details: { payment_id: "PAY-123", amount: 299.99, method: "credit_card", status: "completed" },
-    ip_address: "192.168.1.103",
-    created_at: "2024-01-14T16:20:00Z",
-  },
-  {
-    id: 6,
-    user_id: 1,
-    action: "GUEST_PROFILE_UPDATED",
-    details: { guest_id: 42, fields_changed: ["phone", "address"], previous_phone: "+1234567890" },
-    ip_address: "192.168.1.100",
-    created_at: "2024-01-14T14:10:00Z",
-  },
-  {
-    id: 7,
-    user_id: 3,
-    action: "ROOM_CREATED",
-    details: { room_number: "301", room_type: "Presidential Suite", price: 599.99 },
-    ip_address: "192.168.1.103",
-    created_at: "2024-01-14T12:30:00Z",
-  },
-  {
-    id: 8,
-    user_id: 2,
-    action: "USER_DELETED",
-    details: { user_id: 15, user_name: "Jane Smith", reason: "Account closure request" },
-    ip_address: "192.168.1.102",
-    created_at: "2024-01-14T11:15:00Z",
-  },
-]
 
 const getActionBadgeVariant = (action) => {
   if (action.includes("CREATED") || action.includes("LOGIN")) return "default"
@@ -95,6 +22,7 @@ const getActionIcon = (action) => {
   if (action.includes("USER") || action.includes("GUEST")) return <User className="h-4 w-4" />
   if (action.includes("LOGIN")) return <Globe className="h-4 w-4" />
   if (action.includes("ROOM")) return <House className="h-4 w-4" />
+  if (action.includes("COUPON")) return <Ticket className="h-4 w-4" />
   return <Calendar className="h-4 w-4" />
 }
 const breadcrumbs= [
@@ -152,7 +80,6 @@ export default function AuditLog({audit_logs, admins}) {
       <Head title="Audit Log" />
       <div className="min-h-screen bg-background p-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground mt-1">Track all administrative actions and system events</p>
@@ -197,8 +124,7 @@ export default function AuditLog({audit_logs, admins}) {
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
@@ -206,7 +132,7 @@ export default function AuditLog({audit_logs, admins}) {
                     <User className="h-5 w-5 text-blue-500" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">User Actions</p>
+                    <p className="text-sm text-muted-foreground">Users</p>
                     <p className="text-2xl font-bold">
                       {filteredLogs.filter((log) => log.action.includes("USER") || log.action.includes("GUEST")).length}
                     </p>
@@ -250,6 +176,22 @@ export default function AuditLog({audit_logs, admins}) {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Ticket className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Coupons</p>
+                    <p className="text-2xl font-bold">
+                      {filteredLogs.filter((log) => log.action.includes("COUPON")).length}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
                   <div className="p-2 bg-orange-500/10 rounded-lg">
                     <Globe className="h-5 w-5 text-orange-500" />
                   </div>
@@ -264,7 +206,6 @@ export default function AuditLog({audit_logs, admins}) {
             </Card>
           </div>
 
-          {/* Filters */}
           <Card>
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row gap-4">
@@ -284,9 +225,10 @@ export default function AuditLog({audit_logs, admins}) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Actions</SelectItem>
-                    <SelectItem value="user">User Actions</SelectItem>
+                    <SelectItem value="user">Users</SelectItem>
                     <SelectItem value="reservation">Reservations</SelectItem>
                     <SelectItem value="room">Rooms</SelectItem>
+                    <SelectItem value="coupon">Coupons</SelectItem>
                     <SelectItem value="login">Login Events</SelectItem>
                   </SelectContent>
                 </Select>
@@ -294,7 +236,6 @@ export default function AuditLog({audit_logs, admins}) {
             </CardContent>
           </Card>
 
-          {/* Audit Log Table */}
           <Card>
             <CardHeader>
               <CardTitle>Activity Timeline</CardTitle>

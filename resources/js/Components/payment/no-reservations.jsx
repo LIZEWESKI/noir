@@ -12,7 +12,7 @@ const  NoReservations = () => {
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <ShoppingCart className="h-10 w-10 text-primary" strokeWidth={1.5} />
           </div>
-          <h1 className="text-3xl font-bold mb-3">No Reservations to Pay For</h1>
+          <h1 className="text-3xl font-bold mb-3">No reservations to pay for</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
             It looks like you don't have any pending reservations that require payment at this time.
           </p>
