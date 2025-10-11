@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Exports\ReservationExport;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\CancelReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
@@ -137,7 +138,7 @@ class ReservationManagementController extends Controller
     }
 
     public function edit(Reservation $reservation) {
-        $reservation->loadMissing(['user','room']);
+        $reservation->loadMissing(['user','room','payments']);
         $unavailable_dates = Reservation::select('check_in','check_out')
             ->where('room_id', $reservation->room_id)
             ->where('status','completed')
@@ -180,6 +181,7 @@ class ReservationManagementController extends Controller
         );
         // helper method to calculate nights count & the total price 
         $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
+        // we need to adjust pricing (here and in the front end) if there is a coupon code, we gonna take care of it later 
         $attributes = array_merge($attributes, $pricing);
 
         // if the reservation status is completed we need to adjust some changes to payment or create a new payment record
@@ -233,13 +235,13 @@ class ReservationManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
-        $this->authorize('export', 'reservations');
+        Gate::authorize('export', 'reservations');
         return (new ReservationExport())->exportCsv();
     }
 
     public function exportXlsx(): StreamedResponse
     {
-        $this->authorize('export', 'reservations');
+        Gate::authorize('export', 'reservations');
         return (new ReservationExport())->exportXlsx();
     }
 }

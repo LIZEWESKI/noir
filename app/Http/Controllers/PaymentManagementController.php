@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Exports\PaymentExport;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaymentManagementController extends Controller
@@ -28,14 +29,14 @@ class PaymentManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
-        $this->authorize('export', 'payments');
+        Gate::authorize('export', 'payments');
         $payment_export = new PaymentExport();
         return $payment_export->exportCsv();
     }
     
     public function exportXlsx(): StreamedResponse
     {
-        $this->authorize('export', 'payments');
+        Gate::authorize('export', 'payments');
         $payment_export = new PaymentExport();
         return $payment_export->exportXlsx();
     }

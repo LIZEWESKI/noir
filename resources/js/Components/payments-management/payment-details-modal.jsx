@@ -6,8 +6,8 @@ import { User, Calendar, MapPin, Bed } from "lucide-react"
 import { format } from "date-fns"
 import { useInitials } from "@/hooks/use-initials"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useCapitalize } from "@/hooks/use-capitalize"
+import PriceDisplay from "@/components/reservations/price-display"
 
 export default function PaymentDetailsModal({isOpen, onClose,payment}) {
 
@@ -28,7 +28,6 @@ export default function PaymentDetailsModal({isOpen, onClose,payment}) {
     return role === "admin" ? "default" : "secondary"
   }
   const getInitials = useInitials();
-  const {formatCurrency} = useCurrencyFormatter();
   const getCapitalize  = useCapitalize()
   return (
     <>
@@ -74,7 +73,11 @@ export default function PaymentDetailsModal({isOpen, onClose,payment}) {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm text-muted-foreground">Total Amount</p>
-                        <p className="text-2xl font-semibold">{formatCurrency(payment.total_amount)}</p>
+                        <PriceDisplay 
+                          original={payment.total_amount} 
+                          discounted={payment.original_price} 
+                          model="payment" 
+                        />
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Payment Status</p>

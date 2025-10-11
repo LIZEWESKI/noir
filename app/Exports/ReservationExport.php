@@ -39,7 +39,7 @@ class ReservationExport extends Export
             $reservation->user->name,
             $room,
             $dates,
-            "$" . number_format($reservation->total_price, 2),
+            $reservation->amount_due ? "$" . number_format($reservation->amount_due, 2) : "$" . number_format($reservation->total_price, 2),
             $reservation->status,
         ];
     }

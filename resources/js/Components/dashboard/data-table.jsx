@@ -26,11 +26,11 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useInitials } from "@/hooks/use-initials"
 import { getStatusColor } from "@/components/dashboard/get-reservation-status"
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
 import { usePage } from "@inertiajs/react"
+import PriceDisplay from '@/components/reservations/price-display'
 
 export const schema = z.object({
   id: z.number(),
@@ -93,10 +93,12 @@ const columns = [
   {
     accessorKey: "price",
     header: "Total Price",
-    cell: ({ row, table }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {table.options.meta.formatCurrency(row.original.total_price)}
-      </Badge>
+    cell: ({ row }) => (
+      <PriceDisplay 
+        original={row.original.total_price}
+        discounted={row.original.amount_due}
+        className="text-muted-foreground font-normal"
+      />
     ),
   },
 ]
@@ -112,13 +114,11 @@ export function DataTable({ data: initialData }) {
   })
   const {auth: {permissions}} = usePage().props;
   const getInitials = useInitials()
-  const { formatCurrency } = useCurrencyFormatter()
   const table = useReactTable({
     data,
     columns,
     meta: {
       getInitials,
-      formatCurrency,
     },
     state: {
       sorting,

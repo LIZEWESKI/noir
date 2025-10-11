@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\RoomExport;
 use App\Models\Room;
 use Inertia\Inertia;
 use App\Models\Feature;
 use App\Models\AuditLog;
+use App\Exports\RoomExport;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreRoomRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateRoomRequest;
@@ -129,13 +130,13 @@ class RoomManagementController extends Controller
     // Ok it is now resuable :D
     public function exportCsv(): StreamedResponse
     {
-        $this->authorize('export', 'rooms');
+        Gate::authorize('export', 'rooms');
         return (new RoomExport())->exportCsv();
     }
 
     public function exportXlsx(): StreamedResponse
     {
-        $this->authorize('export', 'rooms');
+        Gate::authorize('export', 'rooms');
         return (new RoomExport())->exportXlsx();
     }
 }

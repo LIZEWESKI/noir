@@ -12,7 +12,6 @@ const breadcrumbs= [
 
 export default function Dashboard({metrics,reservations,charts_data}) {
     const {auth} = usePage().props;
-    console.log(auth.permissions)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />

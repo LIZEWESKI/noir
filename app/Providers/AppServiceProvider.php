@@ -13,6 +13,7 @@ use App\Policies\CouponPolicy;
 use App\Policies\ExportPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\ReservationPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Srmklive\PayPal\Providers\PayPalServiceProvider;
@@ -45,5 +46,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
         RedirectIfAuthenticated::redirectUsing(fn($request) => route('home'));
+
+        Gate::define('export', function ($user, $resource) {
+            return $user->hasPermission("export_{$resource}");
+        });
     }
 }

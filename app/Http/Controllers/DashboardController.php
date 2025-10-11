@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\DashboardExport;
 use App\Models\Room;
 use Inertia\Inertia;
 use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Exports\DashboardExport;
+use Illuminate\Support\Facades\Gate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -17,18 +18,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-        $now = Carbon::now();
-        $firstDay = $now->copy()->startOfMonth();
-        $lastDay = $now->copy()->endOfMonth();
-        $lastMonthFirstDay = $now->copy()->subMonth()->startOfMonth();
-        $lastMonthLastDay = $now->copy()->subMonth()->endOfMonth();
-
         $paymentStats = Payment::monthlyStats();
-        $roomsAvailable = Room::availableCount();
-        $roomsTrend = Room::trendComparedToYesterday();
-
-
 
         $metrics = [
             (object)[
@@ -62,13 +52,13 @@ class DashboardController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
-        $this->authorize('export', 'analytics');
+        Gate::authorize('export', 'analytics');
         return (new DashboardExport())->exportCsv();
     }
     
     public function exportXlsx(): StreamedResponse
     {
-        $this->authorize('export', 'analytics');
+        Gate::authorize('export', 'analytics');
         return (new DashboardExport())->exportXlsx();
     }
 

@@ -12,13 +12,11 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  ChevronRight,
-  Download,
-  Eye,
 } from "lucide-react"
 import { Link } from "@inertiajs/react"
 import Layout from "@/layouts/layout"
 import Edit from "./edit"
+import PriceDisplay from "@/components/reservations/price-display"
 
 // Status badge component with appropriate colors
 const StatusBadge = ({ status }) => {
@@ -139,7 +137,11 @@ const  ReservationsHistory = ({ reservations, payments}) => {
 
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div className="flex items-baseline gap-1">
-                          <span className="font-semibold text-lg">${Number(reservation.total_price).toFixed(2)}</span>
+                          <PriceDisplay 
+                            original={reservation.total_price}
+                            discounted={reservation.amount_due}
+                            className="font-semibold text-lg"
+                          />
                           <span className="text-sm text-muted-foreground">total</span>
                         </div>
 
@@ -196,7 +198,12 @@ const  ReservationsHistory = ({ reservations, payments}) => {
                       </div>
 
                       <div className="flex flex-col md:items-end gap-2">
-                        <div className="font-semibold text-lg">${Number(payment.total_amount).toFixed(2)}</div>
+                        <PriceDisplay 
+                          original={payment.total_amount}
+                          discounted={payment.original_price}
+                          model="payment"
+                          className="font-semibold text-lg"
+                        />
                       </div>
                     </div>
                   </CardContent>

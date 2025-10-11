@@ -5,6 +5,7 @@ import { CreditCard } from 'lucide-react'
 import { Link } from '@inertiajs/react'
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
 import { useCapitalize } from '@/hooks/use-capitalize'
+import PriceDisplay from '@/components/reservations/price-display'
 
 const PaymentsHistory = ({payments}) => {
     const getCapitalize = useCapitalize()
@@ -34,7 +35,11 @@ const PaymentsHistory = ({payments}) => {
                         </div>
                         <p className="text-sm text-muted-foreground">{getCapitalize(payment.payment_method)}</p>
                         </div>
-                        <span className="font-semibold text-foreground">${payment.total_amount}</span>
+                        <PriceDisplay 
+                            original={payment.total_amount}
+                            discounted={payment.original_price}
+                            model='payment'
+                        />
                     </div>
                     <div className="text-xs text-muted-foreground">{new Date(payment.created_at).toLocaleDateString()}</div>
                 </Link>

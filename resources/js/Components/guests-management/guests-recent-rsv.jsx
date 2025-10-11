@@ -4,11 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowRight, Calendar } from "lucide-react"
 import { useInitials } from "@/hooks/use-initials"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
+import PriceDisplay from "@/components/reservations/price-display"
 
 export default function GuestsRecentRsv({ users }) {
   const getInitials = useInitials()
-  const { formatCurrency } = useCurrencyFormatter()
+  console.log(users[0].reservations);
   return (
     <Card className="border-border h-fit">
       <CardHeader className="pb-4">
@@ -47,10 +47,13 @@ export default function GuestsRecentRsv({ users }) {
                     {reservation.check_in} <ArrowRight className="w-4 h-4" /> {reservation.check_out}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="font-semibold text-sm">
-                      {formatCurrency(reservation.total_price)}
-                    </div>
+                  <div className="flex items-center gap-4">
+                    <PriceDisplay 
+                      original={reservation.total_price}
+                      discounted={reservation.amount_due}
+                      model="reservation"
+                      className="text-sm"
+                    />
                     <Badge className={`text-xs px-2 py-0 ${getStatusColor(reservation.status)}`}>
                       {reservation.status}
                     </Badge>

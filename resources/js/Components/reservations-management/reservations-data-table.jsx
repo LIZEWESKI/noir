@@ -43,11 +43,11 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useInitials } from "@/hooks/use-initials"
 import DeleteAlertDialog from "@/components/ui/delete-alert-dialog"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
 import { usePage } from "@inertiajs/react"
+import PriceDisplay from "@/components/reservations/price-display"
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -203,20 +203,8 @@ const columns = [
         </div>
       </div>
     ),
-    cell: ({ row, table }) => (
-      <div className="space-y-1">
-        {row.original.amount_due ? (
-          <>
-            <div className="font-semibold">{table.options.meta.formatCurrency(row.original.amount_due)}</div>
-            <div className="text-xs text-destructive line-through">
-              {table.options.meta.formatCurrency(row.original.total_price)}</div>
-          </>
-        ) : (
-          <>
-            <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_price)}</div>
-          </>
-        )}
-      </div>
+    cell: ({ row }) => (
+      <PriceDisplay discounted={row.original.amount_due} original={row.original.total_price} model="reservation" />
     ),
   },
   {
@@ -328,7 +316,7 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false)
   const [selectedReservationId, setSelectedReservationId] = React.useState(null)
   const getInitials = useInitials()
-  const { formatCurrency } = useCurrencyFormatter()
+
   const table = useReactTable({
     data: tableData,
     columns,
@@ -337,7 +325,6 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
       canDelete: permissions.deleteReservations,
       canViewGuests: permissions.viewGuests,
       getInitials,
-      formatCurrency,
       onEdit,
       onDelete,
       viewRoom,

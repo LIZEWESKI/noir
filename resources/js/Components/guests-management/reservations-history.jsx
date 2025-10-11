@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Link } from '@inertiajs/react'
 import { Calendar } from 'lucide-react'
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
+import PriceDisplay from '@/components/reservations/price-display'
 
 const ReservationsHistory = ({reservations}) => {
   return (
@@ -38,7 +39,10 @@ const ReservationsHistory = ({reservations}) => {
                         {reservation.room.name} - Room {reservation.room.roon_number}
                     </p>
                     </div>
-                    <span className="font-semibold text-foreground">${reservation.total_price}</span>
+                    <PriceDisplay 
+                        original={reservation.total_price}
+                        discounted={reservation.amount_due}
+                    />
                 </div>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>Check-in: {new Date(reservation.check_in).toLocaleDateString()}</span>

@@ -37,6 +37,14 @@ class Payment extends Model
         return $this->belongsTo(Coupon::class,'coupon_id');
     }
 
+    protected $appends = ['original_price'];
+    public function getOriginalPriceAttribute()
+    {
+        if(!$this->coupon) return null;
+        if($this->payment_status !== "completed") return null;
+        return (string) ($this->total_amount + $this->discount_amount);
+    }
+
     public static function statsForPeriod($start, $end): object
     {
         return self::selectRaw('COUNT(*) as totalBooking, SUM(total_amount) as totalRevenue')

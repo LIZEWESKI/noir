@@ -37,11 +37,11 @@ import { useInitials } from "@/hooks/use-initials"
 import { getStatusColor } from "@/components/reservations-management/get-reservation-status"
 import { useCapitalize } from "@/hooks/use-capitalize"
 import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"
 import { useExportCsv } from "@/hooks/use-export-csv"
 import { useExportXlsx } from "@/hooks/use-export-xlsx"
 import ExtensionDropdown from "../data-table/extension-dropdown"
 import { usePage } from "@inertiajs/react"
+import PriceDisplay from "@/components/reservations/price-display"
 
 function ColumnFilter({ column, title }) {
   const columnFilterValue = column.getFilterValue()
@@ -160,8 +160,12 @@ const columns = [
         </div>
       </div>
     ),
-    cell: ({ row, table }) => (
-      <div className="font-semibold">{table.options.meta.formatCurrency(row.original.total_amount)}</div>
+    cell: ({ row }) => (
+      <PriceDisplay 
+        original={row.original.total_amount} 
+        discounted={row.original.original_price} 
+        model="payment" 
+      />
     ),
   },
   {
@@ -242,7 +246,6 @@ function PaymentsDataTable({ data: initialData }) {
   const {auth: {permissions}} = usePage().props;
   const getInitials = useInitials()
   const getCapitalize = useCapitalize()
-  const { formatCurrency } = useCurrencyFormatter()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [selectedPaymentId, setSelectedPaymentId] = React.useState(null)
   const table = useReactTable({
@@ -251,7 +254,6 @@ function PaymentsDataTable({ data: initialData }) {
     meta: {
       getInitials,
       getCapitalize,
-      formatCurrency,
       onModalClick: (id) => {
         setSelectedPaymentId(id)
         setIsModalOpen(true)

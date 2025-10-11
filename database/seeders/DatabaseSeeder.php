@@ -57,7 +57,5 @@ class DatabaseSeeder extends Seeder
         $this->call(FeatureSeeder::class);
         $this->call(FeatureRoomSeeder::class);
         $this->call(ReservationSeeder::class);
-        $this->call(AuditLogSeeder::class);
-
     }
 }

@@ -108,9 +108,9 @@ class GuestManagementController extends Controller
             ->select(DB::raw('SUM(nights) as total_nights'))
             ->value('total_nights') ?? 0;
 
-        $totalSpent = $user->reservations()
-            ->where('status', 'completed')
-            ->select(DB::raw('SUM(total_price) as total_spent'))
+        $totalSpent = $user->payments()
+            ->where('payment_status', 'completed')
+            ->select(DB::raw('SUM(total_amount) as total_spent'))
             ->value('total_spent') ?? 0;
 
         $stats = [
@@ -161,13 +161,13 @@ class GuestManagementController extends Controller
 
     public function exportCsv(): StreamedResponse
     {
-        $this->authorize('export', 'guests');
+        Gate::authorize('export', 'guests');
         return (new GuestExport())->exportCsv();
     }
     
     public function exportXlsx(): StreamedResponse
     {
-        $this->authorize('export', 'guests');
+        Gate::authorize('export', 'guests');
         return (new GuestExport())->exportXlsx();
     }
 }
