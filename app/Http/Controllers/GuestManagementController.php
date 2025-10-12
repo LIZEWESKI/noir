@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\GuestExport;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\AuditLog;
+use App\Exports\GuestExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\Auth\StoreUserRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\StreamedResponse;

@@ -86,8 +86,7 @@ class ReservationManagementController extends Controller
             $user = User::create([
                 'name' => $attributes['name'],
                 'email' => $attributes['email'],
-                'password' => '12345678', // password should be crypted, set it to my default password for testing purposes
-                // bcrypt(str()->random(12))
+                'password' => bcrypt(str()->random(12)), 
                 'profile_picture_path' => 'avatars/4HVFSopizefGn97jTjzyIkbximVD4zF31hZ2HA7C.png'
             ]);
 
@@ -137,7 +136,16 @@ class ReservationManagementController extends Controller
         return redirect()->route('admin.reservations_management.index')->with('success', 'Reservation created successfully!');
     }
 
+    public function show(Reservation $reservation) {
+        $reservation = $reservation->loadMissing(['user','room','payments']);
+        return Inertia::render('admin/reservations-management/show',compact("reservation"));
+    }
+
     public function edit(Reservation $reservation) {
+        // we don't allow to edit paid reservation
+        // paid reservation are read-only
+        if ($reservation->status === "completed") abort(403, 'Unauthorized.');
+
         $reservation->loadMissing(['user','room','payments']);
         $unavailable_dates = Reservation::select('check_in','check_out')
             ->where('room_id', $reservation->room_id)
@@ -164,6 +172,9 @@ class ReservationManagementController extends Controller
     }
 
     public function update(UpdateReservationRequest $request, Reservation $reservation) {
+
+        if ($reservation->status === "completed") abort(403, 'Unauthorized.');
+
         $oldStatus = $reservation->status;
         $attributes = $request->validated();
 

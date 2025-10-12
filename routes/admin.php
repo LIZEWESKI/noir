@@ -73,6 +73,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         ->name('reservations_management.create');
     Route::post("/reservations-management",[ReservationManagementController::class, 'store'])
         ->name('reservations_management.store');
+    Route::get("/reservations-management/{reservation}",[ReservationManagementController::class, 'show'])
+        ->name('reservations_management.show');
     Route::get("/reservations-management/edit/{reservation}",[ReservationManagementController::class, 'edit'])
         ->name('reservations_management.edit');
     Route::put('/reservations-management/{reservation}',[ReservationManagementController::class,'update'])

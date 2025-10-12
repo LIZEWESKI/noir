@@ -245,7 +245,7 @@ const columns = [
       const canViewGuests = table.options.meta?.canViewGuests;
 
       const hasActions =
-        canUpdate || canViewGuests ||
+        (canUpdate && row.original.status !== "completed") || canViewGuests ||
         (canDelete && row.original.status !== "cancelled") ||
         true;
 
@@ -276,7 +276,7 @@ const columns = [
               View Room
             </DropdownMenuItem>
 
-            {canUpdate && (
+            {canUpdate && row.original.status !== "completed" &&(
               <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Reservation

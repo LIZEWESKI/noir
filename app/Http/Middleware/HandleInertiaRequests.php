@@ -63,6 +63,7 @@ class HandleInertiaRequests extends Middleware
                     
                     'viewAnyReservations'   => $request->user()?->can('viewAny', Reservation::class),
                     'createReservations' => $request->user()?->can('create', Reservation::class),
+                    'viewReservations'   => $request->user()?->can('view', Reservation::class),
                     'updateReservations' => $request->user()?->can('update', new Reservation),
                     'deleteReservations' => $request->user()?->can('delete', new Reservation),
                     'exportReservations' => $request->user()?->hasPermission('export_reservations') ?? false,
