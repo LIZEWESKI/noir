@@ -16,7 +16,6 @@ use App\Policies\ReservationPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Srmklive\PayPal\Providers\PayPalServiceProvider;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 
 class AppServiceProvider extends ServiceProvider

@@ -19,7 +19,7 @@ class UpdateRoomStatuses extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'It updates room status';
 
     /**
      * Execute the console command.
