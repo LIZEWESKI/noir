@@ -63,7 +63,7 @@ const ShowPricingSummary = ({reservation}) => {
                 <p className="text-sm text-destructive line-through">${reservation.total_price}</p>
             )}
             <p className="text-2xl font-bold">
-                ${hasDiscount ? reservation.amount_due : reservation.total_price}
+                {hasDiscount ? formatCurrency(reservation.amount_due) : formatCurrency(reservation.total_price)}
             </p>
             </div>
         </div>
@@ -71,7 +71,7 @@ const ShowPricingSummary = ({reservation}) => {
         {hasDiscount && (
             <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
             <p className="text-sm text-primary font-medium text-center">
-                You saved {formatCurrency(reservation.total_price - reservation.amount_due)}!
+                {reservation.user.name} saved {formatCurrency(reservation.total_price - reservation.amount_due)}!
             </p>
             </div>
         )}

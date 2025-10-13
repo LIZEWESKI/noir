@@ -243,10 +243,11 @@ const columns = [
       const canUpdate = table.options.meta?.canUpdate;
       const canDelete = table.options.meta?.canDelete;
       const canViewGuests = table.options.meta?.canViewGuests;
+      const canViewReservations = table.options.meta?.canViewReservations;
 
       const hasActions =
         (canUpdate && row.original.status !== "completed") || canViewGuests ||
-        (canDelete && row.original.status !== "cancelled") ||
+        (canDelete && row.original.status !== "cancelled") || canViewReservations ||
         true;
 
       if (!hasActions) return null;
@@ -276,6 +277,13 @@ const columns = [
               View Room
             </DropdownMenuItem>
 
+            {canViewReservations && (
+              <DropdownMenuItem onClick={() => table.options.meta.viewReservation(row.original)}>
+                <Calendar className="mr-2 h-4 w-4" />
+                View Reservation
+              </DropdownMenuItem>
+            )}
+
             {canUpdate && row.original.status !== "completed" &&(
               <DropdownMenuItem onClick={() => table.options.meta?.onEdit?.(row.original)}>
                 <Edit className="mr-2 h-4 w-4" />
@@ -303,7 +311,7 @@ const columns = [
   }
 ]
 
-function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom }) {
+function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest, viewRoom, viewReservation }) {
   const [tableData, setTableData] = React.useState(() => initialData)
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
@@ -324,11 +332,13 @@ function ReservationsDataTable({ data: initialData, onEdit, onDelete, viewGuest,
       canUpdate: permissions.updateReservations,
       canDelete: permissions.deleteReservations,
       canViewGuests: permissions.viewGuests,
+      canViewReservations: permissions.viewReservations,
       getInitials,
       onEdit,
       onDelete,
       viewRoom,
       viewGuest,
+      viewReservation,
       onDeleteClick: (id) => {
         setSelectedReservationId(id)
         setIsDeleteOpen(true)

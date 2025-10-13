@@ -26,7 +26,6 @@ const breadcrumbs= [
 ];
 
 export default function ShowReservationPage({ reservation }) {
-    console.log(reservation)
     const getCapitalized = useCapitalize();
 
     const checkInDate = new Date(reservation.check_in)

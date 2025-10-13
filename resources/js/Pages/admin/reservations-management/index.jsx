@@ -56,6 +56,10 @@ export default function Index({
     router.visit(`/admin/guests-management/${user.id}`)
   }
 
+  const viewReservation = (reservation) => {
+    router.visit(`/admin/reservations-management/${reservation.id}`)
+  }
+
   const handleDeleteReservation = {
     title: "Cancel Reservation",
     description: "Are you sure you want to cancel this reservation? This action cannot be undone.",
@@ -65,7 +69,7 @@ export default function Index({
       })
     }
   }
-  console.log(reservations_management);
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
         <Head title="Reservation Management"/>
@@ -94,6 +98,7 @@ export default function Index({
               onDelete={handleDeleteReservation}
               viewGuest={viewGuest}
               viewRoom={viewRoom}
+              viewReservation={viewReservation}
             />
           </div>
         <Toaster/>
