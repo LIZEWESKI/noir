@@ -9,6 +9,7 @@ use App\Mail\SuccessPayment;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +25,7 @@ class PayPalController extends Controller
      */
     public function paymentGateway(Request $request)
     {
-        
+        // hmm look what I did here
         $query = $request->input("reservation");
         if(empty($query)){
             $reservations = Reservation::latest()
@@ -40,7 +41,34 @@ class PayPalController extends Controller
                 ->where('status', 'pending')
                 ->get();
         }
-        return Inertia::render('payment/index',compact('reservations'));
+
+        // lets get demo coupons data ready to be rendered,
+        // what we need is a variedly of coupons e.g. Expired, Upcoming and fixed or type
+        // Because we are lazy, I can do just inRandomOrder and limit the collection by a certain number
+        // maybe 6 or 8, if the user got all invalid coupons,the page would automatically refresh
+        // thus new random coupons would be rendered
+        // Its just a demo and I don't get paid for this so I think it's fair
+        $coupons = Coupon::inRandomOrder()->limit(6)->get()->map(function($c) {
+            // even though we are lazy we want a good UX for our users
+            // we need to provide for the user the status of each coupon e.g. expired, upcoming or valid
+            $startDate = Carbon::parse($c->start_date);
+            $endDate = Carbon::parse($c->end_date);
+            $today = Carbon::now();
+            
+            if ($today->between($startDate, $endDate)) $status = "Coupon is currently active";
+            elseif($endDate->isPast()) $status = "Expired coupon";
+            else $status = "Upcoming coupon";
+
+            return [
+                "id" => $c->id,
+                "code" => $c->code,
+                "type" => $c->type,
+                "value" => $c->value,
+                "status" => $status,
+            ];
+        })->toArray();
+
+        return Inertia::render('payment/index',compact('reservations','coupons'));
     }
     /**
      * process transaction.

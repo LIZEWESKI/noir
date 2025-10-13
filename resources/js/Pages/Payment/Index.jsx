@@ -9,7 +9,7 @@ import NoReservations from "@/components/payment/no-reservations"
 import SecurityNotice from "@/components/payment/security-notice"
 import PriceSummary from "@/components/payment/price-summary"
 
-const Index = ({ reservations }) => {
+const Index = ({ reservations, coupons }) => {
   const { flash } = usePage().props
   const {coupon} = flash;
   useEffect(() => {
@@ -56,7 +56,7 @@ const Index = ({ reservations }) => {
               <div className="lg:col-span-5 space-y-6">
                 <div className="sticky top-8">
                   <div className="space-y-6">
-                    <PriceSummary reservations={reservations} coupon={coupon} />
+                    <PriceSummary reservations={reservations} coupon={coupon} coupons={coupons} />
                     <SecurityNotice />
                   </div>
                 </div>

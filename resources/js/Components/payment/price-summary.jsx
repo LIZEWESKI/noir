@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input"
 import { Check, Loader } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useForm } from '@inertiajs/react'
+import DemoCoupons from '@/components/demo/demo-coupons'
 
 
-const PriceSummary = ({ reservations, coupon }) => {
+const PriceSummary = ({ reservations, coupon, coupons }) => {
   const { data, setData, post, processing, errors } = useForm({coupon: ''})
   const couponDefault = {
     code : "",
@@ -32,6 +33,10 @@ const PriceSummary = ({ reservations, coupon }) => {
   const discountAmount = couponData.type === "percentage" ? (subtotal * couponData.value) / 100 : couponData.value
   const finalTotal = subtotal - discountAmount
 
+  const handleDemoCouponSelect = (couponCode) => {
+    setData("coupon", couponCode)
+  }
+  
   const applyCoupon = (e) => {
     setCouponData(couponDefault)
     e.preventDefault()
@@ -63,6 +68,8 @@ const PriceSummary = ({ reservations, coupon }) => {
         </div>
 
         <div className="pt-4 border-t space-y-3">
+          {/* I should've used useContext for this but I think its overkill, we can afford to prop drilling this time */}
+          <DemoCoupons onSelectCoupon={handleDemoCouponSelect} coupons={coupons} />
           <form className="flex gap-2" onSubmit={applyCoupon}>
             <div className="relative flex-1">
               <Input

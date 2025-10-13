@@ -45,7 +45,11 @@ class ApplyCouponRequest extends FormRequest
             if (Coupon::userLimitReached($coupon,$user)) {
                 $validator->errors()->add('coupon', 'You have reached the usage limit for this coupon!');
             }
-            if (!Coupon::codeValid($coupon)) {
+            if (!Coupon::codeExpired($coupon)) {
+                $validator->errors()->add('coupon', 'This coupon code has expired!');
+            }
+
+            if (!Coupon::codeUpComing($coupon)) {
                 $validator->errors()->add('coupon', 'This coupon cannot be applied at this time');
             }
         });

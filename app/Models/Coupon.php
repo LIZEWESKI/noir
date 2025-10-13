@@ -59,15 +59,20 @@ class Coupon extends Model
         return false;
     }
     
-    public static function codeValid(Coupon $coupon):bool {
+    public static function codeExpired(Coupon $coupon):bool {
         $end_date = Carbon::parse($coupon->end_date);
-        $start_date = Carbon::parse($coupon->start_date);
         // and if the coupon end date is expired
         if ($end_date->isPast()) return false;
+        return true;
+    }
+
+    public static function codeUpComing(Coupon $coupon):bool {
+        $start_date = Carbon::parse($coupon->start_date);
         // if the coupon code start date hasn't been reached yet
         if ($start_date->isFuture()) return false;
         return true;
     }
+
 
 
     public function getDiscountAmount(float $originalAmount): float 
