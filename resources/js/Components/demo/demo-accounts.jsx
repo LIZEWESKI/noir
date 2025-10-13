@@ -38,7 +38,7 @@ const descriptions = [
 ]
 
 export function DemoAccounts({ demoAccounts }) {
-  
+
   const isMobile = useMediaQuery({query:'(max-width: 1034px)'});
   const getCapitalize = useCapitalize()
   const getInitials = useInitials();
@@ -105,7 +105,7 @@ export function DemoAccounts({ demoAccounts }) {
                     <div className="flex items-center gap-2 mb-0.5">
                       <p className="font-medium text-sm text-foreground truncate">{getCapitalize(account.name)}</p>
                       <Badge variant="secondary" className="text-xs shrink-0">
-                        {getCapitalize(account.role)}
+                        {account.role !== "admin" ? getCapitalize(account.role) : "Super Admin"}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground truncate">{getDescription(account.role)?.description || "Imagine this is a role short description" }</p>

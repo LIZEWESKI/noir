@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
-use App\Http\Controllers\ChangeLogController;
 use App\Http\Controllers\CouponManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
