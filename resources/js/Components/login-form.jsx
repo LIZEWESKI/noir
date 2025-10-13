@@ -14,14 +14,14 @@ import { useForm, Link} from "@inertiajs/react"
 import { LoaderCircle } from "lucide-react"
 
 export function LoginForm({className,...props}) {
-      const { data, setData, post, processing, errors } = useForm({
-        email: '',
-        password: '',
-      })
-      function handleLogin(e) {
-          e.preventDefault();
-          post("login");
-      }
+  const { data, setData, post, processing, errors } = useForm({
+    email: '',
+    password: '',
+  })
+  function handleLogin(e) {
+    e.preventDefault();
+    post("login");
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>

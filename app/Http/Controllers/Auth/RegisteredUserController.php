@@ -20,7 +20,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/register');
+        $demo_accounts = User::find(config('demo.ids'),['id','profile_picture_path','role','name']);
+        return Inertia::render('auth/register',compact('demo_accounts'));
     }
 
     /**

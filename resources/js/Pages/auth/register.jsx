@@ -1,16 +1,16 @@
 import React from 'react'
-import { Head , Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import Layout from '@/layouts/layout';
 import { RegisterForm } from '@/components/register-form';
+import { DemoAccounts } from '@/components/demo/demo-accounts';
 
-const Register = () => {
+const Register = ({demo_accounts}) => {
   return (
     <>
         <Head title="Sign up"/>
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6  rounded-sm md:p-10">
-        <div className="flex w-full max-w-sm flex-col gap-6">
-            <RegisterForm />
-        </div>
+        <div className="flex min-h-svh flex-col items-center justify-center gap-8 p-6 md:p-10 relative">
+          <RegisterForm />
+          <DemoAccounts demoAccounts={demo_accounts}/>
         </div>
     </>
   )
