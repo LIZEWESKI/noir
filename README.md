@@ -8,20 +8,16 @@ A modern, elegant hotel booking system built with Laravel, Inertia.js, React, an
 - **Room Browsing**: View available rooms with detailed information and images
 - **Reservation System**: Book rooms with date selection and guest information
 - **Payment Processing**: Secure payment via PayPal and credit/debit cards
-- **Reservation Management**: View, modify, and cancel reservations
 - **Responsive Design**: Optimized for all devices from mobile to desktop
 - **Real-time Notifications**: Mailtrap for user actions
-- **Admin Dashboard**: Manage rooms, reservations, and users (admin only)
-
+- **RBAC Dashboard**: Manage rooms, reservations, payments and much more
 
 ## 🛠️ Technologies
 
 - **Backend**:
 
 - [Laravel](https://laravel.com/) - PHP framework for the backend
-- MySQL - Database management
-
-
+- [MySQL](https://www.mysql.com/) - Database management
 
 - **Frontend**:
 
@@ -36,15 +32,6 @@ A modern, elegant hotel booking system built with Laravel, Inertia.js, React, an
 - **Payment Processing**:
 
 - PayPal integration
-
-- **Other Tools**:
-
-- [date-fns](https://date-fns.org/) - Date manipulation library
-- [Lucide React](https://lucide.dev/) - Icon library
-- [Sonner](https://sonner.emilkowal.ski/) - Toast notifications
-
-
-
 
 
 ## 📋 Prerequisites
@@ -239,17 +226,6 @@ npm run build
 ## 📝 License
 
 This project is licensed under the MIT License 
-
-## 👥 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin feature`)
-5. Open a Pull Request
-
 
 ## 📞 Support
 
