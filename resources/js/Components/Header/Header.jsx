@@ -20,8 +20,8 @@ const Header = () => {
   ]
   return (
     <header className={`fixed top-0 right-0 left-0 bg-background border-b md:px-20 py-2 px-4 z-50`}>
-      <MobileNav className="flex md:hidden" user={auth.user} url={url} navigation={navigation} legalNavigation={legalNavigation}/>
-      <DesktopNav className="hidden md:flex" user={auth.user} url={url} navigation={navigation} legalNavigation={legalNavigation}/>
+      <MobileNav className="flex md:hidden" user={auth?.user || null} url={url} navigation={navigation} legalNavigation={legalNavigation}/>
+      <DesktopNav className="hidden md:flex" user={auth?.user || null} url={url} navigation={navigation} legalNavigation={legalNavigation}/>
     </header>
   )
 }

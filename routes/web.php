@@ -35,11 +35,6 @@ Route::get("/legal", [LegalController::class,'legal'])->name("legal");
 Route::get("/privacy-policy", [LegalController::class,'privacyPolicy'])->name("privacy_policy");
 Route::get("/terms-of-service", [LegalController::class,'TermsOfService'])->name("terms_of_service");
 
-// Page Not Found
-Route::fallback(function() {
-    return Inertia::render('not-found')->toResponse(request())->setStatusCode(404);
-});
-
 // Middleware Auth Resource
 Route::middleware('auth')->group(function () {
     Route::get('/reservations',[ReservationController::class,'index'])->name("reservations.index");
