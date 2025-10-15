@@ -35,7 +35,7 @@ const ErrorPage = ({ status = 404 }) => {
   const IconComponent = config.icon
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="max-w-lg w-full text-center space-y-8 animate-in fade-in duration-500">
         <div className="space-y-4">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted/50">
