@@ -83,6 +83,7 @@ class User extends Authenticatable
             ->get();
         $users->transform(function ($u) { 
             $u->is_active = $u->isActive(); 
+            $u->last_stay = $u->last_stay ?? "No last stay"; 
             return $u; 
         });
         return $users;
