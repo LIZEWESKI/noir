@@ -106,13 +106,11 @@ class GuestManagementController extends Controller
 
         $totalNights = $user->reservations()
             ->where('status', 'completed')
-            ->select(DB::raw('SUM(nights) as total_nights'))
-            ->value('total_nights') ?? 0;
+            ->sum('nights');
 
         $totalSpent = $user->payments()
             ->where('payment_status', 'completed')
-            ->select(DB::raw('SUM(total_amount) as total_spent'))
-            ->value('total_spent') ?? 0;
+            ->sum('total_amount');
 
         $stats = [
             'stays_count' => $staysCount,

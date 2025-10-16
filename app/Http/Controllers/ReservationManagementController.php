@@ -37,12 +37,10 @@ class ReservationManagementController extends Controller
 
     public function create() {
         // Fetching all rooms with their unavailable dates
-        $rooms = Room::select('id', 'name', 'room_number',"guests","price")
-            ->with(['reservations' => function ($q) {
-                $q->select('id', 'room_id', 'check_in', 'check_out')
-                ->where('status', 'completed');
-            }])
-            ->get();
+        $rooms = Room::with(['reservations' => function ($query) {
+                $query->select('id', 'room_id', 'check_in', 'check_out')
+                    ->where('status', 'completed');
+            }])->get(['id', 'name', 'room_number', 'guests', 'price']);
 
         $rooms->each(function ($room) {
             $room->unavailable_dates = $room->reservations->map(fn($r) => [

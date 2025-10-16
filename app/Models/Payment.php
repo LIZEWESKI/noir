@@ -45,26 +45,29 @@ class Payment extends Model
         return (string) ($this->total_amount + $this->discount_amount);
     }
 
-    public static function statsForPeriod($start, $end): object
+    public static function statsForPeriod($start, $end): array
     {
-        return self::selectRaw('COUNT(*) as totalBooking, SUM(total_amount) as totalRevenue')
-            ->where('payment_status', 'completed')
+        $totalBooking = self::where('payment_status', 'completed')
             ->whereBetween('created_at', [$start, $end])
-            ->first();
+            ->count();
+
+        $totalRevenue = self::where('payment_status', 'completed')
+            ->whereBetween('created_at', [$start, $end])
+            ->sum('total_amount');
+
+        return [
+            'totalBooking' => $totalBooking,
+            'totalRevenue' => $totalRevenue,
+        ];
     }
 
     public static function averageBookingValue($start, $end)
     {
-        $stats = self::selectRaw('COUNT(*) as totalBooking, SUM(total_amount) as totalRevenue')
-            ->where('payment_status', 'completed')
-            ->whereBetween('created_at', [$start, $end])
-            ->first();
-
-        if (!$stats || $stats->totalBooking == 0) {
+        $stats = self::statsForPeriod($start, $end);
+        if ($stats['totalBooking'] == 0) {
             return 0;
         }
-
-        return round($stats->totalRevenue / $stats->totalBooking, 2);
+        return round($stats['totalRevenue'] / $stats['totalBooking'], 2);
     }
 
     
@@ -88,12 +91,12 @@ class Payment extends Model
 
         return [
             'booking' => [
-                'value' => (int)($currentMonth->totalBooking ?? 0),
-                'trend' => $calculateChange($currentMonth->totalBooking ?? 0, $lastMonth->totalBooking ?? 0)
+                'value' => (int)($currentMonth['totalBooking'] ?? 0),
+                'trend' => $calculateChange($currentMonth['totalBooking'] ?? 0, $lastMonth['totalBooking'] ?? 0)
             ],
             'revenue' => [
-                'value' => number_format((float)($currentMonth->totalRevenue ?? 0), 2, '.', ''),
-                'trend' => $calculateChange($currentMonth->totalRevenue ?? 0, $lastMonth->totalRevenue ?? 0)
+                'value' => number_format((float)($currentMonth['totalRevenue'] ?? 0), 2, '.', ''),
+                'trend' => $calculateChange($currentMonth['totalRevenue'] ?? 0, $lastMonth['totalRevenue'] ?? 0)
             ],
             'avg_booking_value' => [
                 'value' => number_format((float)($currentABV ?? 0), 2, '.', ''),
