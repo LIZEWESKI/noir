@@ -13,6 +13,7 @@ use App\Policies\CouponPolicy;
 use App\Policies\ExportPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\ReservationPolicy;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -44,6 +45,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
         RedirectIfAuthenticated::redirectUsing(fn($request) => route('home'));
 
         Gate::define('export', function ($user, $resource) {
