@@ -8,7 +8,7 @@ use App\Http\Requests\ApplyCouponRequest;
 
 class ApplyCouponController extends Controller
 {
-    /**
+    /** 
      * Handle the incoming request.
      */
     public function __invoke(ApplyCouponRequest $request)
