@@ -8,10 +8,11 @@ const appName = import.meta.env.VITE_APP_NAME || 'Noir';
 
 createInertiaApp({
     title: (title) => `${title ? title : appName}`,
-    resolve: (name) => {
-        const pages = import.meta.glob('./pages/**/*.jsx');
-        return pages[`./pages/${name}.jsx`]();
-    },
+    resolve: (name) =>
+        resolvePageComponent(
+            `./pages/${name}.jsx`,
+            import.meta.glob('./pages/**/*.jsx'),
+        ),
     setup({ el, App, props }) {
         const root = createRoot(el);
 
