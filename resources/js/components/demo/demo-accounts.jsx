@@ -3,11 +3,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useMediaQuery } from "react-responsive"
 import { useCapitalize } from "@/hooks/use-capitalize"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
-import { router, usePage } from "@inertiajs/react"
+import { router } from "@inertiajs/react"
 import { toast } from "sonner"
 
 const descriptions = [
@@ -37,9 +36,8 @@ const descriptions = [
   },
 ]
 
-export function DemoAccounts({ demoAccounts }) {
+export function DemoAccounts({ demoAccounts, isMobile, isAbsolute = false }) {
 
-  const isMobile = useMediaQuery({query:'(max-width: 1034px)'});
   const getCapitalize = useCapitalize()
   const getInitials = useInitials();
   const [isOpen, setIsOpen] = useState(false)
@@ -65,7 +63,7 @@ export function DemoAccounts({ demoAccounts }) {
   }
 
   return (
-    <div className={`w-[300px] max-w-sm absolute top-14 right-[-44px] ${isMobile && "hidden"}`}>
+    <div className={`w-[300px] max-w-sm ${isAbsolute && "absolute top-14 right-[-44px]"} ${isMobile && "hidden"}`}>
       <div className="relative">
         <div className="flex justify-center mb-3">
           <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500/30">
