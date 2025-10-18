@@ -9,17 +9,11 @@ const pages = import.meta.glob('./pages/**/*.jsx', { eager: true });
 
 createInertiaApp({
     title: (title) => `${title ? title : appName}`,
-    resolve: (name) => {
-        
-        const pagePath = `./pages/${name}.jsx`;
-        const page = pages[pagePath];
-
-        if (!page) {
-            throw new Error(`Page not found: ${pagePath}`);
-        }
-
-        return page.default;
-    },
+    resolve: (name) => 
+        resolvePageComponent(
+            `./pages/${name}.tsx`,
+            import.meta.glob('./pages/**/*.tsx'),
+        ),
     setup({ el, App, props }) {
         const root = createRoot(el);
 
