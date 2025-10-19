@@ -8,7 +8,6 @@ import PriceDisplay from "@/components/reservations/price-display"
 
 export default function GuestsRecentRsv({ users }) {
   const getInitials = useInitials()
-  console.log(users[0].reservations);
   return (
     <Card className="border-border h-fit">
       <CardHeader className="pb-4">

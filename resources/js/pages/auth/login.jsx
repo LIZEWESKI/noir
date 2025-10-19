@@ -35,7 +35,6 @@ const Login = ({demo_accounts}) => {
       },
     })
   }, [flash]);
-  console.log(isMobile);
   return (
     <>
       <Head title="Login"/>

@@ -71,7 +71,6 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(data);
         post('/admin/coupons-management')
     }
 

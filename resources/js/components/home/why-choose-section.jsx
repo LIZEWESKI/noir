@@ -42,7 +42,7 @@ export default function WhyChooseSection() {
     </div>
 
     {/* Features Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 items-center h-96">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 items-center">
         {features.map((feature, index) => (
         <div
             key={index}
