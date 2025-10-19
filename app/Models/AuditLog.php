@@ -31,7 +31,8 @@ class AuditLog extends Model
             'user_id'   => Auth::id(),
             'action'    => $action,
             'details'   => $details,
-            'ip_address'=> request()->ip(),
+            // 'ip_address'=> request()->ip(),
+            'ip_address'=> '0.0.0.0',
         ]);
     }
 
