@@ -20,6 +20,7 @@
         "league/flysystem-aws-s3-v3": "^3.29",
         "phpoffice/phpspreadsheet": "^5.1",
         "srmklive/paypal": "~3.0",
+        "symfony/brevo-mailer": "*",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
