@@ -30,7 +30,7 @@ class SuccessPayment extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('reservation@noir.com', 'Noir'),
+            from: new Address(env('MAIL_FROM_ADDRESS','reservation@noir.com'), env('MAIL_FROM_NAME','Noir')),
             subject: 'Success Payment',
         );
     }
