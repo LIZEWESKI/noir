@@ -4,10 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use Storage;
 use Illuminate\Support\Str;
 use App\Traits\HasAdminRole;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -55,9 +55,10 @@ class User extends Authenticatable
     protected $appends = ['profile_picture_url'];
     public function getProfilePictureUrlAttribute()
     {
-        return $this->google_id && !Str::contains($this->profile_picture_path,"avatars")
-        ? $this->profile_picture_path 
-        : ($this->profile_picture_path ? asset('storage/' . $this->profile_picture_path) : null);
+        if (!$this->profile_picture_path) return null;
+        if ($this->google_id && !Str::contains($this->profile_picture_path, "avatars")) return $this->profile_picture_path;
+
+        return Storage::disk(config('filesystems.default'))->url($this->profile_picture_path);
     }
 
     public function hasPermission(string $permission): bool
@@ -79,7 +80,7 @@ class User extends Authenticatable
             ->withCount(['reservations as stays' => function ($query) { 
                 $query->where('status', 'completed'); }]) 
             ->withMax('reservations as last_stay', 'check_in')
-            ->orderByDesc("stays")
+            ->orderByDesc("created_at")
             ->get();
         $users->transform(function ($u) { 
             $u->is_active = $u->isActive(); 

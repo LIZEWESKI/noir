@@ -2,11 +2,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Upload, User, Eye, EyeOff } from "lucide-react"
 import AppLayout from "@/layouts/app-layout"
 import { Head, router, useForm } from "@inertiajs/react"
+import { useInitials } from "@/hooks/use-initials"
 
 const breadcrumbs = [
   {
@@ -19,11 +21,13 @@ const breadcrumbs = [
   },
   {
     title: 'Edit Guest',
-    href: '#',
+    href: '/admin/guests-management/edit/{guest}',
   },
 ];
 
 export default function EditGuest({ user }) {
+  const getInitials = useInitials();
+
   const { data, setData, post, processing, errors } = useForm({
     name: user.name || "",
     email: user.email || "",
@@ -75,19 +79,19 @@ export default function EditGuest({ user }) {
                   <div className="flex flex-col items-center mb-6">
                     <div className="w-24 h-24 rounded-full bg-muted border-2 border-dashed border-border flex items-center justify-center mb-4">
                       {data.profile_picture_path ? (
-                        <img
-                          src={URL.createObjectURL(data.profile_picture_path)}
-                          alt="Profile"
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : user.profile_picture_path ? (
-                        <img
-                          src={user.profile_picture_url}
-                          alt="Profile"
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        <User className="w-8 h-8 text-muted-foreground" />
+                        <Avatar className="h-full w-full overflow-hidden rounded-full">
+                            <AvatarImage src={URL.createObjectURL(data.profile_picture_path)} alt={user.name} />
+                            <AvatarFallback >
+                                {getInitials(data.name)}
+                            </AvatarFallback>
+                        </Avatar>
+                      ) : user.profile_picture_path && (
+                        <Avatar className="h-full w-full overflow-hidden rounded-full">
+                            <AvatarImage src={user.profile_picture_url} alt={user.name} />
+                            <AvatarFallback >
+                                {getInitials(user.name)}
+                            </AvatarFallback>
+                        </Avatar>
                       )}
                     </div>
                     <Button

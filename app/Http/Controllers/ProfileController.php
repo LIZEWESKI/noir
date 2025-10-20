@@ -38,19 +38,18 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
+
         if ($request->hasFile('profile_picture')) {
-            // Store file in storage/app/public/profile_pictures
-            $path = $request->file('profile_picture')->store('avatars');
-            // leaving this line here
-            // Storage::disk(config('filesystems.default'))->put('images/foo.jpg', $data);
-            // Delete old avatar if exists
-            if ($request->user()->profile_picture_path) {
-                Storage::disk('public')->delete($request->user()->profile_picture_path);
+            $path = $request->file('profile_picture')->store('avatars', config('filesystems.default'));
+            if ($user->profile_picture_path) {
+                Storage::disk(config('filesystems.default'))->delete($user->profile_picture_path);
             }
-            $request->user()->profile_picture_path = $path;
+            $user->profile_picture_path = $path;
         }
-        $request->user()->save();
+        
+        $user->save();
         return Redirect::route('profile.edit')->with('success', 'Your profile has been updated.');
     }
 

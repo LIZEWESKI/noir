@@ -8,8 +8,8 @@ use App\Models\AuditLog;
 use App\Exports\GuestExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Auth\StoreUserRequest;
 use App\Http\Requests\Auth\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -45,10 +45,13 @@ class GuestManagementController extends Controller
         
         return Inertia::render('admin/guests-management/create');
     }
+
     public function store(StoreUserRequest $request) {
         $attributes = $request->validated();
+
         if ($request->hasFile('profile_picture_path')) {
-            $path = $request->file('profile_picture_path')->store('avatars');
+            $file = $request->file('profile_picture_path');
+            $path = $file->store('avatars', config('filesystems.default'));
             $attributes['profile_picture_path'] = $path;
         }
 
@@ -68,20 +71,19 @@ class GuestManagementController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $validated = $request->validated();
-        // dd($validated);
-        // Handle optional password
+
         if (!empty($validated['password'])) {
             $validated['password'] = bcrypt($validated['password']);
         } else {
-            unset($validated['password']); // keep existing password
+            unset($validated['password']);
         }
 
-        // Handle profile picture upload
         if ($request->hasFile('profile_picture_path')) {
             $file = $request->file('profile_picture_path');
-            $path = $file->store('avatars');
+            $path = $file->store('avatars', config('filesystems.default'));
+            if ($user->profile_picture_path) Storage::disk(config('filesystems.default'))->delete($user->profile_picture_path);
             $validated['profile_picture_path'] = $path;
-        }else {
+        } else {
             unset($validated['profile_picture_path']);
         }
 
@@ -94,6 +96,7 @@ class GuestManagementController extends Controller
 
         return redirect()->route('admin.guests_management.index')->with('success', 'Guest updated successfully.');
     }
+
     public function show(User $user) {
         $staysCount = $user->reservations()
             ->where('status', 'completed')

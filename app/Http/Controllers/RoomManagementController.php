@@ -42,9 +42,10 @@ class RoomManagementController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('image_path')) {
-            $path = $request->file('image_path')->store('rooms');
+            $path = $request->file('image_path')->store('rooms', config('filesystems.default'));
             $data['image_path'] = $path;
         }
+
         $data['size'] = $data['size'] . ' m²';
         $room = Room::create(Arr::except($data,"features"));
         if($data["features"] ?? false) {
@@ -79,10 +80,11 @@ class RoomManagementController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('image_path')) {
-            $path = $request->file('image_path')->store('rooms');
+            $file = $request->file('image_path');
+            $path = $file->store('rooms', config('filesystems.default'));
+            if ($room->image_path) Storage::disk(config('filesystems.default'))->delete($room->image_path);
             $data['image_path'] = $path;
-        }
-        else {
+        } else {
             unset($data['image_path']);
         }
 
