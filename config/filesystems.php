@@ -68,6 +68,7 @@ return [
             'region' => env('DO_SPACES_REGION', 'lon1'),
             'bucket' => env('DO_SPACES_BUCKET'),
             'url' => env('DO_SPACES_CDN_ENDPOINT'),
+            'throw' => true,
             'visibility' => 'public',
         ],
 

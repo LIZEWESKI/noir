@@ -209,6 +209,10 @@ const { data, setData, post, processing, errors } = useForm({
                     <SelectContent>
                       <SelectItem value="user">Guest</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="receptionist">Receptionist</SelectItem>
+                      <SelectItem value="accountant">Accountant</SelectItem>
+                      <SelectItem value="housekeeping">Housekeeping</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.role && <p className="text-xs text-destructive">{errors.role}</p>}
