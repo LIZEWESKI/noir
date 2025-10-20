@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Room extends Model
 {
@@ -31,9 +32,12 @@ class Room extends Model
         return $this->hasMany(Reservation::class);
     }
     protected $appends = ['image_path_url'];
+
     public function getImagePathUrlAttribute()
     {
-        return $this->image_path ? asset('storage/' . $this->image_path) : null;
+        if (!$this->image_path) return null;
+
+        return Storage::disk(config('filesystems.default'))->url($this->image_path);
     }
 
     function feature(string $name) {

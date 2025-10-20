@@ -42,6 +42,8 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_picture')) {
             // Store file in storage/app/public/profile_pictures
             $path = $request->file('profile_picture')->store('avatars');
+            // leaving this line here
+            // Storage::disk(config('filesystems.default'))->put('images/foo.jpg', $data);
             // Delete old avatar if exists
             if ($request->user()->profile_picture_path) {
                 Storage::disk('public')->delete($request->user()->profile_picture_path);

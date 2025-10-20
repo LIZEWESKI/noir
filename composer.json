@@ -11,15 +11,16 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "phpoffice/phpspreadsheet": "^5.1",
         "srmklive/paypal": "~3.0",
-        "tightenco/ziggy": "^2.0",
-        "fakerphp/faker": "^1.23"
+        "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "laravel/breeze": "^2.3",
