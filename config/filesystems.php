@@ -65,9 +65,10 @@ return [
             'key' => env('DO_SPACES_KEY'),
             'secret' => env('DO_SPACES_SECRET'),
             'endpoint' => env('DO_SPACES_ENDPOINT'),
-            'region' => env('DO_SPACES_REGION', 'nyc3'),
+            'region' => env('DO_SPACES_REGION', 'lon1'),
             'bucket' => env('DO_SPACES_BUCKET'),
             'url' => env('DO_SPACES_CDN_ENDPOINT'),
+            'visibility' => 'public',
         ],
 
     ],
