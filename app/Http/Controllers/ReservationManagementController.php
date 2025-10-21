@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 use App\Exports\ReservationExport;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreReservationRequest;
+use Illuminate\Validation\ValidationException;
 use App\Http\Requests\CancelReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -99,11 +100,16 @@ class ReservationManagementController extends Controller
         $checkOut = Carbon::parse($attributes['check_out']);
         
         // Check for overlapping reservations
-        Reservation::checkOverLap(
+        $isOverlap = Reservation::checkOverLap(
             $attributes['room_id'],
             $attributes['check_in'],
             $attributes['check_out']
         );
+        if($isOverlap) {
+            throw ValidationException::withMessages([
+                'error' => 'The selected dates overlap with an existing reservation.',
+            ]);
+        }
         // helper method to calculate nights count & the total price 
         $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
 
@@ -182,15 +188,21 @@ class ReservationManagementController extends Controller
         $checkOut = Carbon::parse($attributes['check_out']);
         
         // Check for overlapping reservations
-        Reservation::checkOverLap(
+        $isOverlap = Reservation::checkOverLap(
             $attributes['room_id'],
             $attributes['check_in'],
             $attributes['check_out'],
             $reservation->id
         );
+        if($isOverlap) {
+            throw ValidationException::withMessages([
+                'error' => 'The selected dates overlap with an existing reservation.',
+            ]);
+        }
         // helper method to calculate nights count & the total price 
         $pricing = Reservation::calculatePricing($room, $checkIn, $checkOut);
-        // we need to adjust pricing (here and in the front end) if there is a coupon code, we gonna take care of it later 
+        // we need to adjust pricing (here and in the front end) if there is a coupon code, we gonna take care of it later
+        // (coming from the future, I didn't take care of it) 
         $attributes = array_merge($attributes, $pricing);
 
         // if the reservation status is completed we need to adjust some changes to payment or create a new payment record

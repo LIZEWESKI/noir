@@ -1,11 +1,10 @@
 import { Calendar, Users, Bed, Shield } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { format } from "date-fns"
-import PaypalButton from "./paypal-button"
 
 const ReservationsDetails = ({ reservations }) => {
+  console.log(reservations)
   const subtotal = reservations.reduce((sum, item) => {
     const roomTotal = Number.parseFloat(item.room.price) * Number(item.nights)
     return sum + roomTotal

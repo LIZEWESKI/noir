@@ -22,6 +22,7 @@ class ReservationController extends Controller
             ->where('user_id',Auth::id())
             ->where('status', 'pending')
             ->get();
+
         return Inertia::render("reservations" ,compact('reservations'));
     }
 
@@ -57,8 +58,12 @@ class ReservationController extends Controller
         $checkIn = Carbon::parse($attributes['check_in']);
         $checkOut = Carbon::parse($attributes['check_out']);
         // Check for overlapping reservations
-        Reservation::checkOverLap($request->room_id, $request->check_in, $request->check_out,null);
-
+        $isOverlap = Reservation::checkOverLap($request->room_id, $request->check_in, $request->check_out,null);
+        if($isOverlap) {
+            throw ValidationException::withMessages([
+                'error' => 'The selected dates overlap with an existing reservation.',
+            ]);
+        }
         // Get Room 
         $room = Room::findOrFail($attributes['room_id']);
         // helper method to calculate nights count & the total price 

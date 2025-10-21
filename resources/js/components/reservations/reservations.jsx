@@ -11,7 +11,7 @@ const Reservations = ({reservations}) => {
                     <div className="flex justify-between items-center">
                         <h1 className="text-3xl font-bold  ">Reservations</h1>
                         <Badge variant="outline" className="text-sm px-3 py-1">
-                        {reservations.length} {reservations.length === 1 ? "Room" : "Rooms"}
+                            {reservations.length} {reservations.length === 1 ? "Room" : "Rooms"}
                         </Badge>
                     </div>
                     <div className="space-y-6">

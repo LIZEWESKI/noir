@@ -3,6 +3,7 @@ import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-payp
 import axios from "axios";
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const PaypalButton = ({coupon,reservations}) => {
   const [clientID, setClientID] = useState("");
@@ -28,7 +29,10 @@ const PaypalButton = ({coupon,reservations}) => {
               return res.data.orderID;
             } 
           } catch (error) {
-            return null;
+            if (error.response?.status === 422) {
+              const msg = error.response.data.errors.error?.[0]
+              toast.error(msg)
+            }
           }
         }}
         onApprove={async (data) => {

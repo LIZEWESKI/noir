@@ -9,7 +9,7 @@ import { usePage } from "@inertiajs/react"
 const Show = ({room, related_rooms,unavailable_dates}) => {
   const {errors, flash} = usePage().props;
   useEffect(() => {
-    errors.date && toast.error(errors.date, {
+    errors.error && toast.error(errors.error, {
       descriptionClassName: "text-white/90", 
       duration: 5000,
       position: "top-center",

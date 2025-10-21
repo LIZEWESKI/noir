@@ -8,12 +8,14 @@ use App\Models\Reservation;
 use App\Mail\SuccessPayment;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\ValidationException;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalController extends Controller
@@ -25,7 +27,6 @@ class PayPalController extends Controller
      */
     public function paymentGateway(Request $request)
     {
-        // hmm look what I did here
         $query = $request->input("reservation");
         if(empty($query)){
             $reservations = Reservation::latest()
@@ -34,7 +35,6 @@ class PayPalController extends Controller
                 ->where('status', 'pending')
                 ->get();
         }else {
-            // This is a very naive version to handle authorization access (I should use Policy instead)
             $reservations = Reservation::where('user_id',Auth::id())
                 ->with(['room',"user:id,name,email"])
                 ->where("id",$query)
@@ -42,12 +42,13 @@ class PayPalController extends Controller
                 ->get();
         }
 
-        // lets get demo coupons data ready to be rendered,
-        // what we need is a variedly of coupons e.g. Expired, Upcoming and fixed or type
-        // Because we are lazy, I can do just inRandomOrder and limit the collection by a certain number
-        // maybe 6 or 8, if the user got all invalid coupons,the page would automatically refresh
-        // thus new random coupons would be rendered
-        // Its just a demo and I don't get paid for this so I think it's fair
+        foreach ($reservations as $r) {
+            if (Reservation::checkOverLap($r->room_id, $r->check_in, $r->check_out, $r->id)) {
+                return redirect()->route('reservations.index')
+                    ->with('error', 'Please cancel the unavailable reservation(s) to proceed.');
+            }
+        }
+
         $coupons = Coupon::inRandomOrder()->limit(6)->get()->map(function($c) {
             // even though we are lazy we want a good UX for our users
             // we need to provide for the user the status of each coupon e.g. expired, upcoming or valid
@@ -89,6 +90,20 @@ class PayPalController extends Controller
             ->where('status', 'pending')
             ->whereIn('id',$reservationsIds)
             ->get();
+            
+        if ($reservations->isEmpty()) {
+            throw ValidationException::withMessages([
+                'error' => 'No reservations found for this payment.',
+            ]);
+        }
+
+        foreach ($reservations as $r) {
+            if (Reservation::checkOverLap($r->room_id, $r->check_in, $r->check_out, $r->id)) {
+                throw ValidationException::withMessages([
+                    'error' => 'Please cancel the unavailable reservation(s) to proceed.',
+                ]);
+        }}
+
         $totalAmount = $reservations->sum('total_price');
 
         if($couponId)  {

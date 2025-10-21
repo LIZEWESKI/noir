@@ -19,7 +19,18 @@ const Index = ({reservations}) => {
         color: "#fff",
       }
     })
+    
+    flash.error && toast.error(flash.error, {
+      descriptionClassName: "text-white/90", 
+      duration: 5000,
+      position: "top-center",
+      style: {
+        backgroundColor: "hsl(var(--destructive))",
+        color: "#fff",
+      }
+    })
   }, [flash]);
+
   return (
     <>
       <Head title="Reservation"/>

@@ -1,5 +1,6 @@
 import React from 'react'
-import {  Calendar, Users, Bed, Trash2 } from "lucide-react"
+import { Calendar, Users, Bed, Trash2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { format } from "date-fns"
@@ -15,7 +16,7 @@ const ReservationCard = ({reservation}) => {
         },
     }
   return (
-    <Card className="overflow-hidden">
+    <Card className={`overflow-hidden ${reservation.expired && "border-destructive"}`}>
         <CardContent className="p-0">
             <div className="flex flex-col sm:flex-row">
                 
@@ -35,13 +36,20 @@ const ReservationCard = ({reservation}) => {
                         {reservation.room.bed} • {reservation.room.size}
                         </p>
                     </div>
-                    <DeleteAlertDialog 
-                        title={CANCELLATION_ALERT.title}
-                        description={CANCELLATION_ALERT.description}
-                        action={() => CANCELLATION_ALERT.action()}
-                    >
-                        <Trash2 className="h-5 w-5 text-destructive" />
-                    </DeleteAlertDialog>
+                    <div className='flex justify-between items-center gap-2'>
+                        <DeleteAlertDialog 
+                            title={CANCELLATION_ALERT.title}
+                            description={CANCELLATION_ALERT.description}
+                            action={() => CANCELLATION_ALERT.action()}
+                        >
+                            <Trash2 className="h-5 w-5 text-destructive" />
+                        </DeleteAlertDialog>
+                        {reservation.expired && (
+                            <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
+                                No longer available
+                            </Badge>
+                        )}
+                    </div>
 
                 </div>
 

@@ -38,7 +38,12 @@ class Reservation extends Model
         return $this->belongsToMany(Payment::class, 'payment_reservation');
     }
 
-    protected $appends = ['amount_due'];
+    protected $appends = ['expired','amount_due'];
+
+    public function getExpiredAttribute() {
+        return $this::checkOverlap($this->room_id, $this->check_in, $this->check_out);
+    }
+
     public function getAmountDueAttribute()
     {
         // We need to grab the payment attached to this reservation
@@ -95,12 +100,8 @@ class Reservation extends Model
                     });
             })
         ->exists();
-        if ($overlap) {
-            throw ValidationException::withMessages([
-                'date' => 'The selected dates overlap with an existing reservation.',
-            ]);
-        }
-        return true;
+        if ($overlap) return true;
+        return false;
     }
 
     public static function calculatePricing(Room $room, $checkIn, $checkOut): array {

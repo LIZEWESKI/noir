@@ -83,7 +83,7 @@ const EditReservation = ({reservation, unavailable_dates, rooms: availableRooms 
 
   const {errors : exceptionErrors} = usePage().props;
   useEffect(() => {
-    exceptionErrors.date && toast.error(exceptionErrors.date, {
+    exceptionErrors.error && toast.error(exceptionErrors.error, {
       descriptionClassName: "text-white/90", 
       duration: 5000,
       position: "top-center",
