@@ -5,6 +5,7 @@ import { Check, Loader } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useForm } from '@inertiajs/react'
 import DemoCoupons from '@/components/demo/demo-coupons'
+import DemoPayPalCredentials from '../demo/demo-paypal-credentials'
 
 
 const PriceSummary = ({ reservations, coupon, coupons }) => {
@@ -124,6 +125,7 @@ const PriceSummary = ({ reservations, coupon, coupons }) => {
             <span>${Math.ceil(finalTotal).toFixed(2)}</span>
           </div>
         </div>
+        <DemoPayPalCredentials />
         <PaypalButton coupon={coupon} reservations={reservations}/>
       </div>
     </div>
