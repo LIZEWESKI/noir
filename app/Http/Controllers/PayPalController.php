@@ -90,19 +90,22 @@ class PayPalController extends Controller
             ->where('status', 'pending')
             ->whereIn('id',$reservationsIds)
             ->get();
-            
-        if ($reservations->isEmpty()) {
-            throw ValidationException::withMessages([
-                'error' => 'No reservations found for this payment.',
-            ]);
-        }
-
-        foreach ($reservations as $r) {
-            if (Reservation::checkOverLap($r->room_id, $r->check_in, $r->check_out, $r->id)) {
+        try {
+            if ($reservations->isEmpty()) {
                 throw ValidationException::withMessages([
-                    'error' => 'Please cancel the unavailable reservation(s) to proceed.',
+                    'error' => 'No reservations found for this payment.',
                 ]);
-        }}
+            }
+    
+            foreach ($reservations as $r) {
+                if (Reservation::checkOverLap($r->room_id, $r->check_in, $r->check_out, $r->id)) {
+                    throw ValidationException::withMessages([
+                        'error' => 'Looks like someone was first to pay for this reservation!',
+                    ]);
+            }}
+        }catch(ValidationException  $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
 
         $totalAmount = $reservations->sum('total_price');
 
@@ -118,7 +121,7 @@ class PayPalController extends Controller
             "intent" => "CAPTURE",
             "application_context" => [
                 "locale" => "en-US",
-                "return_url" => route('processTransaction'),
+                "return_url" => route('successTransaction'),
                 "cancel_url" => route('cancelTransaction'),
             ],
             "purchase_units" => [

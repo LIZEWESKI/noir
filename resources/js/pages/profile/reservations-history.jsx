@@ -102,7 +102,7 @@ const  ReservationsHistory = ({ reservations, payments}) => {
           ) : (
             <div className="space-y-4">
               {filteredReservations.map((reservation) => (
-                <Card key={reservation.id} className={`overflow-hidden ${reservation.expired && reservation.status !== "cancelled" && "border-destructive"}`}>
+                <Card key={reservation.id} className={`overflow-hidden`}>
                   <div className="md:flex">
                     {/* Room Image */}
                     <div className="md:w-1/4 h-32 md:h-auto relative">
@@ -131,11 +131,6 @@ const  ReservationsHistory = ({ reservations, payments}) => {
                           </div>
                         </div>
                         <StatusBadge status={reservation.status} />
-                        {reservation.expired && (
-                          <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
-                              No longer available
-                          </Badge>
-                        )}
                       </div>
 
                       <Separator className="my-4" />

@@ -37,6 +37,11 @@ const ReservationCard = ({reservation}) => {
                         </p>
                     </div>
                     <div className='flex justify-between items-center gap-2'>
+                        {reservation.expired && (
+                            <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
+                                No longer available
+                            </Badge>
+                        )}
                         <DeleteAlertDialog 
                             title={CANCELLATION_ALERT.title}
                             description={CANCELLATION_ALERT.description}
@@ -44,11 +49,6 @@ const ReservationCard = ({reservation}) => {
                         >
                             <Trash2 className="h-5 w-5 text-destructive" />
                         </DeleteAlertDialog>
-                        {reservation.expired && (
-                            <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
-                                No longer available
-                            </Badge>
-                        )}
                     </div>
 
                 </div>
