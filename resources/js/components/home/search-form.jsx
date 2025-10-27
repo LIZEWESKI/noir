@@ -3,7 +3,7 @@ import { DateRangePicker } from "./date-range-picker"
 import { GuestSelector } from "./guest-selector"
 import { Button } from "@/components/ui/button"
 import { useForm } from "@inertiajs/react"
-import { addDays, format } from "date-fns"
+import { addDays } from "date-fns"
 
 const SearchForm = () => {
   const [date, setDate] = useState({
@@ -12,8 +12,8 @@ const SearchForm = () => {
   })
   const { data, setData, get, processing, errors } = useForm({
     guests: 1,
-    check_in: (date?.from && format(date?.from, "MM-dd-yyyy")) || "",
-    check_out: (date?.to && format(date?.to, "MM-dd-yyyy")) || "",
+    check_in: date?.from || "",
+    check_out: date?.to || "",
   })
   const handleDateChange = (newDate) => {
     if (newDate?.from && newDate?.to && newDate.from.getTime() === newDate.to.getTime())
@@ -21,8 +21,8 @@ const SearchForm = () => {
     else setDate(newDate)
     setData({
       ...data,
-      check_in: (newDate?.from && format(newDate?.from, "MM-dd-yyyy")) || "",
-      check_out: (newDate?.to && format(newDate?.to, "MM-dd-yyyy")) || "",
+      check_in: newDate?.from?.toISOString().split("T")[0] || "",
+      check_out: newDate?.to?.toISOString().split("T")[0] || "",
     })
   }
   function handleSearch(e) {
