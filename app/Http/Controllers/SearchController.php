@@ -26,7 +26,7 @@ class SearchController extends Controller
         // whatever the f*ck that is.
         // Actually lets break down what this code does
         // This line is obvious
-        $rooms = Room::where('guests', '=', $validated['guests'])
+        $rooms = Room::where('guests', '>=', $validated['guests'])
             // whatever this callback func returns, won't be fetched
             ->whereDoesntHave('reservations', function ($query) use ($checkIn, $checkOut) {
                 // it filters the collection based on reservation's status

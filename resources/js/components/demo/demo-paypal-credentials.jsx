@@ -8,8 +8,8 @@ const DemoPayPalCredentials = () => {
   const [copiedField, setCopiedField] = useState(null)
 
   const credentials = {
-    email: "sb-demo@noir.com",
-    password: "dontbejerry!",
+    email: "jerry@noir.com",
+    password: "12345678**",
   }
 
   const copyToClipboard = (text, field) => {
