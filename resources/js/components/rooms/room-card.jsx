@@ -16,7 +16,9 @@ const RoomCard = ({room, index}) => {
             <div className="absolute top-4 left-4 bg-background px-4 py-1 rounded-full text-sm font-medium z-10">
             {room.priceType} ${room.price}/Night
             </div>
-            <img src={room.image_path_url || "/placeholder.svg"} alt={room.name} className="object-cover w-full h-full" />
+            <Link href={`/rooms/${room.id}`}>
+                <img src={room.image_path_url || "/placeholder.svg"} alt={room.name} className="object-cover w-full h-full" />
+            </Link>
         </div>
 
         {/* Content Section */}

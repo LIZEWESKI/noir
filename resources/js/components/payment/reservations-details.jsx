@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { format } from "date-fns"
 
 const ReservationsDetails = ({ reservations }) => {
-  console.log(reservations)
   const subtotal = reservations.reduce((sum, item) => {
     const roomTotal = Number.parseFloat(item.room.price) * Number(item.nights)
     return sum + roomTotal
@@ -108,7 +107,7 @@ const ReservationsDetails = ({ reservations }) => {
           <div>
             <h3 className="font-medium text-sm mb-2">Hotel Policies</h3>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
-              <li>Check-in time starts at 2 PM</li>
+              <li>Check-in time starts at 3 PM</li>
               <li>Check-out time is 11 AM</li>
               <li>Front desk staff will greet guests on arrival</li>
             </ul>

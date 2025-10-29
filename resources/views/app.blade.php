@@ -22,7 +22,7 @@
         <!-- Fonts & Icon -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="icon" type="image/png" href="{{ asset('noir-ico.ico') }}">
+        <link rel="icon" type="image/png" href="{{ asset('noir-favicon.ico') }}">
         <!-- Scripts -->
         @routes
         @viteReactRefresh
@@ -31,9 +31,5 @@
     </head>
     <body class="font-geist antialiased">
         @inertia
-        <script>
-            window.PAYPAL_CLIENT_ID = "{{ env('PAYPAL_CLIENT_ID') }}";
-        </script>
-
     </body>
 </html>
