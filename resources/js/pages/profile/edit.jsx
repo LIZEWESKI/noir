@@ -4,7 +4,7 @@ import { toast } from "sonner"
 import { Head, usePage , router} from "@inertiajs/react"
 const Edit = ({children}) => {
   const {url} = usePage();
-  const { flash } = usePage().props;
+  const { flash, errors } = usePage().props;
   flash.success && toast.success(flash.success, {
     descriptionClassName: "text-white/90", 
     duration: 3000,
@@ -14,10 +14,33 @@ const Edit = ({children}) => {
       color: "#fff",
     }
   })
+  errors.error && toast.error(errors.error, {
+    descriptionClassName: "text-white/90", 
+    duration: 3000,
+    position: "top-center",
+    style: {
+      backgroundColor: "hsl(var(--destructive))",
+      color: "#fff",
+    }
+  })
   const sidebarItems = [
-    { id: "profile", label: "Profile", link: "profile.edit", url: "/profile" },
-    { id: "password", label: "Password", link: "profile.edit.password",  url: "/profile/password"},
-    {id: "reservations",label: "Reservations & Payments",link: "profile.reservations",url: "/profile/reservations",},
+    { id: "profile", 
+      label: "Profile", 
+      link: "profile.edit", 
+      url: "/profile" 
+    },
+    { 
+      id: "password", 
+      label: "Password", 
+      link: "profile.edit.password",  
+      url: "/profile/password"
+    },
+    { 
+      id: "reservations",
+      label: "Reservations & Payments",
+      link: "profile.reservations",
+      url: "/profile/reservations"
+    },
   ]
   return (
     <>

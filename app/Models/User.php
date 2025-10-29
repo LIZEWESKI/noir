@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -68,6 +69,16 @@ class User extends Authenticatable
         return in_array($permission, $permissions);
     }
 
+    public function demoAccountValidation() {
+        $user_id = $this->id;
+        $is_demo = in_array($user_id, config('demo.ids'));
+        if($is_demo) {
+            throw ValidationException::withMessages([
+                'error' => 'Demo accounts are not editable.',
+            ]);
+        }
+        return false;
+    }
 
     public function isActive(int $months = 1): bool
     {

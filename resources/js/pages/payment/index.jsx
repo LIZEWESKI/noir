@@ -12,7 +12,6 @@ import PriceSummary from "@/components/payment/price-summary"
 const Index = ({ reservations, coupons }) => {
   const { flash } = usePage().props
   const {coupon} = flash;
-  console.log(reservations)
   useEffect(() => {
     flash.error &&
       toast.error(flash.error, {
