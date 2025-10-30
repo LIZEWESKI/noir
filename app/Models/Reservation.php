@@ -40,8 +40,21 @@ class Reservation extends Model
 
     protected $appends = ['expired','amount_due'];
 
+    public function updateStatus()
+    {
+        $checkIn = Carbon::parse($this->check_in);
+
+        if ($checkIn->isPast() && $this->status !== "completed" && $this->status !== "expired") {
+            $this->update(['status' => 'expired']);
+        }
+    }
+
     public function getExpiredAttribute() {
-        return $this::checkOverlap($this->room_id, $this->check_in, $this->check_out);
+        $checkIn = Carbon::parse($this->check_in);
+        $overlapping = self::checkOverlap($this->room_id, $this->check_in, $this->check_out);
+        $pastCheckIn = now()->greaterThan($checkIn);
+
+        return $overlapping || $pastCheckIn;
     }
 
     public function getAmountDueAttribute()
