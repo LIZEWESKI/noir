@@ -44,7 +44,7 @@ class Reservation extends Model
     {
         $checkIn = Carbon::parse($this->check_in);
 
-        if ($checkIn->isPast() && $this->status !== "completed" && $this->status !== "expired") {
+        if ($checkIn->isPast() && $this->status === "pending") {
             $this->update(['status' => 'expired']);
         }
     }
