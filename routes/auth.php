@@ -48,7 +48,7 @@ Route::middleware('guest')->group(function () {
         Auth::login($user);
 
         // Redirect to intended page or home
-        return redirect('/');
+        return redirect()->intended(route('home'));
     });
 
     Route::get('register', [RegisteredUserController::class, 'create'])

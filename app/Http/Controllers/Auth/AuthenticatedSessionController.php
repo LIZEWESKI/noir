@@ -42,9 +42,8 @@ class AuthenticatedSessionController extends Controller
             'success'    => true,
             'user_agent' => $request->header('User-Agent'),
         ]);
-        // Should redirect to dashboard 
-        // return redirect()->back();
-        return redirect(route("home"));
+        return redirect()->intended(route('home'));
+
     }
     
     public function storeDemo(Request $request) {
@@ -77,7 +76,7 @@ class AuthenticatedSessionController extends Controller
             'success'    => true,
             'user_agent' => $request->header('User-Agent'),
         ]);
-        return redirect(route("home"));
+        return redirect()->intended(route('home'));
     }
 
     /**
