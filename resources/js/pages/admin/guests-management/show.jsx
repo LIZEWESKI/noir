@@ -14,6 +14,7 @@ import PaymentsHistory from "@/components/guests-management/payments-history"
 import DeleteUserDialog from "@/components/ui/delete-user-dialog"
 import { useState } from "react"
 import Can from "@/components/can"
+import PaymentDetailsModal from "@/components/payments-management/payment-details-modal"
 
 const breadcrumbs= [
   {
@@ -34,9 +35,15 @@ const breadcrumbs= [
 const Show = ({guest,stats,reservations,payments}) => {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-    const editGuest = (guest) => {
-      router.visit(`/admin/guests-management/edit/${guest.id}`)
-    }
+  const editGuest = (guest) => {
+    router.visit(`/admin/guests-management/edit/${guest.id}`)
+  }
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null)
+  const onModalClick = (id) => {
+      setSelectedPaymentId(id)
+      setIsModalOpen(true)
+  }
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -71,7 +78,6 @@ const Show = ({guest,stats,reservations,payments}) => {
         <GuestProfile guest={guest} stats={stats} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Reservation History */}
             {reservations.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-10 text-center">
@@ -83,8 +89,7 @@ const Show = ({guest,stats,reservations,payments}) => {
                 </CardContent>
               </Card>
             ) : <ReservationsHistory reservations={reservations} />}
-            
-            {/* Payments History */}
+
             {payments.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-10 text-center">
@@ -95,7 +100,7 @@ const Show = ({guest,stats,reservations,payments}) => {
                   <p className="text-sm text-muted-foreground mt-1 mb-4 max-w-md">{guest.name} hasn't made any payments yet.</p>
                 </CardContent>
               </Card>
-            ) : <PaymentsHistory payments={payments}/>}
+            ) : <PaymentsHistory payments={payments} onModalClick={onModalClick}/>}
             
         </div>
         </div>
@@ -103,6 +108,11 @@ const Show = ({guest,stats,reservations,payments}) => {
           open={isDeleteOpen}
           onOpenChange={setIsDeleteOpen}
           guestId={guest.id}
+        />
+        <PaymentDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          payment={payments.find((p) => p.id === selectedPaymentId)}
         />
     </AppLayout>
   )

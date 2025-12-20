@@ -24,7 +24,7 @@ const ReservationsHistory = ({reservations}) => {
             >
                 <Link
                     className="mb-4"
-                    href={`/admin/reservations-management/edit/${reservation.id}`} 
+                    href={`/admin/reservations-management/${reservation.id}`} 
                     prefetch
                 >
                 <div className="flex items-start justify-between mb-2">

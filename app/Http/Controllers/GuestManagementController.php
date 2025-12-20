@@ -139,7 +139,7 @@ class GuestManagementController extends Controller
             ->orderByDesc('check_in')
             ->get();
         $payments = $user->payments()
-            ->with('reservations:id,room_id,check_in,check_out')
+            ->with('reservations.room','user')
             ->latest()
             ->get();
         return Inertia::render('admin/guests-management/show',compact("guest","stats","reservations","payments"));
