@@ -51,11 +51,6 @@ export function GuestDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Languages className="mr-2 h-4 w-4" />
-          <span>Language</span>
-          <span className="ml-auto text-xs text-muted-foreground">English</span>
-        </DropdownMenuItem>
         <DropdownMenuItem className="flex justify-between">
           Theme
           <ThemeToggle />
